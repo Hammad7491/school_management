@@ -11,6 +11,8 @@
     </div>
     <div class="sidebar-menu-area">
         <ul class="sidebar-menu" id="sidebar-menu">
+
+            {{-- Dashboard --}}
             <li class="dropdown">
                 <a href="javascript:void(0)">
                     <iconify-icon icon="solar:home-smile-angle-outline" class="menu-icon"></iconify-icon>
@@ -18,19 +20,15 @@
                 </a>
                 <ul class="sidebar-submenu">
                     <li>
-                        <a href="index.html"><i class="ri-circle-fill circle-icon text-primary-600 w-auto"></i> AI</a>
+                        <a href="index.html">
+                            <i class="ri-circle-fill circle-icon text-primary-600 w-auto"></i> AI
+                        </a>
                     </li>
-
-
                 </ul>
             </li>
 
-
-
-
+            {{-- Users --}}
             <li class="sidebar-menu-group-title">Users</li>
-
-
 
             <li class="dropdown">
                 <a href="javascript:void(0)">
@@ -59,22 +57,81 @@
                         </a>
                     </li>
                 </ul>
-
             </li>
 
+            {{-- Classes --}}
+            <li class="sidebar-menu-group-title">Classes</li>
 
+            <li class="dropdown">
+                <a href="javascript:void(0)">
+                    <iconify-icon icon="mdi:school-outline" class="menu-icon"></iconify-icon>
+                    <span>Class Management</span>
+                </a>
+                <ul class="sidebar-submenu">
+                    <li>
+                        <a href="{{ route('classes.create') }}">
+                            <i class="ri-circle-fill circle-icon text-primary-600 w-auto"></i> Add Class
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('classes.index') }}">
+                            <i class="ri-circle-fill circle-icon text-primary-600 w-auto"></i> Classes List
+                        </a>
+                    </li>
+                </ul>
+            </li>
 
-  
+            {{-- Courses --}}
+            <li class="sidebar-menu-group-title">Courses</li>
 
+            <li class="dropdown">
+                <a href="javascript:void(0)">
+                    <iconify-icon icon="ph:book-open-text-duotone" class="menu-icon"></iconify-icon>
+                    <span>Course Management</span>
+                </a>
+                <ul class="sidebar-submenu">
+                    <li>
+                        <a href="{{ route('courses.create') }}">
+                            <i class="ri-circle-fill circle-icon text-primary-600 w-auto"></i> Add Course
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('courses.index') }}">
+                            <i class="ri-circle-fill circle-icon text-primary-600 w-auto"></i> Courses List
+                        </a>
+                    </li>
+                </ul>
+            </li>
+
+            {{-- Students --}}
+            <li class="sidebar-menu-group-title">Students</li>
+
+            <li class="dropdown">
+                <a href="javascript:void(0)">
+                    <iconify-icon icon="mdi:account-school-outline" class="menu-icon"></iconify-icon>
+                    <span>Student Management</span>
+                </a>
+                <ul class="sidebar-submenu">
+                    <li>
+                        <a href="{{ route('students.create') }}">
+                            <i class="ri-circle-fill circle-icon text-primary-600 w-auto"></i> Add Student
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('students.index') }}">
+                            <i class="ri-circle-fill circle-icon text-primary-600 w-auto"></i> Students List
+                        </a>
+                    </li>
+                </ul>
+            </li>
+
+            {{-- Email --}}
             <li>
                 <a href="email.html">
                     <iconify-icon icon="mage:email" class="menu-icon"></iconify-icon>
                     <span>Email</span>
                 </a>
             </li>
-
-
-
 
         </ul>
     </div>

@@ -21,34 +21,17 @@ class UserSeeder extends Seeder
         );
         $admin->syncRoles('Admin');
 
-        // — Site Manager User —
-        $manager = User::updateOrCreate(
-            ['name' => 'Site Manager User'],
+        // — School User —
+        $school = User::updateOrCreate(
+            ['name' => 'School User'],
             [
-                'email'    => 'manager@example.com',
+                'email'    => 'school@example.com',
                 'password' => Hash::make('password'),
             ]
         );
-        $manager->syncRoles('Site Manager');
+       
 
-        // — Collaborator User —
-        $collaborator = User::updateOrCreate(
-            ['name' => 'Collaborator User'],
-            [
-                'email'    => 'collaborator@example.com',
-                'password' => Hash::make('password'),
-            ]
-        );
-        $collaborator->syncRoles('Collaborator');
-
-        // — Client User —
-        $client = User::updateOrCreate(
-            ['name' => 'Client User'],
-            [
-                'email'    => 'client@example.com',
-                'password' => Hash::make('password'),
-            ]
-        );
-        $client->syncRoles('Client');
+        // — Student User —
+      
     }
 }

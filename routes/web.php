@@ -7,10 +7,13 @@ use App\Http\Controllers\Admin\SiteController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Auth\SocialController;
 use App\Http\Controllers\Admin\ClientController;
+use App\Http\Controllers\Admin\CourseController;
+use App\Http\Controllers\Admin\StudentController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Chatbot\ChatbotController;
 use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\Chatbot\UserNameController;
+use App\Http\Controllers\Admin\SchoolClassController;
 use App\Http\Controllers\Admin\PurchaseOrderController;
 
 // Public
@@ -42,8 +45,7 @@ Route::middleware('auth')->group(function () {
 
 
 
-               Route::resource('clients', ClientController::class)
-                    ->middleware('can:view clients');
+             
 
                // Dashboard (single index action)
                Route::resource('dashboard', DashboardController::class)
@@ -66,4 +68,13 @@ Route::middleware('auth')->group(function () {
 
                     ->middleware('can:view permissions');
           });
+});
+
+Route::resource('classes', SchoolClassController::class);
+
+Route::resource('courses', CourseController::class);
+Route::middleware('auth')->group(function () {
+    Route::resource('students', StudentController::class);
+    Route::get('students/{student}/bform/download', [StudentController::class, 'downloadBForm'])
+        ->name('students.bform.download');
 });
