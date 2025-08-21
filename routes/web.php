@@ -9,6 +9,7 @@ use App\Http\Controllers\Auth\SocialController;
 use App\Http\Controllers\Admin\ClientController;
 use App\Http\Controllers\Admin\CourseController;
 use App\Http\Controllers\Admin\StudentController;
+use App\Http\Controllers\Admin\HomeworkController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Chatbot\ChatbotController;
 use App\Http\Controllers\Admin\PermissionController;
@@ -77,4 +78,12 @@ Route::middleware('auth')->group(function () {
     Route::resource('students', StudentController::class);
     Route::get('students/{student}/bform/download', [StudentController::class, 'downloadBForm'])
         ->name('students.bform.download');
+});
+
+
+
+Route::middleware('auth')->group(function () {
+    Route::resource('homeworks', HomeworkController::class);
+    Route::get('homeworks/{homework}/download', [HomeworkController::class, 'download'])
+        ->name('homeworks.download');
 });

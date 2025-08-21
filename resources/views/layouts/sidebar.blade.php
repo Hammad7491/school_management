@@ -29,7 +29,6 @@
 
             {{-- Users --}}
             <li class="sidebar-menu-group-title">Users</li>
-
             <li class="dropdown">
                 <a href="javascript:void(0)">
                     <iconify-icon icon="solar:home-smile-angle-outline" class="menu-icon"></iconify-icon>
@@ -61,7 +60,6 @@
 
             {{-- Classes --}}
             <li class="sidebar-menu-group-title">Classes</li>
-
             <li class="dropdown">
                 <a href="javascript:void(0)">
                     <iconify-icon icon="mdi:school-outline" class="menu-icon"></iconify-icon>
@@ -83,7 +81,6 @@
 
             {{-- Courses --}}
             <li class="sidebar-menu-group-title">Courses</li>
-
             <li class="dropdown">
                 <a href="javascript:void(0)">
                     <iconify-icon icon="ph:book-open-text-duotone" class="menu-icon"></iconify-icon>
@@ -105,7 +102,6 @@
 
             {{-- Students --}}
             <li class="sidebar-menu-group-title">Students</li>
-
             <li class="dropdown">
                 <a href="javascript:void(0)">
                     <iconify-icon icon="mdi:account-school-outline" class="menu-icon"></iconify-icon>
@@ -120,6 +116,27 @@
                     <li>
                         <a href="{{ route('students.index') }}">
                             <i class="ri-circle-fill circle-icon text-primary-600 w-auto"></i> Students List
+                        </a>
+                    </li>
+                </ul>
+            </li>
+
+            {{-- Homework --}}
+            <li class="sidebar-menu-group-title">Homework</li>
+            <li class="dropdown">
+                <a href="javascript:void(0)">
+                    <iconify-icon icon="mdi:book-edit-outline" class="menu-icon"></iconify-icon>
+                    <span>Homework Management</span>
+                </a>
+                <ul class="sidebar-submenu">
+                    <li>
+                        <a href="{{ route('homeworks.create') }}">
+                            <i class="ri-circle-fill circle-icon text-primary-600 w-auto"></i> Add Homework
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('homeworks.index') }}">
+                            <i class="ri-circle-fill circle-icon text-primary-600 w-auto"></i> Homework List
                         </a>
                     </li>
                 </ul>
