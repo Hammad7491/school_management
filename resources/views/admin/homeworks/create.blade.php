@@ -10,7 +10,13 @@
     </div>
 
     @if ($errors->any())
-        <div class="alert alert-danger"><ul class="mb-0">@foreach ($errors->all() as $e)<li>{{ $e }}</li>@endforeach</ul></div>
+        <div class="alert alert-danger">
+            <ul class="mb-0">
+                @foreach ($errors->all() as $e)
+                    <li>{{ $e }}</li>
+                @endforeach
+            </ul>
+        </div>
     @endif
 
     <form action="{{ $isEdit ? route('homeworks.update',$homework->id) : route('homeworks.store') }}"
@@ -19,21 +25,36 @@
 
         <div class="card-body">
             <div class="row g-3">
+                {{-- Day --}}
                 <div class="col-md-4">
                     <label class="form-label">Day (Date)</label>
-                    <input type="date" name="day" class="form-control"
-                           value="{{ old('day', $homework->day ?? '') }}" required>
+                    <input
+                        type="date"
+                        name="day"
+                        class="form-control"
+                        value="{{ old('day',
+                                $isEdit
+                                    ? ( $homework->day
+                                        ? \Carbon\Carbon::parse($homework->day)->format('Y-m-d')
+                                        : '' )
+                                    : ''
+                             ) }}"
+                        required>
                 </div>
 
+                {{-- Comment --}}
                 <div class="col-md-8">
                     <label class="form-label">Comment</label>
                     <textarea name="comment" class="form-control" rows="3">{{ old('comment', $homework->comment ?? '') }}</textarea>
                 </div>
 
+                {{-- Assign to Class --}}
                 <div class="col-md-6">
+                    @php
+                        $classChecked = old('add_class', $isEdit && !is_null($homework->class_id)) ? true : false;
+                    @endphp
                     <div class="form-check mb-2">
-                        @php $addClass = old('add_class', isset($homework) && !is_null($homework->class_id)); @endphp
-                        <input class="form-check-input" type="checkbox" id="add_class" name="add_class" value="1" {{ $addClass ? 'checked' : '' }}>
+                        <input class="form-check-input" type="checkbox" id="add_class" name="add_class" value="1" {{ $classChecked ? 'checked' : '' }}>
                         <label class="form-check-label" for="add_class">Assign to Class</label>
                     </div>
                     <select name="class_id" id="class_id" class="form-control" style="display:none;">
@@ -46,10 +67,13 @@
                     </select>
                 </div>
 
+                {{-- Assign to Course --}}
                 <div class="col-md-6">
+                    @php
+                        $courseChecked = old('add_course', $isEdit && !is_null($homework->course_id)) ? true : false;
+                    @endphp
                     <div class="form-check mb-2">
-                        @php $addCourse = old('add_course', isset($homework) && !is_null($homework->course_id)); @endphp
-                        <input class="form-check-input" type="checkbox" id="add_course" name="add_course" value="1" {{ $addCourse ? 'checked' : '' }}>
+                        <input class="form-check-input" type="checkbox" id="add_course" name="add_course" value="1" {{ $courseChecked ? 'checked' : '' }}>
                         <label class="form-check-label" for="add_course">Assign to Course</label>
                     </div>
                     <select name="course_id" id="course_id" class="form-control" style="display:none;">
@@ -62,13 +86,25 @@
                     </select>
                 </div>
 
+                {{-- File --}}
                 <div class="col-12">
                     <label class="form-label">Upload (Image/PDF)</label>
                     <input type="file" name="file" class="form-control">
                     @if($isEdit && $homework->file_path)
-                        <small class="text-muted d-block mt-1">
-                            Current: <a href="{{ route('homeworks.download', $homework->id) }}">Download file</a>
-                        </small>
+                        @php
+                            $ext = strtolower(pathinfo($homework->file_path, PATHINFO_EXTENSION));
+                            $isImage = in_array($ext, ['jpg','jpeg','png','webp','gif']);
+                            $fileLabel = $homework->file_name ?: basename($homework->file_path);
+                        @endphp
+                        <div class="mt-2 p-2 border rounded bg-light">
+                            <div class="small text-muted">Current file:</div>
+                            <div class="d-flex align-items-center gap-3">
+                                @if($isImage)
+                                    <img src="{{ asset('storage/'.$homework->file_path) }}" alt="file" style="height:60px;border-radius:4px;">
+                                @endif
+                                <a href="{{ route('homeworks.download', $homework->id) }}">{{ $fileLabel }}</a>
+                            </div>
+                        </div>
                     @endif
                 </div>
             </div>
@@ -91,6 +127,8 @@ document.addEventListener('DOMContentLoaded', function () {
     const courseSel = document.getElementById('course_id');
 
     function toggle(chk, sel){ sel.style.display = chk.checked ? 'block' : 'none'; }
+
+    // initial state (handles edit & validation back)
     toggle(addClass, classSel);
     toggle(addCourse, courseSel);
 

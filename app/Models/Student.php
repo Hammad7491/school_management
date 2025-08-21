@@ -4,28 +4,47 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Hash;
 
 class Student extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'user_id','class_id','course_id',
-        'reg_no','admission_date','name','father_name','b_form_image_path',
-        'dob','caste','parent_phone','guardian_phone','address',
-        'password','status',
+        // who created the record (admin/school)
+        'user_id',
+
+        // relations
+        'class_id',
+        'course_id',
+
+        // link to the user account of the student
+        'student_id',
+
+        // identifiers
+        'reg_no',
+
+        // profile
+        'admission_date',
+        'name',
+        'father_name',
+        'b_form',                // present in your migration
+        'b_form_image_path',
+        'dob',
+        'caste',
+        'parent_phone',
+        'guardian_phone',
+        'address',
+        'email',                 // duplicated in students table per your migration
+
+        // status
+        'status',
     ];
 
-    // auto-hash password
-    public function setPasswordAttribute($value)
-    {
-        if ($value && !str_starts_with((string)$value, '$2y$')) {
-            $this->attributes['password'] = Hash::make($value);
-        } else {
-            $this->attributes['password'] = $value;
-        }
-    }
+    protected $casts = [
+        'admission_date' => 'date',
+        'dob'            => 'date',
+        'status'         => 'integer', // or 'boolean' if you prefer
+    ];
 
     public function schoolClass()
     {
@@ -35,5 +54,15 @@ class Student extends Model
     public function course()
     {
         return $this->belongsTo(Course::class, 'course_id');
+    }
+
+    public function account() // the student's user row
+    {
+        return $this->belongsTo(\App\Models\User::class, 'student_id');
+    }
+
+    public function createdBy() // the admin/school user who created the student
+    {
+        return $this->belongsTo(\App\Models\User::class, 'user_id');
     }
 }

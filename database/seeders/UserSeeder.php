@@ -1,5 +1,4 @@
 <?php
-// database/seeders/UserSeeder.php
 
 namespace Database\Seeders;
 
@@ -9,29 +8,27 @@ use Illuminate\Support\Facades\Hash;
 
 class UserSeeder extends Seeder
 {
-    public function run()
+    public function run(): void
     {
-        // — Admin User —
+        // Admin
         $admin = User::updateOrCreate(
-            ['name' => 'Admin User'],
-            [
-                'email'    => 'a@a',
-                'password' => Hash::make('a'),
-            ]
+            ['email' => 'a@a'],
+            ['name' => 'Admin User', 'password' => Hash::make('a')]
         );
-        $admin->syncRoles('Admin');
+        $admin->syncRoles(['Admin']);
 
-        // — School User —
-        $school = User::updateOrCreate(
-            ['name' => 'School User'],
-            [
-                'email'    => 'school@example.com',
-                'password' => Hash::make('password'),
-            ]
+        // Principal
+        $principal = User::updateOrCreate(
+            ['email' => 'principal@example.com'],
+            ['name' => 'Principal User', 'password' => Hash::make('password')]
         );
-       
+        $principal->syncRoles(['Principal']);
 
-        // — Student User —
-      
+        // Teacher
+        $teacher = User::updateOrCreate(
+            ['email' => 'teacher@example.com'],
+            ['name' => 'Teacher User', 'password' => Hash::make('password')]
+        );
+        $teacher->syncRoles(['Teacher']);
     }
 }

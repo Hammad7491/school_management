@@ -1,7 +1,7 @@
 @extends('layouts.app')
 @section('content')
 <div class="container py-4">
-    <h1>Admin Dashboard</h1>
-    <p>Use can to restrict sections here.</p>
+    <h1>Student Dashboard</h1>
+    <p>Welcome to your portal.</p>
 </div>
 @endsection

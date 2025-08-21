@@ -14,6 +14,7 @@ return new class extends Migration {
             $table->unsignedBigInteger('user_id');           // admin/school who created
             $table->unsignedBigInteger('class_id')->nullable();
             $table->unsignedBigInteger('course_id')->nullable();
+            $table->unsignedBigInteger('student_id')->nullable();
 
             // registration like previous roll no (6 digits, auto)
             $table->string('reg_no')->unique();
@@ -33,7 +34,7 @@ return new class extends Migration {
             $table->text('address')->nullable();         // Address
 
             // auth & status
-            $table->string('password');                  // hashed
+            $table->string('email')->unique();                  // hashed
             $table->boolean('status')->nullable();       // null=pending, 1=approved, 0=rejected
 
             $table->timestamps();

@@ -122,19 +122,37 @@
 
                 <div class="d-flex justify-content-between mb-32">
                     <div class="form-check style-check d-flex align-items-center">
-                        <input class="form-check-input border border-neutral-300" type="checkbox" id="remember">
+                        <input class="form-check-input border border-neutral-300" type="checkbox" id="remember" name="remember">
                         <label class="form-check-label ms-2" for="remember">Remember me</label>
                     </div>
                     <a href="javascript:void(0)" class="text-primary-600 fw-medium">Forgot Password?</a>
                 </div>
 
-                <button type="submit" class="btn btn-primary text-sm btn-sm px-12 py-16 w-100 radius-12 mb-32">
+                <button type="submit" class="btn btn-primary text-sm btn-sm px-12 py-16 w-100 radius-12 mb-24">
                     Log In
                 </button>
 
+                {{-- Quick login buttons --}}
                 <div class="d-flex flex-wrap gap-2 mb-32">
-                    <button type="button" class="btn btn-secondary" onclick="fillLogin('a@a','a')">Admin</button>
-                    {{-- <button type="button" class="btn btn-secondary" onclick="fillLogin('u@u','a')">User</button> --}}
+                    <button type="button" class="btn btn-secondary"
+                            onclick="fillLogin('a@a','a')">
+                        Admin
+                    </button>
+
+                    <button type="button" class="btn btn-outline-secondary"
+                            onclick="fillLogin('principal@example.com','password')">
+                        Principal
+                    </button>
+
+                    <button type="button" class="btn btn-outline-secondary"
+                            onclick="fillLogin('teacher@example.com','password')">
+                        Teacher
+                    </button>
+
+                    <button type="button" class="btn btn-outline-secondary"
+                            onclick="fillLogin('student@example.com','password')">
+                        Student
+                    </button>
                 </div>
 
                 <p class="text-center text-sm mb-0">

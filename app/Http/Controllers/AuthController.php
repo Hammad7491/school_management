@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\Student;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -34,10 +35,11 @@ class AuthController extends Controller
 
     /**
      * Handle registration (manual or social data).
+     * (You probably don't use this for students, but kept intact.)
      */
     public function register(Request $request)
     {
-        // If social data is present, firstOrCreate and then assign default “Client” role
+        // Social quick-create
         if ($request->has('google_user_data') || $request->has('facebook_user_data')) {
             $socialKey = $request->has('google_user_data') ? 'google_user_data' : 'facebook_user_data';
             $data      = $request->input($socialKey);
@@ -47,25 +49,21 @@ class AuthController extends Controller
                 [
                     'name'      => $data['name'],
                     'avatar'    => $data['avatar'] ?? null,
-                    // store whichever social ID you need
-                    $socialKey === 'google_user_data'
-                        ? 'google_id'
-                        : 'facebook_id'
-                    => $data[$socialKey === 'google_user_data' ? 'google_id' : 'facebook_id'],
+                    $socialKey === 'google_user_data' ? 'google_id' : 'facebook_id'
+                        => $data[$socialKey === 'google_user_data' ? 'google_id' : 'facebook_id'],
                     'password'  => Hash::make(Str::random(16)),
                 ]
             );
 
-            // ensure they have at least the “Client” role
-            if (! $user->hasRole('Client')) {
-                $user->assignRole('Client');
-            }
-
             Auth::login($user, true);
-            return redirect()->route('user.dashboard');
+            // Staff/student redirect rule
+            if (Student::where('student_id', $user->id)->exists()) {
+                return redirect()->route('students.dashboard');
+            }
+            return redirect()->route('admin.dashboard');
         }
 
-        // Manual registration
+        // Manual registration (non-student)
         $validator = Validator::make($request->all(), [
             'name'     => 'required|unique:users,name',
             'email'    => 'required|email|unique:users,email',
@@ -76,48 +74,42 @@ class AuthController extends Controller
             return back()->withErrors($validator)->withInput();
         }
 
-        // create & assign default Client role
         $user = User::create([
             'name'     => $request->name,
             'email'    => $request->email,
             'password' => Hash::make($request->password),
         ]);
 
-        $user->assignRole('Client');
+        // If you use spatie, you can assign a staff role here.
+        // $user->assignRole('Client'); // optional
 
         return redirect()->route('loginform')->with('success', 'Registration successful');
     }
 
     /**
-     * Handle login and redirect based on dynamic roles.
+     * Handle login and redirect:
+     *  - Students (exist in students.student_id) -> students.dashboard
+     *  - Everyone else (staff) -> admin.dashboard
      */
     public function login(Request $request)
     {
-        // validate credentials
         $credentials = $request->validate([
             'email'    => 'required|email',
             'password' => 'required',
         ]);
 
         if (! Auth::attempt($credentials, $request->filled('remember'))) {
-            return back()
-                ->withErrors(['email' => 'Invalid credentials.'])
-                ->withInput();
+            return back()->withErrors(['email' => 'Invalid credentials.'])->withInput();
         }
 
         $user = Auth::user();
 
-        // dynamic redirection based on role
-        if ($user->hasRole('Admin')) {
-            return redirect()->route('admin.dashboard');
+        // If this user is linked as a student, go to students dashboard
+        if (Student::where('student_id', $user->id)->exists()) {
+            return redirect()->route('students.dashboard');
         }
 
-        // you can add more granular redirects here:
-        // if ($user->hasRole('Site Manager')) { ... }
-        // if ($user->hasRole('Collaborator')) { ... }
-        // if ($user->hasRole('Client')) { ... }
-
-        // default logged-in landing
-        return redirect()->route('user.dashboard');
+        // All other users (staff of any role) go to the admin dashboard.
+        return redirect()->route('admin.dashboard');
     }
 }
