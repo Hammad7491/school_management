@@ -47,7 +47,6 @@
                         </a>
                     </li>
                     @endcan
-
                     @can('view users')
                     <li>
                         <a href="{{ route('admin.users.index') }}">
@@ -55,7 +54,6 @@
                         </a>
                     </li>
                     @endcan
-
                     @can('view roles')
                     <li>
                         <a href="{{ route('admin.roles.index') }}">
@@ -63,7 +61,6 @@
                         </a>
                     </li>
                     @endcan
-
                     @can('view permissions')
                     <li>
                         <a href="{{ route('admin.permissions.index') }}">
@@ -176,6 +173,33 @@
                     <li>
                         <a href="{{ route('homeworks.index') }}">
                             <i class="ri-circle-fill circle-icon text-primary-600 w-auto"></i> Homework List
+                        </a>
+                    </li>
+                    @endcan
+                </ul>
+            </li>
+            @endcanany
+
+            {{-- Exams --}}
+            @canany(['create exams','view exams'])
+            <li class="sidebar-menu-group-title">Exams</li>
+            <li class="dropdown">
+                <a href="javascript:void(0)">
+                    <iconify-icon icon="mdi:clipboard-text-outline" class="menu-icon"></iconify-icon>
+                    <span>Exam Management</span>
+                </a>
+                <ul class="sidebar-submenu">
+                    @can('create exams')
+                    <li>
+                        <a href="{{ route('exams.create') }}">
+                            <i class="ri-circle-fill circle-icon text-primary-600 w-auto"></i> Add Exam
+                        </a>
+                    </li>
+                    @endcan
+                    @can('view exams')
+                    <li>
+                        <a href="{{ route('exams.index') }}">
+                            <i class="ri-circle-fill circle-icon text-primary-600 w-auto"></i> Exam List
                         </a>
                     </li>
                     @endcan

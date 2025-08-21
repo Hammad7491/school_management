@@ -3,16 +3,17 @@
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\Auth\SocialController;
+use App\Http\Controllers\Admin\ExamController;
 
-use App\Http\Controllers\Admin\DashboardController;
-use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\RoleController;
-use App\Http\Controllers\Admin\PermissionController;
-use App\Http\Controllers\Admin\SchoolClassController;
+use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Auth\SocialController;
 use App\Http\Controllers\Admin\CourseController;
 use App\Http\Controllers\Admin\StudentController;
 use App\Http\Controllers\Admin\HomeworkController;
+use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\PermissionController;
+use App\Http\Controllers\Admin\SchoolClassController;
 
 /*
 |--------------------------------------------------------------------------
@@ -92,3 +93,8 @@ Route::middleware('auth')->group(function () {
 |--------------------------------------------------------------------------
 */
 Route::redirect('/home', '/admin/dashboard')->name('home');
+Route::middleware('auth')->group(function () {
+    Route::resource('exams', ExamController::class);                 // index/create/store/show(edit)/update/destroy
+    Route::get('exams/{exam}/download', [ExamController::class, 'download'])
+        ->name('exams.download');                                    // ✅ download route
+});
