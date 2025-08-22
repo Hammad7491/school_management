@@ -2,138 +2,228 @@
 
 @section('content')
 @php $isEdit = isset($homework); @endphp
-<div class="container" style="max-width:900px">
 
-    <div class="d-flex align-items-center justify-content-between mb-3">
-        <h2 class="mb-0">{{ $isEdit ? 'Edit Homework' : 'Add Homework' }}</h2>
-        <a href="{{ route('homeworks.index') }}" class="btn btn-link">Back to List</a>
+<style>
+  /* ——— Premium-simple styling (same system as your other pages) ——— */
+  :root{
+    --bg:#f7f9ff; --ink:#0b1020; --muted:#6b7280; --card:#ffffff; --stroke:rgba(15,23,42,.10);
+    --brand1:#6a7bff; --brand2:#22d3ee; --ring:rgba(106,123,255,.28); --danger:#e11d48; --radius:18px;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{ --bg:#0b1020; --ink:#e6e9f5; --muted:#9aa3ba; --card:#0f1830; --stroke:rgba(255,255,255,.12); --ring:rgba(106,123,255,.45); }
+  }
+
+  .page{ min-height:100dvh; background:
+      radial-gradient(800px 400px at -10% 0%, rgba(106,123,255,.12), transparent 60%),
+      radial-gradient(700px 500px at 110% -10%, rgba(34,211,238,.12), transparent 60%),
+      var(--bg); color:var(--ink); }
+  .wrap{ max-width:980px; margin:0 auto; padding:28px 14px 72px; }
+
+  .title{ font-size:clamp(28px,5vw,56px); font-weight:900; line-height:1.05; margin:4px 0 8px; }
+  .title span{ background:linear-gradient(90deg,var(--brand1),var(--brand2)); -webkit-background-clip:text; background-clip:text; color:transparent; }
+  .topbar{ display:flex; gap:12px; align-items:center; justify-content:space-between; flex-wrap:wrap; }
+  .btn-link{ color:#4f46e5; text-decoration:none; font-weight:800; }
+  .btn-link:hover{ text-decoration:underline; }
+
+  .cardx{ background:var(--card); border:1px solid var(--stroke); border-radius:var(--radius); box-shadow:0 20px 55px rgba(2,6,23,.08); }
+  .cardx .body{ padding:22px; }
+
+  .grid{ display:grid; gap:16px; grid-template-columns:1fr; }
+  @media (min-width:760px){ .grid-2{ grid-template-columns:1fr 1fr; } .grid-3{ grid-template-columns:1fr 2fr; } }
+
+  .label{ font-weight:800; margin-bottom:8px; display:flex; align-items:center; gap:.35rem; }
+  .req{ color:var(--danger); font-weight:900; }
+
+  .input, .select, .textarea{
+    width:100%; padding:14px; border-radius:14px; border:1px solid var(--stroke); background:#fff; color:inherit;
+    outline:none; transition:.18s border-color, .18s box-shadow;
+  }
+  .textarea{ min-height:96px; resize:vertical; }
+  .input:focus, .select:focus, .textarea:focus{ border-color:var(--brand1); box-shadow:0 0 0 6px var(--ring); }
+
+  .check-row{ display:flex; gap:10px; align-items:center; margin:8px 0; }
+
+  .uploader{ position:relative; border:1px dashed var(--stroke); border-radius:14px; background:rgba(106,123,255,.04);
+    display:flex; gap:14px; align-items:center; padding:14px; }
+  .uploader:hover{ box-shadow:0 0 0 6px var(--ring); }
+  .uploader input[type=file]{ position:absolute; inset:0; opacity:0; cursor:pointer; }
+  .thumb{ width:76px; height:76px; border-radius:12px; object-fit:cover; border:1px solid var(--stroke); background:#fff; display:none; }
+  .file-meta{ color:var(--muted); font-size:12px; }
+  .file-chip{ display:inline-block; padding:6px 10px; border-radius:999px; border:1px solid var(--stroke); font-weight:800; }
+
+  .actions{ display:flex; flex-wrap:wrap; gap:12px; align-items:center; margin-top:12px; }
+  .btn{ border:0; border-radius:12px; padding:12px 16px; font-weight:900; cursor:pointer; }
+  .btn-primary{ color:#fff; background:linear-gradient(90deg,var(--brand1),var(--brand2)); box-shadow:0 12px 28px rgba(106,123,255,.35); }
+  .btn-primary:hover{ filter:brightness(1.05); transform:translateY(-1px); }
+  .btn-outline{ background:transparent; color:var(--ink); border:1px solid var(--stroke); }
+
+  .alert-danger{ background:#fef2f2; border:1px solid #fecaca; color:#7f1d1d; border-radius:12px; padding:12px 14px; margin-bottom:14px; }
+  @media (prefers-color-scheme: dark){
+    .input, .select, .textarea{ background:rgba(255,255,255,.02); }
+    .thumb{ background:transparent; }
+    .alert-danger{ background:rgba(225,29,72,.16); border-color:rgba(225,29,72,.45); color:#ffe4e6; }
+  }
+</style>
+
+<div class="page">
+  <div class="wrap">
+    <div class="topbar">
+      <h1 class="title">{{ $isEdit ? 'Edit' : 'Add' }} <span>Homework</span></h1>
+      <a href="{{ route('homeworks.index') }}" class="btn-link">← Back to List</a>
     </div>
 
     @if ($errors->any())
-        <div class="alert alert-danger">
-            <ul class="mb-0">
-                @foreach ($errors->all() as $e)
-                    <li>{{ $e }}</li>
-                @endforeach
-            </ul>
-        </div>
+      <div class="alert-danger" role="alert">
+        <ul style="margin:0 0 0 1rem;">
+          @foreach ($errors->all() as $e) <li>{{ $e }}</li> @endforeach
+        </ul>
+      </div>
     @endif
 
     <form action="{{ $isEdit ? route('homeworks.update',$homework->id) : route('homeworks.store') }}"
-          method="POST" class="card shadow-sm" enctype="multipart/form-data">
-        @csrf @if($isEdit) @method('PUT') @endif
+          method="POST" class="cardx" enctype="multipart/form-data" novalidate>
+      @csrf @if($isEdit) @method('PUT') @endif
 
-        <div class="card-body">
-            <div class="row g-3">
-                {{-- Day --}}
-                <div class="col-md-4">
-                    <label class="form-label">Day (Date)</label>
-                    <input
-                        type="date"
-                        name="day"
-                        class="form-control"
-                        value="{{ old('day',
-                                $isEdit
-                                    ? ( $homework->day
-                                        ? \Carbon\Carbon::parse($homework->day)->format('Y-m-d')
-                                        : '' )
-                                    : ''
-                             ) }}"
-                        required>
-                </div>
-
-                {{-- Comment --}}
-                <div class="col-md-8">
-                    <label class="form-label">Comment</label>
-                    <textarea name="comment" class="form-control" rows="3">{{ old('comment', $homework->comment ?? '') }}</textarea>
-                </div>
-
-                {{-- Assign to Class --}}
-                <div class="col-md-6">
-                    @php
-                        $classChecked = old('add_class', $isEdit && !is_null($homework->class_id)) ? true : false;
-                    @endphp
-                    <div class="form-check mb-2">
-                        <input class="form-check-input" type="checkbox" id="add_class" name="add_class" value="1" {{ $classChecked ? 'checked' : '' }}>
-                        <label class="form-check-label" for="add_class">Assign to Class</label>
-                    </div>
-                    <select name="class_id" id="class_id" class="form-control" style="display:none;">
-                        <option value="">— Select Class —</option>
-                        @foreach($classes as $c)
-                            <option value="{{ $c->id }}" {{ old('class_id', $homework->class_id ?? null) == $c->id ? 'selected' : '' }}>
-                                {{ $c->name }}
-                            </option>
-                        @endforeach
-                    </select>
-                </div>
-
-                {{-- Assign to Course --}}
-                <div class="col-md-6">
-                    @php
-                        $courseChecked = old('add_course', $isEdit && !is_null($homework->course_id)) ? true : false;
-                    @endphp
-                    <div class="form-check mb-2">
-                        <input class="form-check-input" type="checkbox" id="add_course" name="add_course" value="1" {{ $courseChecked ? 'checked' : '' }}>
-                        <label class="form-check-label" for="add_course">Assign to Course</label>
-                    </div>
-                    <select name="course_id" id="course_id" class="form-control" style="display:none;">
-                        <option value="">— Select Course —</option>
-                        @foreach($courses as $co)
-                            <option value="{{ $co->id }}" {{ old('course_id', $homework->course_id ?? null) == $co->id ? 'selected' : '' }}>
-                                {{ $co->name }}
-                            </option>
-                        @endforeach
-                    </select>
-                </div>
-
-                {{-- File --}}
-                <div class="col-12">
-                    <label class="form-label">Upload (Image/PDF)</label>
-                    <input type="file" name="file" class="form-control">
-                    @if($isEdit && $homework->file_path)
-                        @php
-                            $ext = strtolower(pathinfo($homework->file_path, PATHINFO_EXTENSION));
-                            $isImage = in_array($ext, ['jpg','jpeg','png','webp','gif']);
-                            $fileLabel = $homework->file_name ?: basename($homework->file_path);
-                        @endphp
-                        <div class="mt-2 p-2 border rounded bg-light">
-                            <div class="small text-muted">Current file:</div>
-                            <div class="d-flex align-items-center gap-3">
-                                @if($isImage)
-                                    <img src="{{ asset('storage/'.$homework->file_path) }}" alt="file" style="height:60px;border-radius:4px;">
-                                @endif
-                                <a href="{{ route('homeworks.download', $homework->id) }}">{{ $fileLabel }}</a>
-                            </div>
-                        </div>
-                    @endif
-                </div>
-            </div>
-
-            <div class="mt-4 d-flex gap-2">
-                <button class="btn btn-primary" type="submit">{{ $isEdit ? 'Update Homework' : 'Add Homework' }}</button>
-                @if($isEdit)
-                    <a href="{{ route('homeworks.create') }}" class="btn btn-outline-secondary">Cancel Edit</a>
-                @endif
-            </div>
+      <div class="body">
+        {{-- Day + Comment --}}
+        <div class="grid grid-3">
+          <div>
+            <label class="label" for="day">Day (Date) <span class="req">*</span></label>
+            <input id="day" type="date" name="day" class="input" required
+                   value="{{ old('day', $isEdit ? ($homework->day ? \Carbon\Carbon::parse($homework->day)->format('Y-m-d') : '') : '') }}">
+          </div>
+          <div style="grid-column:span 2;">
+            <label class="label" for="comment">Comment</label>
+            <textarea id="comment" name="comment" class="textarea" rows="3">{{ old('comment', $homework->comment ?? '') }}</textarea>
+          </div>
         </div>
+
+        {{-- Assign to Class / Course --}}
+        @php
+          $classChecked  = old('add_class',  $isEdit && !is_null($homework->class_id)) ? true : false;
+          $courseChecked = old('add_course', $isEdit && !is_null($homework->course_id)) ? true : false;
+        @endphp
+
+        <div class="grid grid-2" style="margin-top:8px;">
+          <div>
+            <div class="check-row">
+              <input class="form-check-input" type="checkbox" id="add_class" name="add_class" value="1" {{ $classChecked ? 'checked' : '' }}>
+              <label class="label" for="add_class" style="margin:0;">Assign to Class</label>
+            </div>
+            <select name="class_id" id="class_id" class="select"
+                    style="{{ $classChecked ? '' : 'display:none;' }}">
+              <option value="">— Select Class —</option>
+              @foreach($classes as $c)
+                <option value="{{ $c->id }}" {{ old('class_id', $homework->class_id ?? null) == $c->id ? 'selected' : '' }}>
+                  {{ $c->name }}
+                </option>
+              @endforeach
+            </select>
+          </div>
+
+          <div>
+            <div class="check-row">
+              <input class="form-check-input" type="checkbox" id="add_course" name="add_course" value="1" {{ $courseChecked ? 'checked' : '' }}>
+              <label class="label" for="add_course" style="margin:0;">Assign to Course</label>
+            </div>
+            <select name="course_id" id="course_id" class="select"
+                    style="{{ $courseChecked ? '' : 'display:none;' }}">
+              <option value="">— Select Course —</option>
+              @foreach($courses as $co)
+                <option value="{{ $co->id }}" {{ old('course_id', $homework->course_id ?? null) == $co->id ? 'selected' : '' }}>
+                  {{ $co->name }}
+                </option>
+              @endforeach
+            </select>
+          </div>
+        </div>
+
+        {{-- Upload --}}
+        <div style="margin-top:8px;">
+          <label class="label" for="file">Upload (Image/PDF)</label>
+          <div class="uploader">
+            <img id="fileThumb" class="thumb" alt="">
+            <div>
+              <strong>Click to choose a file</strong>
+              <div class="file-meta">PNG/JPG/WEBP/GIF or PDF, up to ~5MB</div>
+              <div id="fileName" class="file-meta" style="margin-top:6px;"></div>
+            </div>
+            <input id="file" type="file" name="file" accept="image/*,application/pdf">
+          </div>
+
+          @if($isEdit && $homework->file_path)
+            @php
+              $ext = strtolower(pathinfo($homework->file_path, PATHINFO_EXTENSION));
+              $isImage = in_array($ext, ['jpg','jpeg','png','webp','gif']);
+              $fileLabel = $homework->file_name ?: basename($homework->file_path);
+            @endphp
+            <div class="file-meta" style="margin-top:8px;">
+              Current file:
+              @if($isImage)
+                <span class="file-chip">Image</span>
+              @else
+                <span class="file-chip">PDF</span>
+              @endif
+              <a href="{{ route('homeworks.download', $homework->id) }}" style="margin-left:.5rem;">{{ $fileLabel }}</a>
+            </div>
+          @endif
+        </div>
+
+        {{-- Actions --}}
+        <div class="actions">
+          <button class="btn btn-primary" type="submit">{{ $isEdit ? 'Update Homework' : 'Add Homework' }}</button>
+          @if($isEdit)
+            <a href="{{ route('homeworks.create') }}" class="btn btn-outline">Cancel edit</a>
+          @endif
+          <a href="{{ route('homeworks.index') }}" class="btn-link" style="margin-left:auto">Back to list →</a>
+        </div>
+      </div>
     </form>
+  </div>
 </div>
 
 <script>
-document.addEventListener('DOMContentLoaded', function () {
+  // Toggle selects + require when visible (robust inline style approach)
+  document.addEventListener('DOMContentLoaded', function(){
     const addClass  = document.getElementById('add_class');
     const classSel  = document.getElementById('class_id');
     const addCourse = document.getElementById('add_course');
     const courseSel = document.getElementById('course_id');
 
-    function toggle(chk, sel){ sel.style.display = chk.checked ? 'block' : 'none'; }
+    function toggle(chk, sel){
+      if(!chk || !sel) return;
+      sel.style.display = chk.checked ? 'block' : 'none';
+      sel.required = chk.checked;
+    }
 
-    // initial state (handles edit & validation back)
     toggle(addClass, classSel);
     toggle(addCourse, courseSel);
 
-    addClass.addEventListener('change',  () => toggle(addClass, classSel));
-    addCourse.addEventListener('change', () => toggle(addCourse, courseSel));
-});
+    addClass?.addEventListener('change', () => toggle(addClass, classSel));
+    addCourse?.addEventListener('change', () => toggle(addCourse, courseSel));
+  });
+
+  // File preview: show image thumb or file name for PDF
+  (function(){
+    const input = document.getElementById('file');
+    const thumb = document.getElementById('fileThumb');
+    const nameEl = document.getElementById('fileName');
+    if(!input) return;
+
+    input.addEventListener('change', () => {
+      const f = input.files && input.files[0];
+      if(!f) return;
+      const isImg = /^image\//.test(f.type);
+      nameEl.textContent = f.name;
+
+      if(isImg){
+        const url = URL.createObjectURL(f);
+        thumb.src = url;
+        thumb.style.display = 'block';
+      }else{
+        thumb.style.display = 'none';
+      }
+    });
+  })();
 </script>
 @endsection

@@ -3,17 +3,19 @@
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\Admin\ExamController;
-
-use App\Http\Controllers\Admin\RoleController;
-use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Auth\SocialController;
+
+use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\RoleController;
+use App\Http\Controllers\Admin\PermissionController;
+use App\Http\Controllers\Admin\SchoolClassController;
 use App\Http\Controllers\Admin\CourseController;
 use App\Http\Controllers\Admin\StudentController;
 use App\Http\Controllers\Admin\HomeworkController;
-use App\Http\Controllers\Admin\DashboardController;
-use App\Http\Controllers\Admin\PermissionController;
-use App\Http\Controllers\Admin\SchoolClassController;
+use App\Http\Controllers\Admin\ExamController;
+
+use App\Http\Controllers\Student\DashboardController as StudentDashboard;
 
 /*
 |--------------------------------------------------------------------------
@@ -48,21 +50,14 @@ Route::get('login/facebook/callback', [SocialController::class, 'handleFacebookC
 */
 Route::middleware('auth')->group(function () {
 
-    // Dashboards
-    Route::get('/admin/dashboard', function () {
-        // you can use a controller if you prefer:
-        // return app(DashboardController::class)->index();
-        return app(DashboardController::class)->index();
-    })->name('admin.dashboard');
-
-    // Student dashboard (students go here after login)
-    Route::view('/students/dashboard', 'students.dashboard')->name('students.dashboard');
+    // Admin Dashboard
+    Route::get('/admin/dashboard', fn () => app(DashboardController::class)->index())
+        ->name('admin.dashboard');
 
     /*
-    |----------------------------------------------------------------------
-    | Admin-prefixed resources (with abilities)
-    |----------------------------------------------------------------------
-    | Keep these under /admin and gate by your permissions.
+    |--------------------------------------------------------------------------
+    | Admin-prefixed resources
+    |--------------------------------------------------------------------------
     */
     Route::prefix('admin')->name('admin.')->group(function () {
         Route::resource('users',        UserController::class)->middleware('can:view users');
@@ -71,30 +66,60 @@ Route::middleware('auth')->group(function () {
     });
 
     /*
-    |----------------------------------------------------------------------
-    | App resources (no admin prefix) – matches your sidebar route() names
-    |----------------------------------------------------------------------
+    |--------------------------------------------------------------------------
+    | App resources
+    |--------------------------------------------------------------------------
     */
     Route::resource('classes',   SchoolClassController::class);
     Route::resource('courses',   CourseController::class);
 
-    Route::resource('students',  StudentController::class);
+    // Prevent "students/dashboard" conflict with admin resource
+    Route::get('students/dashboard', function () {
+        return redirect()->route('student.homeworks');
+    });
+
+    Route::resource('students', StudentController::class)
+        ->whereNumber('student'); // only numeric IDs
+
     Route::get('students/{student}/bform/download', [StudentController::class, 'downloadBForm'])
         ->name('students.bform.download');
 
     Route::resource('homeworks', HomeworkController::class);
     Route::get('homeworks/{homework}/download', [HomeworkController::class, 'download'])
         ->name('homeworks.download');
+
+    Route::resource('exams', ExamController::class);
+    Route::get('exams/{exam}/download', [ExamController::class, 'download'])
+        ->name('exams.download');
 });
 
 /*
 |--------------------------------------------------------------------------
-| Convenience redirect (optional)
+| Convenience redirect
 |--------------------------------------------------------------------------
 */
 Route::redirect('/home', '/admin/dashboard')->name('home');
-Route::middleware('auth')->group(function () {
-    Route::resource('exams', ExamController::class);                 // index/create/store/show(edit)/update/destroy
-    Route::get('exams/{exam}/download', [ExamController::class, 'download'])
-        ->name('exams.download');                                    // ✅ download route
-});
+
+/*
+|--------------------------------------------------------------------------
+| Student area (separate namespace)
+|--------------------------------------------------------------------------
+*/
+// routes/web.php
+Route::middleware(['auth'])
+    ->prefix('student')
+    ->name('student.')
+    ->group(function () {
+        Route::get('/dashboard', [\App\Http\Controllers\Student\DashboardController::class, 'index'])->name('dashboard');
+        Route::get('/homeworks', [\App\Http\Controllers\Student\DashboardController::class, 'homeworks'])->name('homeworks');
+        Route::get('/exams',     [\App\Http\Controllers\Student\DashboardController::class, 'exams'])->name('exams');
+
+        // ✅ Monthly reports page (student-only view by Reg #)
+        Route::get('/monthly-reports', [\App\Http\Controllers\Student\DashboardController::class, 'monthlyReports'])
+            ->name('monthlyreports');
+    });
+
+
+
+    Route::resource('monthlyreports', App\Http\Controllers\Admin\MonthlyReportController::class);
+

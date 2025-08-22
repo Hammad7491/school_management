@@ -207,6 +207,35 @@
             </li>
             @endcanany
 
+
+            {{-- Monthly Reports --}}
+@canany(['create monthlyreports','view monthlyreports'])
+<li class="sidebar-menu-group-title">Monthly Reports</li>
+<li class="dropdown">
+    <a href="javascript:void(0)">
+        <iconify-icon icon="mdi:calendar-month-outline" class="menu-icon"></iconify-icon>
+        <span>Monthly Report Management</span>
+    </a>
+    <ul class="sidebar-submenu">
+        @can('create monthlyreports')
+        <li>
+            <a href="{{ route('monthlyreports.create') }}" class="btn btn-sm btn-info w-100">
+                <i class="ri-add-circle-line"></i> Add Report
+            </a>
+        </li>
+        @endcan
+        @can('view monthlyreports')
+        <li>
+            <a href="{{ route('monthlyreports.index') }}">
+                <i class="ri-circle-fill circle-icon text-primary-600 w-auto"></i> Reports List
+            </a>
+        </li>
+        @endcan
+    </ul>
+</li>
+@endcanany
+
+
             {{-- Email (example static item) --}}
             <li>
                 <a href="email.html">

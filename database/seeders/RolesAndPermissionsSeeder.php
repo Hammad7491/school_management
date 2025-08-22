@@ -43,8 +43,11 @@ class RolesAndPermissionsSeeder extends Seeder
             // Homeworks
             'create homeworks','view homeworks','edit homeworks','delete homeworks',
 
-            // ✅ Exams
+            // Exams
             'create exams','view exams','edit exams','delete exams',
+
+            // ✅ Monthly Reports
+            'create monthlyreports','view monthlyreports','edit monthlyreports','delete monthlyreports',
         ];
 
         foreach ($perms as $p) {
@@ -55,12 +58,12 @@ class RolesAndPermissionsSeeder extends Seeder
         $admin     = Role::create(['name' => 'Admin',     'guard_name' => 'web']);
         $principal = Role::create(['name' => 'Principal', 'guard_name' => 'web']);
         $teacher   = Role::create(['name' => 'Teacher',   'guard_name' => 'web']);
-        // NOTE: No "Student" role — students use a separate dashboard without staff permissions.
+        // NOTE: No "Student" role — students have a separate dashboard.
 
         // Admin gets everything
         $admin->syncPermissions(Permission::all());
 
-        // Principal: full academic control + exams (create/view/edit/delete)
+        // Principal: full academic control + homework/exams/monthlyreports
         $principalPerms = [
             'view dashboard',
             'view users',
@@ -71,12 +74,14 @@ class RolesAndPermissionsSeeder extends Seeder
 
             'create homeworks','view homeworks','edit homeworks','delete homeworks',
 
-            // ✅ Exams (all)
             'create exams','view exams','edit exams','delete exams',
+
+            // ✅ Monthly Reports
+            'create monthlyreports','view monthlyreports','edit monthlyreports','delete monthlyreports',
         ];
         $principal->syncPermissions($principalPerms);
 
-        // Teacher: read core data, manage homework, and full exams (create/view/edit/delete)
+        // Teacher: view core, manage homework/exams/monthlyreports
         $teacherPerms = [
             'view dashboard',
             'view classes','view courses','view students',
@@ -84,8 +89,10 @@ class RolesAndPermissionsSeeder extends Seeder
             'create homeworks','view homeworks','edit homeworks',
             // 'delete homeworks', // enable if you want teachers to delete HW too
 
-            // ✅ Exams (all)
             'create exams','view exams','edit exams','delete exams',
+
+            // ✅ Monthly Reports
+            'create monthlyreports','view monthlyreports','edit monthlyreports','delete monthlyreports',
         ];
         $teacher->syncPermissions($teacherPerms);
 

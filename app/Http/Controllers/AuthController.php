@@ -106,7 +106,7 @@ class AuthController extends Controller
 
         // If this user is linked as a student, go to students dashboard
         if (Student::where('student_id', $user->id)->exists()) {
-            return redirect()->route('students.dashboard');
+            return redirect()->route('student.dashboard');
         }
 
         // All other users (staff of any role) go to the admin dashboard.
