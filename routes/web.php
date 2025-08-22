@@ -3,18 +3,19 @@
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\Auth\SocialController;
+use App\Http\Controllers\Admin\ExamController;
 
-use App\Http\Controllers\Admin\DashboardController;
-use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\RoleController;
-use App\Http\Controllers\Admin\PermissionController;
-use App\Http\Controllers\Admin\SchoolClassController;
+use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Auth\SocialController;
 use App\Http\Controllers\Admin\CourseController;
 use App\Http\Controllers\Admin\StudentController;
 use App\Http\Controllers\Admin\HomeworkController;
-use App\Http\Controllers\Admin\ExamController;
+use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\PermissionController;
+use App\Http\Controllers\Admin\SchoolClassController;
 
+use App\Http\Controllers\Admin\MonthlyReportController;
 use App\Http\Controllers\Student\DashboardController as StudentDashboard;
 
 /*
@@ -110,16 +111,18 @@ Route::middleware(['auth'])
     ->prefix('student')
     ->name('student.')
     ->group(function () {
-        Route::get('/dashboard', [\App\Http\Controllers\Student\DashboardController::class, 'index'])->name('dashboard');
-        Route::get('/homeworks', [\App\Http\Controllers\Student\DashboardController::class, 'homeworks'])->name('homeworks');
-        Route::get('/exams',     [\App\Http\Controllers\Student\DashboardController::class, 'exams'])->name('exams');
+        Route::get('/dashboard',       [StudentDashboard::class, 'index'])->name('dashboard');
+        Route::get('/homeworks',       [StudentDashboard::class, 'homeworks'])->name('homeworks');
+        Route::get('/exams',           [StudentDashboard::class, 'exams'])->name('exams');
 
-        // ✅ Monthly reports page (student-only view by Reg #)
-        Route::get('/monthly-reports', [\App\Http\Controllers\Student\DashboardController::class, 'monthlyReports'])
-            ->name('monthlyreports');
+        // Monthly reports list for student (shown by Reg # match)
+        Route::get('/monthly-reports', [StudentDashboard::class, 'monthlyReports'])->name('monthlyreports');
+
+        // Optional: redirect /student to dashboard
+        Route::redirect('/', '/student/dashboard');
     });
 
-
-
-    Route::resource('monthlyreports', App\Http\Controllers\Admin\MonthlyReportController::class);
+    Route::resource('monthlyreports', MonthlyReportController::class);
+Route::get('monthlyreports/{monthlyreport}/download', [MonthlyReportController::class, 'download'])
+    ->name('monthlyreports.download');
 

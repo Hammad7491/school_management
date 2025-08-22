@@ -6,7 +6,6 @@
     <h2 class="mb-4">Student Dashboard</h2>
 
     <div class="row g-3">
-        {{-- Profile card --}}
         <div class="col-12">
             <div class="card shadow-sm">
                 <div class="card-body d-flex align-items-center justify-content-between flex-wrap">
@@ -45,20 +44,11 @@
                     </div>
                 </div>
 
-                @if($student->schoolClass || $student->course)
                 <div class="card-footer d-flex gap-2">
-                    @if($student->schoolClass)
-                        <a class="btn btn-outline-primary btn-sm" href="{{ route('student.homeworks') }}">
-                            View Homework
-                        </a>
-                    @endif
-                    @if($student->course || $student->schoolClass)
-                        <a class="btn btn-outline-primary btn-sm" href="{{ route('student.exams') }}">
-                            View Exams
-                        </a>
-                    @endif
+                    <a class="btn btn-outline-primary btn-sm" href="{{ route('student.homeworks') }}">View Homework</a>
+                    <a class="btn btn-outline-primary btn-sm" href="{{ route('student.exams') }}">View Exams</a>
+                    <a class="btn btn-outline-primary btn-sm" href="{{ route('student.monthlyreports') }}">Monthly Reports</a>
                 </div>
-                @endif
             </div>
         </div>
     </div>

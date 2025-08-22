@@ -12,105 +12,92 @@ use Illuminate\Support\Facades\Auth;
 class DashboardController extends Controller
 {
     /**
-     * Student overview (name, reg#, class, course, status).
+     * Get the logged-in user's Student profile or abort with 403
+     */
+    protected function currentStudent()
+    {
+        $student = Student::with(['schoolClass','course'])
+            ->where('student_id', Auth::id())
+            ->first();
+
+        abort_if(!$student, 403, 'Student profile not found for this account.');
+        return $student;
+    }
+
+    /**
+     * Student dashboard: basic info + quick links
      */
     public function index()
     {
-        $student = Student::with(['schoolClass', 'course'])
-            ->where('student_id', Auth::id())
-            ->firstOrFail();
+        $student = $this->currentStudent();
 
         return view('students.dashboard', compact('student'));
     }
 
     /**
-     * Student homework list filtered by their class_id and/or course_id.
-     * Shows items if:
-     *  - class_id equals student's class_id, OR
-     *  - course_id equals student's course_id.
+     * Student view: Homeworks filtered by their class/course
+     * Shows items where class_id == student's class OR course_id == student's course
      */
     public function homeworks()
     {
-        $student = Student::where('student_id', Auth::id())->firstOrFail();
+        $student = $this->currentStudent();
+        $classId  = $student->class_id;
+        $courseId = $student->course_id;
 
-        $query = Homework::with(['schoolClass', 'course', 'user'])
-            ->orderByDesc('day')
-            ->orderByDesc('id');
+        $homeworks = Homework::with(['schoolClass','course','user'])
+            ->where(function ($q) use ($classId, $courseId) {
+                // If student has class, include class-targeted homeworks
+                if (!is_null($classId)) {
+                    $q->orWhere('class_id', $classId);
+                }
+                // If student has course, include course-targeted homeworks
+                if (!is_null($courseId)) {
+                    $q->orWhere('course_id', $courseId);
+                }
+            })
+            ->latest('day')->latest('id')
+            ->paginate(12);
 
-        // Apply filters only if the student has enrollments
-        $query->where(function ($q) use ($student) {
-            $hasAny = false;
-
-            if (!is_null($student->class_id)) {
-                $q->orWhere('class_id', $student->class_id);
-                $hasAny = true;
-            }
-
-            if (!is_null($student->course_id)) {
-                $q->orWhere('course_id', $student->course_id);
-                $hasAny = true;
-            }
-
-            // If student has neither class nor course, force empty result
-            if (!$hasAny) {
-                $q->whereRaw('1=0');
-            }
-        });
-
-        $homeworks = $query->paginate(12);
-
-        return view('students.homeworks.index', compact('student', 'homeworks'));
+        return view('students.homeworks.index', compact('student','homeworks'));
     }
 
     /**
-     * Student exam list filtered by their class_id and/or course_id.
+     * Student view: Exams filtered by their class/course
      */
     public function exams()
     {
-        $student = Student::where('student_id', Auth::id())->firstOrFail();
+        $student = $this->currentStudent();
+        $classId  = $student->class_id;
+        $courseId = $student->course_id;
 
-        $query = Exam::with(['schoolClass', 'course'])
-            ->orderByDesc('id');
-
-        $query->where(function ($q) use ($student) {
-            $hasAny = false;
-
-            if (!is_null($student->class_id)) {
-                $q->orWhere('class_id', $student->class_id);
-                $hasAny = true;
-            }
-
-            if (!is_null($student->course_id)) {
-                $q->orWhere('course_id', $student->course_id);
-                $hasAny = true;
-            }
-
-            if (!$hasAny) {
-                $q->whereRaw('1=0');
-            }
-        });
-
-        $exams = $query->paginate(12);
-
-        return view('students.exams.index', compact('student', 'exams'));
-    }
-
-    /**
-     * Student monthly reports filtered STRICTLY by Reg # (roll number).
-     * Only reports with reg_no == student's reg_no are visible.
-     */
-    public function monthlyReports()
-    {
-        $student = Student::with(['schoolClass', 'course'])
-            ->where('student_id', Auth::id())
-            ->firstOrFail();
-
-        $reports = MonthlyReport::with(['schoolClass', 'course', 'creator'])
-            ->where('reg_no', $student->reg_no)
-            ->latest('report_date')
+        $exams = Exam::with(['schoolClass','course'])
+            ->where(function ($q) use ($classId, $courseId) {
+                if (!is_null($classId)) {
+                    $q->orWhere('class_id', $classId);
+                }
+                if (!is_null($courseId)) {
+                    $q->orWhere('course_id', $courseId);
+                }
+            })
             ->latest('id')
             ->paginate(12);
 
-        return view('students.monthlyreports.index', compact('student', 'reports'));
+        return view('students.exams.index', compact('student','exams'));
+    }
+
+    /**
+     * Student view: Monthly Reports (filtered strictly by student's Reg #)
+     * Student only sees reports where reg_no == their reg_no (roll no).
+     */
+    public function monthlyReports()
+    {
+        $student = $this->currentStudent();
+
+        $reports = MonthlyReport::with(['schoolClass','course'])
+            ->where('reg_no', $student->reg_no)
+            ->latest('report_date')->latest('id')
+            ->paginate(12);
+
+        return view('students.monthlyreports.index', compact('student','reports'));
     }
 }

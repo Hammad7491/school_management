@@ -208,7 +208,7 @@
             @endcanany
 
 
-            {{-- Monthly Reports --}}
+          {{-- Monthly Reports --}}
 @canany(['create monthlyreports','view monthlyreports'])
 <li class="sidebar-menu-group-title">Monthly Reports</li>
 <li class="dropdown">
@@ -219,8 +219,8 @@
     <ul class="sidebar-submenu">
         @can('create monthlyreports')
         <li>
-            <a href="{{ route('monthlyreports.create') }}" class="btn btn-sm btn-info w-100">
-                <i class="ri-add-circle-line"></i> Add Report
+            <a href="{{ route('monthlyreports.create') }}">
+                <i class="ri-circle-fill circle-icon text-primary-600 w-auto"></i> Add Report
             </a>
         </li>
         @endcan
