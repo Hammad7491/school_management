@@ -4,10 +4,10 @@
     </button>
 
     <div>
-        <a href="index.html" class="sidebar-logo">
-            <img src="assets/images/logo.png" alt="site logo" class="light-logo">
-            <img src="assets/images/logo-light.png" alt="site logo" class="dark-logo">
-            <img src="assets/images/logo-icon.png" alt="site logo" class="logo-icon">
+        <a href="{{ route('admin.dashboard') }}" class="sidebar-logo">
+            <img src="{{ asset('assets/images/logo.png') }}" alt="site logo" class="light-logo">
+            <img src="{{ asset('assets/images/logo-light.png') }}" alt="site logo" class="dark-logo">
+            <img src="{{ asset('assets/images/logo-icon.png') }}" alt="site logo" class="logo-icon">
         </a>
     </div>
 
@@ -207,36 +207,54 @@
             </li>
             @endcanany
 
+            {{-- Monthly Reports --}}
+            @canany(['create monthlyreports','view monthlyreports'])
+            <li class="sidebar-menu-group-title">Monthly Reports</li>
+            <li class="dropdown">
+                <a href="javascript:void(0)">
+                    <iconify-icon icon="mdi:calendar-month-outline" class="menu-icon"></iconify-icon>
+                    <span>Monthly Report Management</span>
+                </a>
+                <ul class="sidebar-submenu">
+                    @can('create monthlyreports')
+                    <li>
+                        <a href="{{ route('monthlyreports.create') }}">
+                            <i class="ri-circle-fill circle-icon text-primary-600 w-auto"></i> Add Report
+                        </a>
+                    </li>
+                    @endcan
+                    @can('view monthlyreports')
+                    <li>
+                        <a href="{{ route('monthlyreports.index') }}">
+                            <i class="ri-circle-fill circle-icon text-primary-600 w-auto"></i> Reports List
+                        </a>
+                    </li>
+                    @endcan
+                </ul>
+            </li>
+            @endcanany
 
-          {{-- Monthly Reports --}}
-@canany(['create monthlyreports','view monthlyreports'])
-<li class="sidebar-menu-group-title">Monthly Reports</li>
+            {{-- Results --}}
+     @canany(['upload results','view results'])
+<li class="sidebar-menu-group-title">Results</li>
 <li class="dropdown">
     <a href="javascript:void(0)">
-        <iconify-icon icon="mdi:calendar-month-outline" class="menu-icon"></iconify-icon>
-        <span>Monthly Report Management</span>
+        <iconify-icon icon="mdi:table-arrow-up" class="menu-icon"></iconify-icon>
+        <span>Results Management</span>
     </a>
     <ul class="sidebar-submenu">
-        @can('create monthlyreports')
         <li>
-            <a href="{{ route('monthlyreports.create') }}">
-                <i class="ri-circle-fill circle-icon text-primary-600 w-auto"></i> Add Report
+            <a href="{{ route('admin.results.index') }}">
+                <i class="ri-circle-fill circle-icon text-primary-600 w-auto"></i> Manage Results
             </a>
         </li>
-        @endcan
-        @can('view monthlyreports')
-        <li>
-            <a href="{{ route('monthlyreports.index') }}">
-                <i class="ri-circle-fill circle-icon text-primary-600 w-auto"></i> Reports List
-            </a>
-        </li>
-        @endcan
     </ul>
 </li>
 @endcanany
 
 
-            {{-- Email (example static item) --}}
+
+            {{-- Email (example) --}}
             <li>
                 <a href="email.html">
                     <iconify-icon icon="mage:email" class="menu-icon"></iconify-icon>

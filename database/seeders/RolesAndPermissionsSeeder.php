@@ -46,8 +46,11 @@ class RolesAndPermissionsSeeder extends Seeder
             // Exams
             'create exams','view exams','edit exams','delete exams',
 
-            // ✅ Monthly Reports
+            // Monthly Reports
             'create monthlyreports','view monthlyreports','edit monthlyreports','delete monthlyreports',
+
+            // Results (bulk upload/browse)
+            'upload results','view results','edit results','delete results',
         ];
 
         foreach ($perms as $p) {
@@ -63,7 +66,7 @@ class RolesAndPermissionsSeeder extends Seeder
         // Admin gets everything
         $admin->syncPermissions(Permission::all());
 
-        // Principal: full academic control + homework/exams/monthlyreports
+        // Principal: full academic control + homework/exams/monthlyreports/results
         $principalPerms = [
             'view dashboard',
             'view users',
@@ -76,23 +79,29 @@ class RolesAndPermissionsSeeder extends Seeder
 
             'create exams','view exams','edit exams','delete exams',
 
-            // ✅ Monthly Reports
+            // Monthly Reports
             'create monthlyreports','view monthlyreports','edit monthlyreports','delete monthlyreports',
+
+            // Results
+            'upload results','view results','edit results','delete results',
         ];
         $principal->syncPermissions($principalPerms);
 
-        // Teacher: view core, manage homework/exams/monthlyreports
+        // Teacher: view core, manage homework/exams/monthlyreports, and upload/view results
         $teacherPerms = [
             'view dashboard',
             'view classes','view courses','view students',
 
             'create homeworks','view homeworks','edit homeworks',
-            // 'delete homeworks', // enable if you want teachers to delete HW too
+            // 'delete homeworks', // enable if needed
 
             'create exams','view exams','edit exams','delete exams',
 
-            // ✅ Monthly Reports
+            // Monthly Reports
             'create monthlyreports','view monthlyreports','edit monthlyreports','delete monthlyreports',
+
+            // Results (let teachers upload/view; remove edit/delete if you want stricter)
+            'upload results','view results','edit results','delete results',
         ];
         $teacher->syncPermissions($teacherPerms);
 

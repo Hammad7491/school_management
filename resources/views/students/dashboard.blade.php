@@ -44,10 +44,11 @@
                     </div>
                 </div>
 
-                <div class="card-footer d-flex gap-2">
+                <div class="card-footer d-flex flex-wrap gap-2">
                     <a class="btn btn-outline-primary btn-sm" href="{{ route('student.homeworks') }}">View Homework</a>
                     <a class="btn btn-outline-primary btn-sm" href="{{ route('student.exams') }}">View Exams</a>
                     <a class="btn btn-outline-primary btn-sm" href="{{ route('student.monthlyreports') }}">Monthly Reports</a>
+                    <a class="btn btn-primary btn-sm" href="{{ route('student.results') }}">Check Results</a>
                 </div>
             </div>
         </div>

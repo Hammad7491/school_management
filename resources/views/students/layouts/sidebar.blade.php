@@ -46,6 +46,14 @@
                 </a>
             </li>
 
+            {{-- Results (check results) --}}
+            <li class="{{ request()->routeIs('student.results') ? 'active' : '' }}">
+                <a href="{{ route('student.results') }}">
+                    <iconify-icon icon="mdi:chart-box-outline" class="menu-icon"></iconify-icon>
+                    <span>Results</span>
+                </a>
+            </li>
+
         </ul>
     </div>
 

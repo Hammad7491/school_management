@@ -17,6 +17,8 @@ use App\Http\Controllers\Admin\SchoolClassController;
 
 use App\Http\Controllers\Admin\MonthlyReportController;
 use App\Http\Controllers\Student\DashboardController as StudentDashboard;
+use App\Http\Controllers\Admin\ResultController as AdminResultController;
+use App\Http\Controllers\Student\ResultController as StudentResultController;
 
 /*
 |--------------------------------------------------------------------------
@@ -126,3 +128,39 @@ Route::middleware(['auth'])
 Route::get('monthlyreports/{monthlyreport}/download', [MonthlyReportController::class, 'download'])
     ->name('monthlyreports.download');
 
+
+
+    
+
+
+
+   /* ---------------- Admin Results ---------------- */
+Route::middleware('auth')->group(function () {
+
+    // … your other routes …
+
+    // ----- ADMIN Results (single index page for upload + listing) -----
+    Route::prefix('admin')->name('admin.')->group(function () {
+        Route::get('results',           [AdminResultController::class, 'index'])
+            ->name('results.index')
+            ->middleware('can:view results');
+
+        Route::post('results/upload',   [AdminResultController::class, 'upload'])
+            ->name('results.upload')
+            ->middleware('can:upload results');
+    });
+
+    // IMPORTANT: remove any duplicate/public results routes like these:
+    // Route::get('results', ...)->name('results.index');
+    // Route::get('results/upload', ...)->name('results.create');
+    // Route::post('results/upload', ...)->name('results.store');
+});
+
+
+/* ---------------- Student Results ---------------- */
+Route::middleware(['auth'])
+    ->prefix('student')
+    ->name('student.')
+    ->group(function () {
+        Route::get('/results', [StudentResultController::class, 'index'])->name('results');
+    }); 
