@@ -235,24 +235,42 @@
             @endcanany
 
             {{-- Results --}}
-     @canany(['upload results','view results'])
-<li class="sidebar-menu-group-title">Results</li>
-<li class="dropdown">
-    <a href="javascript:void(0)">
-        <iconify-icon icon="mdi:table-arrow-up" class="menu-icon"></iconify-icon>
-        <span>Results Management</span>
-    </a>
-    <ul class="sidebar-submenu">
-        <li>
-            <a href="{{ route('admin.results.index') }}">
-                <i class="ri-circle-fill circle-icon text-primary-600 w-auto"></i> Manage Results
-            </a>
-        </li>
-    </ul>
-</li>
-@endcanany
+            @canany(['upload results','view results'])
+            <li class="sidebar-menu-group-title">Results</li>
+            <li class="dropdown">
+                <a href="javascript:void(0)">
+                    <iconify-icon icon="mdi:table-arrow-up" class="menu-icon"></iconify-icon>
+                    <span>Results Management</span>
+                </a>
+                <ul class="sidebar-submenu">
+                    <li>
+                        <a href="{{ route('admin.results.index') }}">
+                            <i class="ri-circle-fill circle-icon text-primary-600 w-auto"></i> Manage Results
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            @endcanany
 
-
+            {{-- ✅ Vacation / Leave Requests (NEW) --}}
+            @canany(['view vacationrequests','approve vacationrequests','edit vacationrequests','delete vacationrequests'])
+            <li class="sidebar-menu-group-title">Leave Requests</li>
+            <li class="dropdown">
+                <a href="javascript:void(0)">
+                    <iconify-icon icon="mdi:calendar-check-outline" class="menu-icon"></iconify-icon>
+                    <span>Vacation Requests</span>
+                </a>
+                <ul class="sidebar-submenu">
+                    @can('view vacationrequests')
+                    <li>
+                        <a href="{{ route('admin.vacationrequests.index') }}">
+                            <i class="ri-circle-fill circle-icon text-primary-600 w-auto"></i> View Requests
+                        </a>
+                    </li>
+                    @endcan
+                </ul>
+            </li>
+            @endcanany
 
             {{-- Email (example) --}}
             <li>

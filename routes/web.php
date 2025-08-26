@@ -16,9 +16,13 @@ use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\Admin\SchoolClassController;
 
 use App\Http\Controllers\Admin\MonthlyReportController;
-use App\Http\Controllers\Student\DashboardController as StudentDashboard;
+use App\Http\Controllers\Student\VacationRequestController;
 use App\Http\Controllers\Admin\ResultController as AdminResultController;
+use App\Http\Controllers\Student\DashboardController as StudentDashboard;
 use App\Http\Controllers\Student\ResultController as StudentResultController;
+use App\Http\Controllers\Student\VacationRequestController as StudentVacationRequestController;
+use App\Http\Controllers\Admin\VacationRequestController as AdminVacationRequestController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -164,3 +168,36 @@ Route::middleware(['auth'])
     ->group(function () {
         Route::get('/results', [StudentResultController::class, 'index'])->name('results');
     }); 
+
+
+
+
+
+    // routes/web.php
+
+// -------------------- STUDENT: Vacation Requests --------------------
+Route::middleware('auth')->prefix('student')->as('student.')->group(function () {
+    Route::get('vacation-requests',       [StudentVacationRequestController::class, 'index'])->name('vacationrequests.index');
+    Route::get('vacation-requests/new',   [StudentVacationRequestController::class, 'create'])->name('vacationrequests.create');
+    Route::post('vacation-requests',      [StudentVacationRequestController::class, 'store'])->name('vacationrequests.store');
+});
+
+// -------------------- ADMIN/STAFF: Review Vacation Requests ----------
+Route::prefix('admin')
+    ->middleware(['auth','role:Admin|Teacher|Principal'])
+    ->group(function () {
+        Route::get('vacations', [AdminVacationRequestController::class, 'index'])
+            ->name('admin.vacations.index');
+
+        Route::post('vacations/{id}/{status}', [AdminVacationRequestController::class, 'updateStatus'])
+            ->whereIn('status', ['approved','rejected'])
+            ->name('admin.vacations.updateStatus');
+    });
+
+
+
+
+Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
+    Route::resource('vacationrequests', \App\Http\Controllers\Admin\VacationRequestController::class)
+         ->only(['index','show','update','destroy']);
+});

@@ -3,8 +3,21 @@
         <iconify-icon icon="radix-icons:cross-2"></iconify-icon>
     </button>
 
+    @php
+        $isDash   = request()->routeIs('student.dashboard');
+        $isHW     = request()->routeIs('student.homeworks');
+        $isExam   = request()->routeIs('student.exams');
+        $isMR     = request()->routeIs('student.monthlyreports');
+        $isRes    = request()->routeIs('student.results');
+        $isLeave  = request()->routeIs('student.vacationrequests*');
+
+        $openAcademic = $isHW || $isExam;
+        $openReports  = $isMR || $isRes;
+        $openLeave    = $isLeave;
+    @endphp
+
     <div>
-        <a href="{{ url('/') }}" class="sidebar-logo">
+        <a href="{{ route('student.dashboard') }}" class="sidebar-logo">
             <img src="{{ asset('assets/images/logo.png') }}" alt="site logo" class="light-logo">
             <img src="{{ asset('assets/images/logo-light.png') }}" alt="site logo" class="dark-logo">
             <img src="{{ asset('assets/images/logo-icon.png') }}" alt="site logo" class="logo-icon">
@@ -15,43 +28,81 @@
         <ul class="sidebar-menu" id="sidebar-menu">
 
             {{-- Dashboard --}}
-            <li class="{{ request()->routeIs('student.dashboard') ? 'active' : '' }}">
-                <a href="{{ route('student.dashboard') }}">
-                    <iconify-icon icon="mdi:view-dashboard-outline" class="menu-icon"></iconify-icon>
+            <li class="dropdown {{ $isDash ? 'active open' : '' }}">
+                <a href="javascript:void(0)">
+                    <iconify-icon icon="solar:home-smile-angle-outline" class="menu-icon"></iconify-icon>
                     <span>Dashboard</span>
                 </a>
+                <ul class="sidebar-submenu" style="{{ $isDash ? 'display:block' : '' }}">
+                    <li class="{{ $isDash ? 'active' : '' }}">
+                        <a href="{{ route('student.dashboard') }}">
+                            <i class="ri-circle-fill circle-icon text-primary-600 w-auto"></i> Overview
+                        </a>
+                    </li>
+                </ul>
             </li>
 
-            {{-- Homework Schedule --}}
-            <li class="{{ request()->routeIs('student.homeworks') ? 'active' : '' }}">
-                <a href="{{ route('student.homeworks') }}">
-                    <iconify-icon icon="mdi:book-edit-outline" class="menu-icon"></iconify-icon>
-                    <span>Homework Schedule</span>
+            {{-- Academic --}}
+            <li class="sidebar-menu-group-title">Academic</li>
+            <li class="dropdown {{ $openAcademic ? 'active open' : '' }}">
+                <a href="javascript:void(0)">
+                    <iconify-icon icon="mdi:book-education-outline" class="menu-icon"></iconify-icon>
+                    <span>Schedules</span>
                 </a>
+                <ul class="sidebar-submenu" style="{{ $openAcademic ? 'display:block' : '' }}">
+                    <li class="{{ $isHW ? 'active' : '' }}">
+                        <a href="{{ route('student.homeworks') }}">
+                            <i class="ri-circle-fill circle-icon text-primary-600 w-auto"></i> Homework Schedule
+                        </a>
+                    </li>
+                    <li class="{{ $isExam ? 'active' : '' }}">
+                        <a href="{{ route('student.exams') }}">
+                            <i class="ri-circle-fill circle-icon text-primary-600 w-auto"></i> Exam Schedule
+                        </a>
+                    </li>
+                </ul>
             </li>
 
-            {{-- Exam Schedule --}}
-            <li class="{{ request()->routeIs('student.exams') ? 'active' : '' }}">
-                <a href="{{ route('student.exams') }}">
-                    <iconify-icon icon="mdi:clipboard-text-outline" class="menu-icon"></iconify-icon>
-                    <span>Exam Schedule</span>
-                </a>
-            </li>
-
-            {{-- Monthly Reports --}}
-            <li class="{{ request()->routeIs('student.monthlyreports') ? 'active' : '' }}">
-                <a href="{{ route('student.monthlyreports') }}">
+            {{-- Reports & Results --}}
+            <li class="sidebar-menu-group-title">Reports</li>
+            <li class="dropdown {{ $openReports ? 'active open' : '' }}">
+                <a href="javascript:void(0)">
                     <iconify-icon icon="mdi:calendar-month-outline" class="menu-icon"></iconify-icon>
-                    <span>Monthly Reports</span>
+                    <span>Progress</span>
                 </a>
+                <ul class="sidebar-submenu" style="{{ $openReports ? 'display:block' : '' }}">
+                    <li class="{{ $isMR ? 'active' : '' }}">
+                        <a href="{{ route('student.monthlyreports') }}">
+                            <i class="ri-circle-fill circle-icon text-primary-600 w-auto"></i> Monthly Reports
+                        </a>
+                    </li>
+                    <li class="{{ $isRes ? 'active' : '' }}">
+                        <a href="{{ route('student.results') }}">
+                            <i class="ri-circle-fill circle-icon text-primary-600 w-auto"></i> Results
+                        </a>
+                    </li>
+                </ul>
             </li>
 
-            {{-- Results (check results) --}}
-            <li class="{{ request()->routeIs('student.results') ? 'active' : '' }}">
-                <a href="{{ route('student.results') }}">
-                    <iconify-icon icon="mdi:chart-box-outline" class="menu-icon"></iconify-icon>
-                    <span>Results</span>
+            {{-- Vacation / Leave Requests --}}
+            <li class="sidebar-menu-group-title">Requests</li>
+            <li class="dropdown {{ $openLeave ? 'active open' : '' }}">
+                <a href="javascript:void(0)">
+                    <iconify-icon icon="mdi:calendar-check-outline" class="menu-icon"></iconify-icon>
+                    <span>Leave Requests</span>
                 </a>
+                <ul class="sidebar-submenu" style="{{ $openLeave ? 'display:block' : '' }}">
+                    <li class="{{ $isLeave ? 'active' : '' }}">
+                        <a href="{{ route('student.vacationrequests.index') }}">
+                            <i class="ri-circle-fill circle-icon text-primary-600 w-auto"></i> My Requests
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('student.vacationrequests.create') }}">
+                            <i class="ri-circle-fill circle-icon text-primary-600 w-auto"></i> New Request
+                        </a>
+                    </li>
+                </ul>
             </li>
 
         </ul>
