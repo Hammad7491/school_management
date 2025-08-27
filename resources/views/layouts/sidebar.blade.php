@@ -272,6 +272,37 @@
             </li>
             @endcanany
 
+
+
+
+            {{-- ✅ Notifications --}}
+@canany(['create notifications','view notifications'])
+<li class="sidebar-menu-group-title">Notifications</li>
+<li class="dropdown">
+    <a href="javascript:void(0)">
+        <iconify-icon icon="iconoir:bell" class="menu-icon"></iconify-icon>
+        <span>Notifications</span>
+    </a>
+    <ul class="sidebar-submenu">
+        @can('create notifications')
+        <li>
+            <a href="{{ route('admin.notifications.create') }}">
+                <i class="ri-circle-fill circle-icon text-primary-600 w-auto"></i> Create Notification
+            </a>
+        </li>
+        @endcan
+        @can('view notifications')
+        <li>
+            <a href="{{ route('admin.notifications.index') }}">
+                <i class="ri-circle-fill circle-icon text-primary-600 w-auto"></i> Notifications List
+            </a>
+        </li>
+        @endcan
+    </ul>
+</li>
+@endcanany
+
+
             {{-- Email (example) --}}
             <li>
                 <a href="email.html">

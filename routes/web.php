@@ -1,27 +1,26 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\Admin\ExamController;
+use App\Http\Controllers\Auth\SocialController;
 
+use App\Http\Controllers\Admin\ExamController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\UserController;
-use App\Http\Controllers\Auth\SocialController;
 use App\Http\Controllers\Admin\CourseController;
 use App\Http\Controllers\Admin\StudentController;
 use App\Http\Controllers\Admin\HomeworkController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\Admin\SchoolClassController;
-
 use App\Http\Controllers\Admin\MonthlyReportController;
-use App\Http\Controllers\Student\VacationRequestController;
 use App\Http\Controllers\Admin\ResultController as AdminResultController;
+use App\Http\Controllers\Admin\VacationRequestController as AdminVacationRequestController;
+use App\Http\Controllers\Admin\NotificationController as AdminNotificationController;
+
 use App\Http\Controllers\Student\DashboardController as StudentDashboard;
 use App\Http\Controllers\Student\ResultController as StudentResultController;
 use App\Http\Controllers\Student\VacationRequestController as StudentVacationRequestController;
-use App\Http\Controllers\Admin\VacationRequestController as AdminVacationRequestController;
 
 
 /*
@@ -37,12 +36,8 @@ Route::get('/register',  [AuthController::class, 'registerform'])->name('registe
 Route::post('/register', [AuthController::class, 'register'])->name('register');
 Route::post('/logout',   [AuthController::class, 'logout'])->name('logout');
 
-// NEW — matches middleware name exactly
+// Error pages
 Route::view('/error', 'auth.errors.error403')->name('auth.errors.error403');
-
-// Optional: second path with same view (handy to visit directly)
-
-
 
 /*
 |--------------------------------------------------------------------------
@@ -68,7 +63,7 @@ Route::middleware('auth')->group(function () {
 
     /*
     |--------------------------------------------------------------------------
-    | Admin-prefixed resources
+    | Admin Resources
     |--------------------------------------------------------------------------
     */
     Route::prefix('admin')->name('admin.')->group(function () {
@@ -77,22 +72,10 @@ Route::middleware('auth')->group(function () {
         Route::resource('permissions',  PermissionController::class)->middleware('can:view permissions');
     });
 
-    /*
-    |--------------------------------------------------------------------------
-    | App resources
-    |--------------------------------------------------------------------------
-    */
     Route::resource('classes',   SchoolClassController::class);
     Route::resource('courses',   CourseController::class);
 
-    // Prevent "students/dashboard" conflict with admin resource
-    Route::get('students/dashboard', function () {
-        return redirect()->route('student.homeworks');
-    });
-
-    Route::resource('students', StudentController::class)
-        ->whereNumber('student'); // only numeric IDs
-
+    Route::resource('students', StudentController::class);
     Route::get('students/{student}/bform/download', [StudentController::class, 'downloadBForm'])
         ->name('students.bform.download');
 
@@ -107,17 +90,16 @@ Route::middleware('auth')->group(function () {
 
 /*
 |--------------------------------------------------------------------------
-| Convenience redirect
+| Redirects
 |--------------------------------------------------------------------------
 */
 Route::redirect('/home', '/admin/dashboard')->name('home');
 
 /*
 |--------------------------------------------------------------------------
-| Student area (separate namespace)
+| Student Area
 |--------------------------------------------------------------------------
 */
-// routes/web.php
 Route::middleware(['auth'])
     ->prefix('student')
     ->name('student.')
@@ -125,88 +107,98 @@ Route::middleware(['auth'])
         Route::get('/dashboard',       [StudentDashboard::class, 'index'])->name('dashboard');
         Route::get('/homeworks',       [StudentDashboard::class, 'homeworks'])->name('homeworks');
         Route::get('/exams',           [StudentDashboard::class, 'exams'])->name('exams');
-
-        // Monthly reports list for student (shown by Reg # match)
         Route::get('/monthly-reports', [StudentDashboard::class, 'monthlyReports'])->name('monthlyreports');
 
-        // Optional: redirect /student to dashboard
+        // Vacation Requests
+        Route::get('vacation-requests',     [StudentVacationRequestController::class, 'index'])->name('vacation-requests.index');
+        Route::get('vacation-requests/new', [StudentVacationRequestController::class, 'create'])->name('vacation-requests.create');
+        Route::post('vacation-requests',    [StudentVacationRequestController::class, 'store'])->name('vacation-requests.store');
+
+        // Student Results
+        Route::get('/results', [StudentResultController::class, 'index'])->name('results');
+
+        // Student Notifications (see all)
+        Route::get('notifications', function () {
+            $notifications = \App\Models\Notification::where('is_active', true)
+                ->whereNotNull('published_at')
+                ->orderByDesc('published_at')
+                ->paginate(20);
+            return view('students.notifications.index', compact('notifications'));
+        })->name('notifications.index');
+
+        // Default student redirect
         Route::redirect('/', '/student/dashboard');
     });
 
-    Route::resource('monthlyreports', MonthlyReportController::class);
+/*
+|--------------------------------------------------------------------------
+| Monthly Reports (Admin)
+|--------------------------------------------------------------------------
+*/
+Route::resource('monthlyreports', MonthlyReportController::class);
 Route::get('monthlyreports/{monthlyreport}/download', [MonthlyReportController::class, 'download'])
     ->name('monthlyreports.download');
 
+/*
+|--------------------------------------------------------------------------
+| Results
+|--------------------------------------------------------------------------
+*/
+// Admin Results
+Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
+    Route::get('results',           [AdminResultController::class, 'index'])
+        ->name('results.index')
+        ->middleware('can:view results');
 
-
-    
-
-
-
-   /* ---------------- Admin Results ---------------- */
-Route::middleware('auth')->group(function () {
-
-    // … your other routes …
-
-    // ----- ADMIN Results (single index page for upload + listing) -----
-    Route::prefix('admin')->name('admin.')->group(function () {
-        Route::get('results',           [AdminResultController::class, 'index'])
-            ->name('results.index')
-            ->middleware('can:view results');
-
-        Route::post('results/upload',   [AdminResultController::class, 'upload'])
-            ->name('results.upload')
-            ->middleware('can:upload results');
-    });
-
-    // IMPORTANT: remove any duplicate/public results routes like these:
-    // Route::get('results', ...)->name('results.index');
-    // Route::get('results/upload', ...)->name('results.create');
-    // Route::post('results/upload', ...)->name('results.store');
+    Route::post('results/upload',   [AdminResultController::class, 'upload'])
+        ->name('results.upload')
+        ->middleware('can:upload results');
 });
 
-
-/* ---------------- Student Results ---------------- */
-Route::middleware(['auth'])
-    ->prefix('student')
-    ->name('student.')
-    ->group(function () {
-        Route::get('/results', [StudentResultController::class, 'index'])->name('results');
-    }); 
-
-
-
-
-
-    // routes/web.php
-
-// routes/web.php
-Route::middleware('auth')->prefix('student')->as('student.')->group(function () {
-    Route::get('vacation-requests',     [StudentVacationRequestController::class, 'index'])->name('vacation-requests.index');
-    Route::get('vacation-requests/new', [StudentVacationRequestController::class, 'create'])->name('vacation-requests.create');
-    Route::post('vacation-requests',    [StudentVacationRequestController::class, 'store'])->name('vacation-requests.store');
-});
-
-
-// -------------------- ADMIN: Review Vacation Requests ----------
+/*
+|--------------------------------------------------------------------------
+| Vacation Requests (Admin)
+|--------------------------------------------------------------------------
+*/
 Route::prefix('admin')
-    ->middleware(['auth'])   // ✅ only requires authentication now
+    ->middleware(['auth'])
     ->name('admin.')
     ->group(function () {
         Route::get('vacations', [AdminVacationRequestController::class, 'index'])
             ->name('vacations.index');
 
-        // accepts lowercase only; controller will normalize casing before save
         Route::post('vacations/{id}/{status}', [AdminVacationRequestController::class, 'updateStatus'])
             ->whereIn('status', ['approved','rejected'])
             ->name('vacations.updateStatus');
+
+        Route::resource('vacationrequests', AdminVacationRequestController::class)
+            ->only(['index','show','update','destroy']);
+    });
+
+/*
+|--------------------------------------------------------------------------
+| Notifications (Admin)
+|--------------------------------------------------------------------------
+*/
+// routes/web.php
+Route::prefix('admin')
+    ->middleware(['auth'])        // removed role:Admin
+    ->name('admin.')
+    ->group(function () {
+        Route::resource('notifications', AdminNotificationController::class)
+            ->only(['index','create','store','edit','update','destroy']);
+
+        Route::post('notifications/{notification}/toggle',  [AdminNotificationController::class, 'toggle'])
+            ->name('notifications.toggle');
+
+        Route::post('notifications/{notification}/publish', [AdminNotificationController::class, 'publish'])
+            ->name('notifications.publish');
     });
 
 
-
-
-
-Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
-    Route::resource('vacationrequests', \App\Http\Controllers\Admin\VacationRequestController::class)
-         ->only(['index','show','update','destroy']);
+    Route::middleware('auth')->prefix('student')->name('student.')->group(function () {
+    Route::post('notifications/mark-latest-read',
+        [\App\Http\Controllers\Student\NotificationController::class, 'markLatestRead']
+    )->name('notifications.markLatestRead');
 });
+
