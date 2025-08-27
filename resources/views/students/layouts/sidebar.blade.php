@@ -85,25 +85,26 @@
             </li>
 
             {{-- Vacation / Leave Requests --}}
-            <li class="sidebar-menu-group-title">Requests</li>
-            <li class="dropdown {{ $openLeave ? 'active open' : '' }}">
-                <a href="javascript:void(0)">
-                    <iconify-icon icon="mdi:calendar-check-outline" class="menu-icon"></iconify-icon>
-                    <span>Leave Requests</span>
-                </a>
-                <ul class="sidebar-submenu" style="{{ $openLeave ? 'display:block' : '' }}">
-                    <li class="{{ $isLeave ? 'active' : '' }}">
-                        <a href="{{ route('student.vacationrequests.index') }}">
-                            <i class="ri-circle-fill circle-icon text-primary-600 w-auto"></i> My Requests
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('student.vacationrequests.create') }}">
-                            <i class="ri-circle-fill circle-icon text-primary-600 w-auto"></i> New Request
-                        </a>
-                    </li>
-                </ul>
-            </li>
+          <li class="sidebar-menu-group-title">Requests</li>
+<li class="dropdown {{ $openLeave ? 'active open' : '' }}">
+    <a href="javascript:void(0)">
+        <iconify-icon icon="mdi:calendar-check-outline" class="menu-icon"></iconify-icon>
+        <span>Leave Requests</span>
+    </a>
+    <ul class="sidebar-submenu" style="{{ $openLeave ? 'display:block' : '' }}">
+        <li class="{{ $isLeave ? 'active' : '' }}">
+            <a href="{{ route('student.vacation-requests.index') }}">
+                <i class="ri-circle-fill circle-icon text-primary-600 w-auto"></i> My Requests
+            </a>
+        </li>
+        <li>
+            <a href="{{ route('student.vacation-requests.create') }}">
+                <i class="ri-circle-fill circle-icon text-primary-600 w-auto"></i> New Request
+            </a>
+        </li>
+    </ul>
+</li>
+
 
         </ul>
     </div>

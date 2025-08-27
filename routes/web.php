@@ -37,7 +37,12 @@ Route::get('/register',  [AuthController::class, 'registerform'])->name('registe
 Route::post('/register', [AuthController::class, 'register'])->name('register');
 Route::post('/logout',   [AuthController::class, 'logout'])->name('logout');
 
-Route::view('/error', 'auth.errors.error403')->name('auth.error403');
+// NEW — matches middleware name exactly
+Route::view('/error', 'auth.errors.error403')->name('auth.errors.error403');
+
+// Optional: second path with same view (handy to visit directly)
+
+
 
 /*
 |--------------------------------------------------------------------------
@@ -175,24 +180,28 @@ Route::middleware(['auth'])
 
     // routes/web.php
 
-// -------------------- STUDENT: Vacation Requests --------------------
+// routes/web.php
 Route::middleware('auth')->prefix('student')->as('student.')->group(function () {
-    Route::get('vacation-requests',       [StudentVacationRequestController::class, 'index'])->name('vacationrequests.index');
-    Route::get('vacation-requests/new',   [StudentVacationRequestController::class, 'create'])->name('vacationrequests.create');
-    Route::post('vacation-requests',      [StudentVacationRequestController::class, 'store'])->name('vacationrequests.store');
+    Route::get('vacation-requests',     [StudentVacationRequestController::class, 'index'])->name('vacation-requests.index');
+    Route::get('vacation-requests/new', [StudentVacationRequestController::class, 'create'])->name('vacation-requests.create');
+    Route::post('vacation-requests',    [StudentVacationRequestController::class, 'store'])->name('vacation-requests.store');
 });
 
-// -------------------- ADMIN/STAFF: Review Vacation Requests ----------
+
+// -------------------- ADMIN: Review Vacation Requests ----------
 Route::prefix('admin')
-    ->middleware(['auth','role:Admin|Teacher|Principal'])
+    ->middleware(['auth'])   // ✅ only requires authentication now
+    ->name('admin.')
     ->group(function () {
         Route::get('vacations', [AdminVacationRequestController::class, 'index'])
-            ->name('admin.vacations.index');
+            ->name('vacations.index');
 
+        // accepts lowercase only; controller will normalize casing before save
         Route::post('vacations/{id}/{status}', [AdminVacationRequestController::class, 'updateStatus'])
             ->whereIn('status', ['approved','rejected'])
-            ->name('admin.vacations.updateStatus');
+            ->name('vacations.updateStatus');
     });
+
 
 
 

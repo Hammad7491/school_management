@@ -1,3 +1,4 @@
+{{-- resources/views/students/vacationrequests/create.blade.php --}}
 @extends('students.layouts.app')
 
 @section('content')
@@ -12,7 +13,7 @@
 
     <div class="card">
         <div class="card-body">
-            <form action="{{ route('student.vacationrequests.store') }}" method="POST" class="row g-3">
+            <form action="{{ route('student.vacation-requests.store') }}" method="POST" class="row g-3">
                 @csrf
 
                 <div class="col-md-6">
@@ -29,12 +30,12 @@
                 </div>
 
                 <div class="col-md-6">
-                    <label class="form-label">From (optional)</label>
-                    <input type="date" name="start_date" value="{{ old('start_date') }}" class="form-control">
+                    <label class="form-label">From *</label>
+                    <input type="date" name="start_date" value="{{ old('start_date') }}" class="form-control" required>
                 </div>
                 <div class="col-md-6">
-                    <label class="form-label">To (optional)</label>
-                    <input type="date" name="end_date" value="{{ old('end_date') }}" class="form-control">
+                    <label class="form-label">To *</label>
+                    <input type="date" name="end_date" value="{{ old('end_date') }}" class="form-control" required>
                 </div>
 
                 <div class="col-12">
@@ -44,7 +45,7 @@
 
                 <div class="col-12 d-flex gap-2">
                     <button class="btn btn-primary" type="submit">Submit Request</button>
-                    <a class="btn btn-light" href="{{ route('student.vacationrequests.index') }}">Cancel</a>
+                    <a class="btn btn-light" href="{{ route('student.vacation-requests.index') }}">Cancel</a>
                 </div>
             </form>
         </div>

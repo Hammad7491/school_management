@@ -1,3 +1,4 @@
+{{-- resources/views/students/vacationrequests/index.blade.php --}}
 @extends('students.layouts.app')
 
 @section('content')
@@ -14,7 +15,7 @@
                 <h5 class="mb-1">{{ $student->name }}</h5>
                 <div class="small text-muted">Reg #: {{ $student->reg_no }}</div>
             </div>
-            <a href="{{ route('student.vacationrequests.create') }}" class="btn btn-primary btn-sm">New Request</a>
+            <a href="{{ route('student.vacation-requests.create') }}" class="btn btn-primary btn-sm">New Request</a>
         </div>
     </div>
 
@@ -31,19 +32,18 @@
                 </thead>
                 <tbody>
                 @forelse($requests as $r)
+                    @php
+                        $status = strtolower($r->status); // normalize
+                        $range = $r->start_date ? $r->start_date->format('Y-m-d') : '—';
+                        if ($r->end_date) $range .= ' → '.$r->end_date->format('Y-m-d');
+                    @endphp
                     <tr>
-                        <td>
-                            @php
-                                $range = $r->start_date ? $r->start_date->format('Y-m-d') : '—';
-                                if ($r->end_date) $range .= ' → '.$r->end_date->format('Y-m-d');
-                            @endphp
-                            {{ $range }}
-                        </td>
+                        <td>{{ $range }}</td>
                         <td style="max-width:520px">{{ Str::limit($r->reason, 120) }}</td>
-                        <td>
-                            @if($r->status === 'approved')
+                        <td class="text-nowrap">
+                            @if($status === 'approved')
                                 <span class="badge text-bg-success">Approved</span>
-                            @elseif($r->status === 'rejected')
+                            @elseif($status === 'rejected')
                                 <span class="badge text-bg-danger">Rejected</span>
                             @else
                                 <span class="badge text-bg-secondary">Pending</span>
