@@ -28,7 +28,7 @@ use App\Http\Controllers\Student\VacationRequestController as StudentVacationReq
 | Public
 |--------------------------------------------------------------------------
 */
-Route::view('/', 'welcome');
+Route::view('/', 'main.home.home');
 
 Route::get('/login',     [AuthController::class, 'loginform'])->name('loginform');
 Route::post('/login',    [AuthController::class, 'login'])->name('login');
