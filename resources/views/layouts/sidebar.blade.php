@@ -274,6 +274,30 @@
 
 
 
+{{-- Admission --}}
+@canany(['create admissions','view admissions'])
+<li class="sidebar-menu-group-title">Admission</li>
+<li class="dropdown">
+    <a href="javascript:void(0)">
+        <iconify-icon icon="mdi:account-plus-outline" class="menu-icon"></iconify-icon>
+        <span>Admission Management</span>
+    </a>
+    <ul class="sidebar-submenu">
+        @can('view admissions')
+        <li>
+            <a href="{{ route('admissions.index') }}">
+                <i class="ri-circle-fill circle-icon text-primary-600 w-auto"></i> Admission List
+            </a>
+        </li>
+        @endcan
+    </ul>
+</li>
+@endcanany
+
+
+
+
+
 
             {{-- ✅ Notifications --}}
 @canany(['create notifications','view notifications'])

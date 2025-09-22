@@ -225,7 +225,11 @@ Route::get('/admission', function () {
 
 
 
+// Frontend: store admission
 Route::post('/admission/store', [AdmissionController::class, 'store'])->name('admission.store');
 
-// (Optional) Admin side to list all submissions
-Route::get('/admin/admissions', [AdmissionController::class, 'index'])->name('admin.admissions');
+// Admin routes
+Route::prefix('admin')->group(function () {
+    Route::get('/admissions', [AdmissionController::class, 'index'])->name('admissions.index');
+    Route::delete('/admissions/{id}', [AdmissionController::class, 'destroy'])->name('admissions.destroy');
+});
