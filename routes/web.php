@@ -238,3 +238,12 @@ Route::prefix('admin')->group(function () {
 
 
 Route::view('/vision', 'main.vision.vision')->name('vision');
+
+Route::get('/courses', function () {
+    return view('main.courses.index');
+})->name('courses');
+
+
+Route::get('/faculty', function () {
+    return view('main.faculty.index');
+})->name('faculty');

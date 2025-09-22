@@ -15,10 +15,10 @@
       <ul class="nav__list">
         <li><a href="{{ url('/') }}" class="nav__link {{ request()->is('/') ? 'is-active' : '' }}">Home</a></li>
         <a href="{{ route('fee') }}" class="mobile-nav__link">Fee</a>
-        <li><a href="#faculty" class="nav__link">Faculty</a></li>
+        <li><a href="{{ route('faculty') }}" class="nav__link">Faculty</a></li>
         <li><a href="#about" class="nav__link">About</a></li>
         <li><a href="{{ route('vision') }}" class="nav__link">Our Vision</a></li>
-        <li><a href="#courses" class="nav__link">Courses</a></li>
+        <li><a href="{{ route('courses') }}" class="nav__link">Courses</a></li>
         <li><a href="{{ route('admission') }}" class="nav__link">Admission</a></li>
       </ul>
     </nav>
