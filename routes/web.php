@@ -233,3 +233,8 @@ Route::prefix('admin')->group(function () {
     Route::get('/admissions', [AdmissionController::class, 'index'])->name('admissions.index');
     Route::delete('/admissions/{id}', [AdmissionController::class, 'destroy'])->name('admissions.destroy');
 });
+
+
+
+
+Route::view('/vision', 'main.vision.vision')->name('vision');

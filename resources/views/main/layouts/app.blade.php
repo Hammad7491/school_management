@@ -1,4 +1,3 @@
-{{-- resources/views/main/layouts/app.blade.php --}}
 <!DOCTYPE html>
 <html lang="en" data-theme="light">
 <head>
@@ -30,13 +29,13 @@
     {{-- Main theme CSS --}}
     <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}" />
 
-    {{-- Font Awesome 6.5.2 (ensures icons render correctly) --}}
+    {{-- Font Awesome 6.5.2 --}}
     <link rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
           integrity="sha512-Tn2mM6h1k8zNfVvMsu9gmNThXhA4Y2t3qk4kj4V2z6Z5wAv8CfqjJZepF2O0Ub/6r6mZXV9r3HWY3eRq+U9/Dg=="
           crossorigin="anonymous" referrerpolicy="no-referrer" />
 
-    {{-- Bootstrap Icons (optional, if you need them too) --}}
+    {{-- Bootstrap Icons --}}
     <link rel="stylesheet"
           href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" />
 
@@ -75,7 +74,8 @@
       /* Reset left gutter for marketing pages */
       .page--home .dashboard-main,
       .page--fee .dashboard-main,
-      .page--admission .dashboard-main{
+      .page--admission .dashboard-main,
+      .page--vision .dashboard-main {
         padding-left: 0 !important;
         margin-left: 0 !important;
       }
@@ -88,7 +88,10 @@
       .page--fee .page-container,
       .page--admission .content,
       .page--admission .container,
-      .page--admission .page-container{
+      .page--admission .page-container,
+      .page--vision .content,
+      .page--vision .container,
+      .page--vision .page-container {
         padding-left: 0 !important;
         margin-left: 0 !important;
       }
@@ -96,7 +99,8 @@
       /* Centered wrapper */
       .page--home .wrap,
       .page--landing .wrap,
-      .page--admission .wrap{
+      .page--admission .wrap,
+      .page--vision .wrap {
         max-width: 1200px;
         margin: 0 auto;
         padding: 18px 14px 40px;
