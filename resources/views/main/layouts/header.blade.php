@@ -14,12 +14,11 @@
     <nav class="nav" id="siteNav" aria-label="Primary">
       <ul class="nav__list">
         <li><a href="{{ url('/') }}" class="nav__link {{ request()->is('/') ? 'is-active' : '' }}">Home</a></li>
-        <a href="{{ route('fee') }}" class="mobile-nav__link">Fee</a>
-        <li><a href="{{ route('faculty') }}" class="nav__link">Faculty</a></li>
-        <li><a href="#about" class="nav__link">About</a></li>
-        <li><a href="{{ route('vision') }}" class="nav__link">Our Vision</a></li>
-        <li><a href="{{ route('courses') }}" class="nav__link">Courses</a></li>
-        <li><a href="{{ route('admission') }}" class="nav__link">Admission</a></li>
+        <li><a href="{{ route('fee') }}" class="nav__link {{ request()->is('fee') ? 'is-active' : '' }}">Fee</a></li>
+        <li><a href="{{ route('faculty') }}" class="nav__link {{ request()->is('faculty') ? 'is-active' : '' }}">Faculty</a></li>
+        <li><a href="{{ route('vision') }}" class="nav__link {{ request()->is('vision') ? 'is-active' : '' }}">Our Vision</a></li>
+        <li><a href="{{ route('courses') }}" class="nav__link {{ request()->is('courses') ? 'is-active' : '' }}">Courses</a></li>
+        <li><a href="{{ route('admission') }}" class="nav__link {{ request()->is('admission') ? 'is-active' : '' }}">Admission</a></li>
       </ul>
     </nav>
 
@@ -41,13 +40,12 @@
   {{-- Mobile Off-canvas --}}
   <div class="mobile-panel" id="mobilePanel" aria-hidden="true">
     <nav class="mobile-nav" aria-label="Mobile primary">
-      <a href="{{ url('/') }}" class="mobile-nav__link">Home</a>
-      <a href="{{ route('fee') }}" class="mobile-nav__link">Fee</a>
-      <a href="#faculty" class="mobile-nav__link">Faculty</a>
-      <a href="#about" class="mobile-nav__link">About</a>
-      <a href="#vision" class="mobile-nav__link">Our Vision</a>
-      <a href="#courses" class="mobile-nav__link">Courses</a>
-      <a href="#admission" class="mobile-nav__link">Admission</a>
+      <a href="{{ url('/') }}" class="mobile-nav__link {{ request()->is('/') ? 'is-active' : '' }}">Home</a>
+      <a href="{{ route('fee') }}" class="mobile-nav__link {{ request()->is('fee') ? 'is-active' : '' }}">Fee</a>
+      <a href="{{ route('faculty') }}" class="mobile-nav__link {{ request()->is('faculty') ? 'is-active' : '' }}">Faculty</a>
+      <a href="{{ route('vision') }}" class="mobile-nav__link {{ request()->is('vision') ? 'is-active' : '' }}">Our Vision</a>
+      <a href="{{ route('courses') }}" class="mobile-nav__link {{ request()->is('courses') ? 'is-active' : '' }}">Courses</a>
+      <a href="{{ route('admission') }}" class="mobile-nav__link {{ request()->is('admission') ? 'is-active' : '' }}">Admission</a>
       @auth
         <a href="{{ route('admin.dashboard') }}" class="mobile-nav__btn">Dashboard</a>
       @else
@@ -74,7 +72,6 @@
     --stroke:rgba(12,18,38,.09);
     --brand1: var(--fse-blue);
     --brand2: var(--fse-sky);
-    --ring:  rgba(31,100,200,.28);
     --radius:16px;
   }
 
@@ -109,15 +106,14 @@
   .nav__list{ display:flex; gap:12px; list-style:none; padding:0; margin:0; flex-wrap:wrap; }
   .nav__link{
     text-decoration:none; color:var(--ink); font-weight:800;
-    padding:10px 12px; border-radius:12px; border:1px solid transparent; transition:.2s ease;
+    padding:10px 14px; border-radius:12px; border:1px solid transparent; transition:.25s ease;
   }
   .nav__link:hover{
-    border-color: rgba(31,100,200,.25);
-    background: rgba(34,193,241,.06);
+    color: var(--fse-blue);
   }
+  /* Active state = solid blue text */
   .nav__link.is-active{
-    background: linear-gradient(90deg, var(--brand1), var(--brand2));
-    -webkit-background-clip:text; background-clip:text; color:transparent;
+    color: var(--fse-blue) !important;
   }
 
   /* BUTTONS */
@@ -146,7 +142,12 @@
     opacity:0; pointer-events:none; transition:.18s ease; }
   .mobile-panel.open{ transform:translateY(0); opacity:1; pointer-events:auto; }
   .mobile-nav{ padding:14px 20px; display:grid; gap:8px; }
-  .mobile-nav__link{ padding:12px; border-radius:12px; font-weight:800; color:var(--ink); text-decoration:none; }
+  .mobile-nav__link{
+    padding:12px; border-radius:12px; font-weight:800; color:var(--ink); text-decoration:none;
+  }
+  .mobile-nav__link.is-active{
+    color: var(--fse-blue) !important;
+  }
   .mobile-nav__btn{ padding:12px; border-radius:12px; color:#fff; text-align:center; background:linear-gradient(90deg,var(--fse-blue),var(--fse-sky)); }
 
   /* RESPONSIVE */
