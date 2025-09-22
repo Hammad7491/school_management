@@ -13,12 +13,13 @@
     {{-- Desktop Nav --}}
     <nav class="nav" id="siteNav" aria-label="Primary">
       <ul class="nav__list">
-        <li><a href="{{ url('/') }}" class="nav__link {{ request()->is('/') ? 'is-active' : '' }}">Home</a></li>
-        <li><a href="{{ route('fee') }}" class="nav__link {{ request()->is('fee') ? 'is-active' : '' }}">Fee</a></li>
-        <li><a href="{{ route('faculty') }}" class="nav__link {{ request()->is('faculty') ? 'is-active' : '' }}">Faculty</a></li>
-        <li><a href="{{ route('vision') }}" class="nav__link {{ request()->is('vision') ? 'is-active' : '' }}">Our Vision</a></li>
-        <li><a href="{{ route('courses') }}" class="nav__link {{ request()->is('courses') ? 'is-active' : '' }}">Courses</a></li>
-        <li><a href="{{ route('admission') }}" class="nav__link {{ request()->is('admission') ? 'is-active' : '' }}">Admission</a></li>
+<li><a href="{{ url('/') }}" class="nav__link {{ request()->is('/') ? 'is-active' : '' }}">Home</a></li>
+<li><a href="{{ route('fee') }}" class="nav__link {{ request()->is('fee') ? 'is-active' : '' }}">Fee</a></li>
+<li><a href="{{ route('faculty') }}" class="nav__link {{ request()->is('faculty') ? 'is-active' : '' }}">Faculty</a></li>
+<li><a href="{{ route('vision') }}" class="nav__link {{ request()->is('vision') ? 'is-active' : '' }}">Our Vision</a></li>
+<li><a href="{{ route('computer.courses') }}" class="nav__link {{ request()->is('courses') ? 'is-active' : '' }}">Courses</a></li>
+<li><a href="{{ route('admission') }}" class="nav__link {{ request()->is('admission') ? 'is-active' : '' }}">Admission</a></li>
+
       </ul>
     </nav>
 
@@ -41,11 +42,12 @@
   <div class="mobile-panel" id="mobilePanel" aria-hidden="true">
     <nav class="mobile-nav" aria-label="Mobile primary">
       <a href="{{ url('/') }}" class="mobile-nav__link {{ request()->is('/') ? 'is-active' : '' }}">Home</a>
-      <a href="{{ route('fee') }}" class="mobile-nav__link {{ request()->is('fee') ? 'is-active' : '' }}">Fee</a>
-      <a href="{{ route('faculty') }}" class="mobile-nav__link {{ request()->is('faculty') ? 'is-active' : '' }}">Faculty</a>
-      <a href="{{ route('vision') }}" class="mobile-nav__link {{ request()->is('vision') ? 'is-active' : '' }}">Our Vision</a>
-      <a href="{{ route('courses') }}" class="mobile-nav__link {{ request()->is('courses') ? 'is-active' : '' }}">Courses</a>
-      <a href="{{ route('admission') }}" class="mobile-nav__link {{ request()->is('admission') ? 'is-active' : '' }}">Admission</a>
+<a href="{{ route('fee') }}" class="mobile-nav__link {{ request()->is('fee') ? 'is-active' : '' }}">Fee</a>
+<a href="{{ route('faculty') }}" class="mobile-nav__link {{ request()->is('faculty') ? 'is-active' : '' }}">Faculty</a>
+<a href="{{ route('vision') }}" class="mobile-nav__link {{ request()->is('vision') ? 'is-active' : '' }}">Our Vision</a>
+<a href="{{ route('computer.courses') }}" class="mobile-nav__link {{ request()->is('courses') ? 'is-active' : '' }}">Courses</a>
+<a href="{{ route('admission') }}" class="mobile-nav__link {{ request()->is('admission') ? 'is-active' : '' }}">Admission</a>
+
       @auth
         <a href="{{ route('admin.dashboard') }}" class="mobile-nav__btn">Dashboard</a>
       @else

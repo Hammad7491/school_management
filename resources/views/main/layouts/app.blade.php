@@ -7,7 +7,7 @@
         @hasSection('title')@yield('title')@else AL-FARAN — School of Excellence @endif
     </title>
 
-    <link rel="icon" type="image/png" href="{{ asset('assets/images/favicon.png') }}" sizes="16x16" />
+    <link rel="icon" type="image/png" href="{{ asset('assets/images/school/logo.jpg') }}" sizes="16x16" />
 
     {{-- Core vendor CSS --}}
     <link rel="stylesheet" href="{{ asset('assets/css/remixicon.css') }}" />

@@ -125,9 +125,8 @@
         <h3>Attention Needed</h3>
         <ul class="list">
 
-          {{-- Vacation requests waiting review (ROW + BADGE BOTH CLICKABLE WHEN >0) --}}
+          {{-- Vacation requests waiting review --}}
           <li class="row">
-            {{-- make whole text a link to pending filter --}}
             <a class="row-link" href="{{ route('admin.vacations.index', ['status' => 'pending']) }}">
               Vacation requests waiting review
             </a>

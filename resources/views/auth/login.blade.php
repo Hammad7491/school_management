@@ -1,209 +1,186 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="light">
+<html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Log In | Silva - Responsive Admin Dashboard Template</title>
-    <link rel="icon" type="image/png" href="{{ asset('assets/images/favicon.png') }}" sizes="16x16" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login | AL-FARAN School of Excellence</title>
+  <link rel="icon" type="image/png" href="{{ asset('assets/images/school/logo.jpg') }}" sizes="32x32" />
 
-    <!-- remix icon font css -->
-    <link rel="stylesheet" href="{{ asset('assets/css/remixicon.css') }}" />
-    <!-- BootStrap css -->
-    <link rel="stylesheet" href="{{ asset('assets/css/lib/bootstrap.min.css') }}" />
-    <!-- Apex Chart css -->
-    <link rel="stylesheet" href="{{ asset('assets/css/lib/apexcharts.css') }}" />
-    <!-- Data Table css -->
-    <link rel="stylesheet" href="{{ asset('assets/css/lib/dataTables.min.css') }}" />
-    <!-- Text Editor css -->
-    <link rel="stylesheet" href="{{ asset('assets/css/lib/editor-katex.min.css') }}" />
-    <link rel="stylesheet" href="{{ asset('assets/css/lib/editor.atom-one-dark.min.css') }}" />
-    <link rel="stylesheet" href="{{ asset('assets/css/lib/editor.quill.snow.css') }}" />
-    <!-- Date picker css -->
-    <link rel="stylesheet" href="{{ asset('assets/css/lib/flatpickr.min.css') }}" />
-    <!-- Calendar css -->
-    <link rel="stylesheet" href="{{ asset('assets/css/lib/full-calendar.css') }}" />
-    <!-- Vector Map css -->
-    <link rel="stylesheet" href="{{ asset('assets/css/lib/jquery-jvectormap-2.0.5.css') }}" />
-    <!-- Popup css -->
-    <link rel="stylesheet" href="{{ asset('assets/css/lib/magnific-popup.css') }}" />
-    <!-- Slick Slider css -->
-    <link rel="stylesheet" href="{{ asset('assets/css/lib/slick.css') }}" />
-    <!-- prism css -->
-    <link rel="stylesheet" href="{{ asset('assets/css/lib/prism.css') }}" />
-    <!-- file upload css -->
-    <link rel="stylesheet" href="{{ asset('assets/css/lib/file-upload.css') }}" />
-    <!-- audioplayer css -->
-    <link rel="stylesheet" href="{{ asset('assets/css/lib/audioplayer.css') }}" />
-    <!-- main css -->
-    <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}" />
-</head>
-<body>
-<section class="auth bg-base d-flex flex-wrap">
-    <div class="auth-left d-lg-block d-none">
-        <div class="d-flex align-items-center flex-column h-100 justify-content-center">
-            <img src="{{ asset('assets/images/auth/auth-img.png') }}" alt="">
-        </div>
-    </div>
+  <!-- remix icon -->
+  <link rel="stylesheet" href="{{ asset('assets/css/remixicon.css') }}" />
+  <!-- Bootstrap -->
+  <link rel="stylesheet" href="{{ asset('assets/css/lib/bootstrap.min.css') }}" />
+  <!-- Main CSS -->
+  <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}" />
 
-    <div class="auth-right py-32 px-24 d-flex flex-column justify-content-center">
-        <div class="max-w-464-px mx-auto w-100">
-            <div class="text-center mb-40">
-                <a href="{{ url('/') }}" class="max-w-290-px d-inline-block">
-                    <img src="{{ asset('assets/images/logo.png') }}" alt="logo">
-                </a>
-            </div>
-
-            @if ($errors->any())
-                <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                    <ul class="mb-0">
-                        @foreach ($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            @endif
-
-            <h4 class="mb-12">Welcome back</h4>
-            <p class="mb-32 text-secondary-light text-lg">Sign in to continue to Silva.</p>
-
-            <form id="loginForm" action="{{ route('login') }}" method="POST">
-                @csrf
-
-                <div class="row mb-32">
-                    <div class="col-6">
-                        <a href="{{ route('google.login') }}" class="btn text-primary-600 border d-flex align-items-center justify-content-center w-100 gap-2">
-                            <iconify-icon icon="logos:google-icon" class="text-xl"></iconify-icon>
-                            Google
-                        </a>
-                    </div>
-                    <div class="col-6">
-                        <a href="{{ route('facebook.login') }}" class="btn text-primary-600 border d-flex align-items-center justify-content-center w-100 gap-2">
-                            <iconify-icon icon="ic:baseline-facebook" class="text-xl"></iconify-icon>
-                            Facebook
-                        </a>
-                    </div>
-                </div>
-
-                <div class="center-border-horizontal text-center mb-32">
-                    <span class="bg-base z-1 px-4">or continue with email</span>
-                </div>
-
-                <div class="icon-field mb-16">
-                    <span class="icon top-50 translate-middle-y">
-                        <iconify-icon icon="mage:email"></iconify-icon>
-                    </span>
-                    <input type="email"
-                           name="email"
-                           id="emailaddress"
-                           class="form-control h-56-px bg-neutral-50 radius-12"
-                           placeholder="Email address"
-                           required
-                           value="{{ old('email') }}">
-                </div>
-
-                <div class="position-relative mb-20">
-                    <div class="icon-field">
-                        <span class="icon top-50 translate-middle-y">
-                            <iconify-icon icon="solar:lock-password-outline"></iconify-icon>
-                        </span>
-                        <input type="password"
-                               name="password"
-                               id="password"
-                               class="form-control h-56-px bg-neutral-50 radius-12"
-                               placeholder="Password"
-                               required>
-                        <button type="button"
-                                id="togglePassword"
-                                class="toggle-password ri-eye-line cursor-pointer position-absolute end-0 top-50 translate-middle-y me-16 text-secondary-light"
-                                data-toggle="#password"></button>
-                    </div>
-                </div>
-
-                <div class="d-flex justify-content-between mb-32">
-                    <div class="form-check style-check d-flex align-items-center">
-                        <input class="form-check-input border border-neutral-300" type="checkbox" id="remember" name="remember">
-                        <label class="form-check-label ms-2" for="remember">Remember me</label>
-                    </div>
-                    <a href="javascript:void(0)" class="text-primary-600 fw-medium">Forgot Password?</a>
-                </div>
-
-                <button type="submit" class="btn btn-primary text-sm btn-sm px-12 py-16 w-100 radius-12 mb-24">
-                    Log In
-                </button>
-
-                {{-- Quick login buttons --}}
-                <div class="d-flex flex-wrap gap-2 mb-32">
-                    <button type="button" class="btn btn-secondary"
-                            onclick="fillLogin('a@a','a')">
-                        Admin
-                    </button>
-
-                    <button type="button" class="btn btn-outline-secondary"
-                            onclick="fillLogin('principal@example.com','password')">
-                        Principal
-                    </button>
-
-                    <button type="button" class="btn btn-outline-secondary"
-                            onclick="fillLogin('teacher@example.com','password')">
-                        Teacher
-                    </button>
-
-                    <button type="button" class="btn btn-outline-secondary"
-                            onclick="fillLogin('student@example.com','password')">
-                        Student
-                    </button>
-                </div>
-
-                <p class="text-center text-sm mb-0">
-                    Don’t have an account?
-                    <a href="{{ route('registerform') }}" class="text-primary-600 fw-semibold">Sign Up</a>
-                </p>
-            </form>
-        </div>
-    </div>
-</section>
-
-<!-- jQuery -->
-<script src="{{ asset('assets/js/lib/jquery-3.7.1.min.js') }}"></script>
-<!-- Bootstrap -->
-<script src="{{ asset('assets/js/lib/bootstrap.bundle.min.js') }}"></script>
-<!-- Apex Charts -->
-<script src="{{ asset('assets/js/lib/apexcharts.min.js') }}"></script>
-<!-- DataTables -->
-<script src="{{ asset('assets/js/lib/dataTables.min.js') }}"></script>
-<!-- Iconify -->
-<script src="{{ asset('assets/js/lib/iconify-icon.min.js') }}"></script>
-<!-- jQuery UI -->
-<script src="{{ asset('assets/js/lib/jquery-ui.min.js') }}"></script>
-<!-- Vector Map -->
-<script src="{{ asset('assets/js/lib/jquery-jvectormap-2.0.5.min.js') }}"></script>
-<script src="{{ asset('assets/js/lib/jquery-jvectormap-world-mill-en.js') }}"></script>
-<!-- Popup -->
-<script src="{{ asset('assets/js/lib/magnific-popup.min.js') }}"></script>
-<!-- Slick Slider -->
-<script src="{{ asset('assets/js/lib/slick.min.js') }}"></script>
-<!-- Prism -->
-<script src="{{ asset('assets/js/lib/prism.js') }}"></script>
-<!-- File Upload -->
-<script src="{{ asset('assets/js/lib/file-upload.js') }}"></script>
-<!-- Audioplayer -->
-<script src="{{ asset('assets/js/lib/audioplayer.js') }}"></script>
-<!-- Main JS -->
-<script src="{{ asset('assets/js/app.js') }}"></script>
-
-<script>
-    function fillLogin(email, password) {
-        document.getElementById('emailaddress').value = email;
-        document.getElementById('password').value = password;
-        document.getElementById('loginForm').submit();
+  <style>
+    body {
+      min-height: 100vh;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #6a7bff, #22d3ee);
+      font-family: 'Inter', sans-serif;
+      padding: 20px;
     }
 
-    document.getElementById('togglePassword').addEventListener('click', function() {
-        this.classList.toggle('ri-eye-off-line');
-        let input = document.querySelector(this.getAttribute('data-toggle'));
-        input.type = input.type === 'password' ? 'text' : 'password';
-    });
+    .login-wrapper {
+      width: 100%;
+      max-width: 420px;
+      background: linear-gradient(135deg, #6a7bff, #22d3ee);
+      border-radius: 20px;
+      padding: 40px 32px;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.25);
+      text-align: center;
+      color: #fff;
+      animation: fadeIn 0.6s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+      from {opacity: 0; transform: translateY(20px);}
+      to {opacity: 1; transform: translateY(0);}
+    }
+
+    .login-logo {
+      margin-bottom: 20px;
+    }
+    .login-logo img {
+      width: 100px;
+      height: 100px;
+      object-fit: contain;
+      border-radius: 12px;
+      border: 2px solid #fff;
+      background: #fff;
+      padding: 8px;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+    }
+
+    .login-title {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 25px;
+      line-height: 1.5;
+    }
+
+    .form-control {
+      border-radius: 12px;
+      padding: 14px 16px;
+      font-size: 15px;
+      border: none;
+      margin-bottom: 15px;
+    }
+
+    .btn-primary {
+      background: #fff;
+      color: #0b1020;
+      border: none;
+      font-weight: 700;
+      padding: 14px;
+      border-radius: 12px;
+      font-size: 16px;
+      margin-bottom: 15px;
+      transition: 0.2s;
+    }
+    .btn-primary:hover { background: #f1f5f9; }
+
+    .quick-buttons button {
+      flex: 1;
+      min-width: 45%;
+      border-radius: 10px;
+      font-weight: 600;
+      background: rgba(255,255,255,0.15);
+      color: #fff;
+      border: 1px solid rgba(255,255,255,0.4);
+    }
+    .quick-buttons button:hover {
+      background: rgba(255,255,255,0.25);
+    }
+
+    .btn-home {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      background: rgba(255,255,255,0.2);
+      color: #fff;
+      padding: 8px 16px;
+      border-radius: 12px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: 0.2s;
+    }
+    .btn-home:hover { background: rgba(255,255,255,0.35); }
+
+    @media(max-width: 500px){
+      .login-wrapper { padding: 30px 20px; }
+      .login-title { font-size: 16px; }
+    }
+  </style>
+</head>
+<body>
+
+<a href="{{ url('/') }}" class="btn-home"><i class="ri-home-4-line"></i> Home</a>
+
+<div class="login-wrapper">
+  <div class="login-logo">
+    <img src="{{ asset('assets/images/school/logo.jpg') }}" alt="School Logo">
+  </div>
+
+  <div class="login-title">
+    Login as Faculty or Student<br>
+    in <strong>AL-FARAN School of Excellence</strong>
+  </div>
+
+  @if ($errors->any())
+    <div class="alert alert-danger alert-dismissible fade show text-start" role="alert">
+      <ul class="mb-0">
+        @foreach ($errors->all() as $error)
+          <li>{{ $error }}</li>
+        @endforeach
+      </ul>
+      <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+  @endif
+
+  <form id="loginForm" action="{{ route('login') }}" method="POST">
+    @csrf
+
+    <input type="email" name="email" class="form-control" placeholder="Email address" value="{{ old('email') }}" required>
+    <div class="position-relative">
+      <input type="password" name="password" id="password" class="form-control" placeholder="Password" required>
+      <button type="button" id="togglePassword" class="position-absolute end-0 top-50 translate-middle-y me-3 bg-transparent border-0 text-dark">
+        <i class="ri-eye-line"></i>
+      </button>
+    </div>
+
+    <button type="submit" class="btn btn-primary w-100">Log In</button>
+
+    {{-- Quick login buttons --}}
+    <div class="d-flex flex-wrap gap-2 quick-buttons">
+      <button type="button" onclick="fillLogin('a@a','a')">Admin</button>
+      <button type="button" onclick="fillLogin('principal@example.com','password')">Principal</button>
+      <button type="button" onclick="fillLogin('teacher@example.com','password')">Teacher</button>
+      <button type="button" onclick="fillLogin('student@example.com','password')">Student</button>
+    </div>
+  </form>
+</div>
+
+<!-- JS -->
+<script src="{{ asset('assets/js/lib/bootstrap.bundle.min.js') }}"></script>
+<script>
+  function fillLogin(email, password) {
+    document.querySelector('[name="email"]').value = email;
+    document.querySelector('[name="password"]').value = password;
+    document.getElementById('loginForm').submit();
+  }
+
+  document.getElementById('togglePassword').addEventListener('click', function() {
+    const pwd = document.getElementById('password');
+    const icon = this.querySelector('i');
+    pwd.type = pwd.type === 'password' ? 'text' : 'password';
+    icon.classList.toggle('ri-eye-line');
+    icon.classList.toggle('ri-eye-off-line');
+  });
 </script>
 </body>
 </html>

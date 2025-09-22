@@ -99,32 +99,32 @@
             </li>
             @endcanany
 
-            {{-- Courses --}}
-            @canany(['create courses','view courses'])
-            <li class="sidebar-menu-group-title">Courses</li>
-            <li class="dropdown">
-                <a href="javascript:void(0)">
-                    <iconify-icon icon="ph:book-open-text-duotone" class="menu-icon"></iconify-icon>
-                    <span>Course Management</span>
-                </a>
-                <ul class="sidebar-submenu">
-                    @can('create courses')
-                    <li>
-                        <a href="{{ route('courses.create') }}">
-                            <i class="ri-circle-fill circle-icon text-primary-600 w-auto"></i> Add Course
-                        </a>
-                    </li>
-                    @endcan
-                    @can('view courses')
-                    <li>
-                        <a href="{{ route('courses.index') }}">
-                            <i class="ri-circle-fill circle-icon text-primary-600 w-auto"></i> Courses List
-                        </a>
-                    </li>
-                    @endcan
-                </ul>
-            </li>
-            @endcanany
+          @canany(['create courses','view courses'])
+<li class="sidebar-menu-group-title">Courses</li>
+<li class="dropdown">
+    <a href="javascript:void(0)">
+        <iconify-icon icon="ph:book-open-text-duotone" class="menu-icon"></iconify-icon>
+        <span>Course Management</span>
+    </a>
+    <ul class="sidebar-submenu">
+        @can('create courses')
+        <li>
+            <a href="{{ route('courses.create') }}">
+                <i class="ri-circle-fill circle-icon text-primary-600 w-auto"></i> Add Course
+            </a>
+        </li>
+        @endcan
+        @can('view courses')
+        <li>
+            <a href="{{ route('courses.index') }}">
+                <i class="ri-circle-fill circle-icon text-primary-600 w-auto"></i> Courses List
+            </a>
+        </li>
+        @endcan
+    </ul>
+</li>
+@endcanany
+
 
             {{-- Students --}}
             @canany(['create students','view students'])

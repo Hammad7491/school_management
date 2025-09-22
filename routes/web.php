@@ -237,11 +237,15 @@ Route::prefix('admin')->group(function () {
 
 
 
+// Computer Courses Page
+Route::get('/computer-courses', function () {
+    return view('main.courses.computer');
+})->name('computer.courses');
+
+
 Route::view('/vision', 'main.vision.vision')->name('vision');
 
-Route::get('/courses', function () {
-    return view('main.courses.index');
-})->name('courses');
+
 
 
 Route::get('/faculty', function () {
