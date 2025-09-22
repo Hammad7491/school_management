@@ -4,7 +4,9 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@hasSection('title')@yield('title')@else AL-FARAN — School of Excellence @endif</title>
+    <title>
+        @hasSection('title')@yield('title')@else AL-FARAN — School of Excellence @endif
+    </title>
 
     <link rel="icon" type="image/png" href="{{ asset('assets/images/favicon.png') }}" sizes="16x16" />
 
@@ -28,11 +30,13 @@
     {{-- Main theme CSS --}}
     <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}" />
 
-    {{-- Icon font helpers (optional) --}}
+    {{-- Font Awesome 6.5.2 (ensures icons render correctly) --}}
     <link rel="stylesheet"
-          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-          integrity="sha512-pO1Q6XbEDfLA+4+o7y6hGBTkmwCZghV9MwXJIpZ/8r+PjfKEGCxy8orp27G0iE5wVfZ+Tz+hPL+ygP1F8KkPfg=="
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+          integrity="sha512-Tn2mM6h1k8zNfVvMsu9gmNThXhA4Y2t3qk4kj4V2z6Z5wAv8CfqjJZepF2O0Ub/6r6mZXV9r3HWY3eRq+U9/Dg=="
           crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    {{-- Bootstrap Icons (optional, if you need them too) --}}
     <link rel="stylesheet"
           href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" />
 
@@ -40,9 +44,8 @@
     @stack('styles')
     @yield('styles')
 
-    {{-- Small layout fixes + page toggles --}}
+    {{-- Layout fixes --}}
     <style>
-      /* Reuse your design tokens if present */
       :root{
         --ink:#0b1020; --muted:#64748b; --card:#ffffff; --stroke:rgba(15,23,42,.10);
         --brand1:#6a7bff; --brand2:#22d3ee; --ring:rgba(106,123,255,.35);
@@ -55,7 +58,6 @@
         }
       }
 
-      /* Base page wrapper used by all pages */
       .dashboard-main{
         min-height: 100dvh;
         display: flex;
@@ -66,30 +68,35 @@
           #f7f9fc;
       }
 
-      /* Your header/footer live outside of the page container; content goes here */
       .page-container{
         flex: 1 1 auto;
       }
 
-      /* Some admin templates add a left sidebar gutter via padding/margin on main. 
-         We neutralize it ONLY when a page explicitly asks (page--home). */
-      .page--home .dashboard-main{
+      /* Reset left gutter for marketing pages */
+      .page--home .dashboard-main,
+      .page--fee .dashboard-main,
+      .page--admission .dashboard-main{
         padding-left: 0 !important;
         margin-left: 0 !important;
       }
 
-      /* If your theme applies container left padding to .content/.container,
-         we scope a reset for the home page only. Add/remove selectors as needed. */
       .page--home .content,
       .page--home .container,
-      .page--home .page-container{
+      .page--home .page-container,
+      .page--fee .content,
+      .page--fee .container,
+      .page--fee .page-container,
+      .page--admission .content,
+      .page--admission .container,
+      .page--admission .page-container{
         padding-left: 0 !important;
         margin-left: 0 !important;
       }
 
-      /* Keep a nice centered width on marketing pages; pages can apply their own wrappers */
+      /* Centered wrapper */
       .page--home .wrap,
-      .page--landing .wrap{
+      .page--landing .wrap,
+      .page--admission .wrap{
         max-width: 1200px;
         margin: 0 auto;
         padding: 18px 14px 40px;
@@ -97,7 +104,6 @@
     </style>
 </head>
 
-{{-- Allow pages to toggle layout behavior with a class, e.g. @section('body_class','page--home') --}}
 <body class="@yield('body_class')">
   <main class="dashboard-main">
     {{-- Global Header --}}
@@ -126,7 +132,7 @@
   <script src="{{ asset('assets/js/lib/file-upload.js') }}"></script>
   <script src="{{ asset('assets/js/lib/audioplayer.js') }}"></script>
 
-  {{-- Iconify (for your <iconify-icon> components) --}}
+  {{-- Iconify --}}
   <script src="{{ asset('assets/js/lib/iconify-icon.min.js') }}"></script>
 
   {{-- Theme/App scripts --}}

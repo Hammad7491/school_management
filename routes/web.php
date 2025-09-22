@@ -2,11 +2,13 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\Auth\SocialController;
+use Illuminate\Support\Facades\Notification;
 
+use App\Http\Controllers\AdmissionController;
 use App\Http\Controllers\Admin\ExamController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Auth\SocialController;
 use App\Http\Controllers\Admin\CourseController;
 use App\Http\Controllers\Admin\StudentController;
 use App\Http\Controllers\Admin\HomeworkController;
@@ -14,12 +16,13 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\Admin\SchoolClassController;
 use App\Http\Controllers\Admin\MonthlyReportController;
-use App\Http\Controllers\Admin\ResultController as AdminResultController;
-use App\Http\Controllers\Admin\VacationRequestController as AdminVacationRequestController;
-use App\Http\Controllers\Admin\NotificationController as AdminNotificationController;
+use App\Http\Controllers\Student\NotificationController;
 
+use App\Http\Controllers\Admin\ResultController as AdminResultController;
 use App\Http\Controllers\Student\DashboardController as StudentDashboard;
 use App\Http\Controllers\Student\ResultController as StudentResultController;
+use App\Http\Controllers\Admin\NotificationController as AdminNotificationController;
+use App\Http\Controllers\Admin\VacationRequestController as AdminVacationRequestController;
 use App\Http\Controllers\Student\VacationRequestController as StudentVacationRequestController;
 
 
@@ -202,3 +205,27 @@ Route::prefix('admin')
     )->name('notifications.markLatestRead');
 });
 
+
+
+Route::get('/fee', function () {
+    return view('main.fee.index');
+})->name('fee');
+
+
+// Admission Page
+Route::get('/admission', function () {
+    return view('main.admission.admission');
+})->name('admission');
+
+
+// Admission Page
+Route::get('/admission', function () {
+    return view('main.admission.admission');
+})->name('admission');
+
+
+
+Route::post('/admission/store', [AdmissionController::class, 'store'])->name('admission.store');
+
+// (Optional) Admin side to list all submissions
+Route::get('/admin/admissions', [AdmissionController::class, 'index'])->name('admin.admissions');

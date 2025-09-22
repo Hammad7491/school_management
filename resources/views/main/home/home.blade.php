@@ -23,17 +23,11 @@
   .hero { position: relative; width: 100%; overflow: hidden; }
   .slides { display: flex; width: 300%; transition: transform .7s ease; }
   .slide {
-    min-width: 100%;
-    height: clamp(320px, 52vw, 520px);
-    position: relative;
-    background: #000;
+    min-width: 100%; height: clamp(320px, 52vw, 520px);
+    position: relative; background: #000;
   }
-  .slide img {
-    width: 100%; height: 100%;
-    object-fit: cover; object-position: center; display: block;
-  }
+  .slide img { width: 100%; height: 100%; object-fit: cover; object-position: center; }
   .slide::after { display: none; }
-
   .hero__caption {
     position:absolute; inset:0; z-index:2;
     display:flex; flex-direction:column; align-items:center; justify-content:center;
@@ -45,16 +39,9 @@
     -webkit-background-clip: text; -webkit-text-fill-color: transparent;
     margin: 0 0 12px 0; text-shadow: 0 3px 18px rgba(0,0,0,.25);
   }
-  .hero__sub {
-    font-size: clamp(14px, 1.8vw, 20px); max-width: 880px;
-    line-height: 1.7; margin: 0; color: #f1f5f9;
-  }
-  .dots {
-    position: absolute; left: 0; right: 0; bottom: 14px;
-    display: flex; justify-content: center; gap: 8px; z-index: 3;
-  }
-  .dot { width: 10px; height: 10px; border-radius: 999px;
-    background: #e5e7eb; cursor: pointer; transition:.2s; }
+  .hero__sub { font-size: clamp(14px, 1.8vw, 20px); max-width: 880px; line-height: 1.7; margin: 0; color: #f1f5f9; }
+  .dots { position: absolute; left: 0; right: 0; bottom: 14px; display: flex; justify-content: center; gap: 8px; z-index: 3; }
+  .dot { width: 10px; height: 10px; border-radius: 999px; background: #e5e7eb; cursor: pointer; transition:.2s; }
   .dot.active { width: 26px; background: linear-gradient(90deg, var(--fse-blue), var(--fse-sky)); }
 
   /* === SECTION HEADINGS === */
@@ -66,11 +53,8 @@
     -webkit-background-clip: text; -webkit-text-fill-color: transparent;
     display:inline-block;
   }
-  .h-title::after{
-    content:""; display:block; width:70px; height:5px;
-    margin-top:8px; border-radius:999px;
-    background: linear-gradient(90deg, var(--fse-blue), var(--fse-sky));
-  }
+  .h-title::after{ content:""; display:block; width:70px; height:5px; margin-top:8px; border-radius:999px;
+    background: linear-gradient(90deg, var(--fse-blue), var(--fse-sky)); }
   .h-sub{ font-size: clamp(15px, 1.7vw, 20px); color: var(--muted); line-height:1.9; }
 
   /* === CARDS === */
@@ -79,23 +63,13 @@
     padding: 32px; box-shadow: 0 10px 30px rgba(2,6,23,.08);
   }
 
-  /* === GALLERY NEW === */
+  /* === GALLERY === */
   .gallery-sub { margin-top: 30px; }
-  .gallery-sub h3 {
-    font-size: clamp(18px, 2.4vw, 28px);
-    font-weight: 800;
-    margin-bottom: 14px;
-    color: var(--fse-blue);
-  }
+  .gallery-sub h3 { font-size: clamp(18px, 2.4vw, 28px); font-weight: 800; margin-bottom: 14px; color: var(--fse-blue); }
   .g-grid{ display:grid; gap:14px; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
   .g-card{ position:relative; overflow:hidden; border-radius: 12px; }
-  .g-img{
-    width:100%; aspect-ratio: 4 / 3; object-fit: cover; display:block;
-    transition: transform .6s ease, filter .6s ease;
-  }
+  .g-img{ width:100%; aspect-ratio: 4 / 3; object-fit: cover; transition: transform .6s ease, filter .6s ease; }
   .g-card:hover .g-img{ transform: scale(1.08); filter: brightness(1.1); }
-  .g-shade{ position:absolute; inset:0; background: linear-gradient(180deg, rgba(0,0,0,0) 40%, rgba(0,0,0,.35)); }
-  .g-cap{ position:absolute; left:10px; bottom:8px; color:#fff; font-weight:800; text-shadow:0 2px 10px rgba(0,0,0,.5); }
 
   /* === ACHIEVEMENTS === */
   .feat{ display:grid; gap:12px; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
@@ -103,7 +77,19 @@
   .chip__title{ font-weight:900; margin:0 0 4px; color:var(--ink); }
   .chip__text{ margin:0; font-size:14px; color:var(--muted); }
 
-  /* === ADMISSION BUTTON === */
+  /* === ACADEMICS === */
+  .academics-grid{ display:grid; gap:18px; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); }
+  .acad-card{ background:#fff; border-radius:14px; padding:20px; border:1px solid var(--stroke); box-shadow:0 6px 20px rgba(0,0,0,.05); }
+  .acad-card h4{ margin:0 0 8px; font-size:18px; font-weight:800; color:var(--fse-blue); }
+  .acad-card p{ margin:0; color:var(--muted); font-size:15px; line-height:1.6; }
+
+  /* === TESTIMONIALS === */
+  .testi-grid{ display:grid; gap:18px; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+  .testi{ background:#fff; border:1px solid var(--stroke); border-radius:14px; padding:20px; box-shadow:0 6px 20px rgba(0,0,0,.05); }
+  .testi p{ font-size:15px; line-height:1.6; color:var(--ink); margin:0 0 12px; }
+  .testi strong{ display:block; font-size:14px; color:var(--fse-blue); }
+
+  /* === CTA BUTTONS === */
   .cta-box { text-align: center; margin: 50px 0; }
   .btn-admission {
     padding:14px 28px; font-size:18px; font-weight: 900;
@@ -112,10 +98,7 @@
     cursor:pointer; box-shadow: 0 8px 24px rgba(31,100,200,.25);
     transition: transform .2s, box-shadow .2s;
   }
-  .btn-admission:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 12px 28px rgba(31,100,200,.35);
-  }
+  .btn-admission:hover { transform: translateY(-3px); box-shadow: 0 12px 28px rgba(31,100,200,.35); }
 </style>
 
 @section('content')
@@ -154,7 +137,7 @@
   <main class="wrap">
     {{-- ABOUT --}}
     <section class="section about">
-      <h2 class="h-title">About Our School</h2>
+      <h3 class="h-title">About Our School</h3>
       <div class="about-card">
         <p class="h-sub">
           AL-FARAN School of Excellence blends strong academics with values and creativity. 
@@ -164,10 +147,28 @@
       </div>
     </section>
 
-    {{-- CAMPUS LIFE WITH SUBHEADINGS --}}
-    <section class="section gallery">
-      <h2 class="h-title">Campus Life</h2>
+    {{-- ACADEMICS --}}
+    <section class="section academics">
+      <h3 class="h-title">Academics</h3>
+      <div class="academics-grid">
+        <div class="acad-card">
+          <h4>Strong Curriculum</h4>
+          <p>Aligned with national standards, blending science, math, languages, and social sciences.</p>
+        </div>
+        <div class="acad-card">
+          <h4>Activity-Based Learning</h4>
+          <p>Hands-on projects, group activities, and practical exposure to make learning fun.</p>
+        </div>
+        <div class="acad-card">
+          <h4>Modern Classrooms</h4>
+          <p>Smart boards, multimedia teaching aids, and a focus on digital literacy.</p>
+        </div>
+      </div>
+    </section>
 
+    {{-- CAMPUS LIFE --}}
+    <section class="section gallery">
+      <h3 class="h-title">Campus Life</h3>
       <div class="gallery-sub">
         <h3>Award Ceremony</h3>
         <div class="g-grid">
@@ -177,7 +178,6 @@
           <article class="g-card"><img class="g-img" src="{{ asset('assets/images/school/award4.jpg') }}"></article>
         </div>
       </div>
-
       <div class="gallery-sub">
         <h3>School Function</h3>
         <div class="g-grid">
@@ -187,7 +187,6 @@
           <article class="g-card"><img class="g-img" src="{{ asset('assets/images/school/function4.jpg') }}"></article>
         </div>
       </div>
-
       <div class="gallery-sub">
         <h3>Class Room</h3>
         <div class="g-grid">
@@ -206,11 +205,39 @@
 
     {{-- ACHIEVEMENTS --}}
     <section class="section achievements">
-      <h2 class="h-title">Our Achievements</h2>
+      <h3 class="h-title">Our Achievements</h3>
       <div class="feat">
         <div class="chip"><p class="chip__title">Board Toppers</p><p class="chip__text">Strong performance in board exams with top results.</p></div>
         <div class="chip"><p class="chip__title">Debate Champions</p><p class="chip__text">Winners of city-level debates and declamation contests.</p></div>
         <div class="chip"><p class="chip__title">Science & Sports</p><p class="chip__text">Prizes in science fairs, robotics, athletics and more.</p></div>
+      </div>
+    </section>
+
+    {{-- TESTIMONIALS --}}
+    <section class="section testimonials">
+      <h3 class="h-title">What Parents Say</h3>
+      <div class="testi-grid">
+        <div class="testi">
+          <p>“My son has become more confident and active since joining AL-FARAN. The teachers give attention like family.”</p>
+          <strong>— Ahmed Raza, Lahore</strong>
+        </div>
+        <div class="testi">
+          <p>“I shifted my daughter from another school and I’m very happy. The focus on both academics and values is amazing.”</p>
+          <strong>— Maria Khan, Karachi</strong>
+        </div>
+        <div class="testi">
+          <p>“The best part is how they involve parents and keep us updated. A real caring environment for children.”</p>
+          <strong>— Faisal Mehmood, Islamabad</strong>
+        </div>
+      </div>
+    </section>
+
+    {{-- CONTACT --}}
+    <section class="section contact">
+      <h3 class="h-title">Contact Us</h3>
+      <p class="h-sub">Have questions or want to visit our campus? Get in touch with us today.</p>
+      <div class="cta-box">
+        <button class="btn-admission">Contact Us</button>
       </div>
     </section>
   </main>
