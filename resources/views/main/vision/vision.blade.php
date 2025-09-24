@@ -55,6 +55,63 @@
     margin-bottom:36px;
     box-shadow:0 12px 28px rgba(2,6,23,.06);
   }
+
+  /* About Ahmad Tech Section */
+  .about-section h2 {
+    text-align:center;
+    margin-bottom:28px;
+  }
+  .about-flex{
+    display:flex;
+    flex-wrap:wrap;
+    align-items:flex-start;
+    gap:24px;
+    text-align:left;
+  }
+  .about-photo{
+    flex:0 0 140px;
+    text-align:center;
+  }
+  .about-photo img{
+    width:140px; height:140px;
+    border-radius:50%;
+    object-fit:cover;
+    border:4px solid var(--brand1);
+    box-shadow:0 8px 18px rgba(0,0,0,.15);
+  }
+  .about-info{
+    flex:1;
+  }
+  .about-info h3{
+    font-size:22px;
+    font-weight:800;
+    margin-bottom:10px;
+    display:flex;
+    align-items:center;
+    gap:12px;
+    flex-wrap:wrap;
+    background:linear-gradient(90deg,var(--brand1),var(--brand2));
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+  }
+  .about-info .badge{
+    background:var(--brand1);
+    color:#fff;
+    font-size:13px;
+    font-weight:600;
+    padding:6px 12px;
+    border-radius:8px;
+  }
+  .about-info p{
+    font-size:16px;
+    line-height:1.8;
+    margin-bottom:14px;
+  }
+
+  @media(max-width:768px){
+    .about-flex{ flex-direction:column; align-items:center; text-align:center; }
+    .about-info h3{ justify-content:center; }
+  }
 </style>
 
 <div class="page">
@@ -100,6 +157,21 @@
       </ul>
 
       <p>Through these commitments, our mission is to create a learning ecosystem where every student feels inspired, supported, and challenged to reach their fullest potential. We seek to transform our school into a beacon of hope and progress in the village—a place where education is not about memorizing books, but about unlocking the power of knowledge, technology, and values to shape a brighter future for individuals and the community alike.</p>
+    </div>
+
+    <!-- About Ahmad Tech Section -->
+    <div class="card about-section">
+      <h2>About Ahmad Tech</h2>
+      <div class="about-flex">
+        <div class="about-photo">
+          <img src="{{ asset('assets/images/school/ahmad.jpg') }}" alt="Eng. Ahmad Awan">
+        </div>
+        <div class="about-info">
+          <h3>Eng. Ahmad Awan <span class="badge">Owner</span></h3>
+          <p>Ahmed Tech is a growing digital technology company committed to providing innovative, reliable, and affordable IT solutions for businesses and individuals. We specialize in developing high-quality mobile applications, web platforms, and customized software solutions that meet the demands of the modern digital era.</p>
+          <p>At Ahmed Tech, we believe technology should be simple, accessible, and empowering. Our team focuses on creating solutions that are easy to use, time-saving, and result-driven. From small businesses to large enterprises, we aim to help our clients grow by offering tools that enhance productivity, streamline operations, and improve customer engagement.</p>
+        </div>
+      </div>
     </div>
 
   </div>
