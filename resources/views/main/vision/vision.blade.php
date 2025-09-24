@@ -16,15 +16,12 @@
     }
   }
 
-  body.page--vision .dashboard-main{
-    padding-left: 0 !important;
-    margin-left: 0 !important;
-  }
+  body.page--vision .dashboard-main,
   body.page--vision .page-container,
   body.page--vision .container,
   body.page--vision .content{
-    padding-left: 0 !important;
-    margin-left: 0 !important;
+    padding-left:0!important;
+    margin-left:0!important;
   }
 
   .page{ background:var(--bg); color:var(--ink); min-height:100dvh; }
@@ -34,7 +31,7 @@
     text-align:center;
     color:#fff;
   }
-  .hero h1{ font-size: clamp(32px,6vw,64px); font-weight:900; margin-bottom:10px; }
+  .hero h1{ font-size:clamp(32px,6vw,64px); font-weight:900; margin-bottom:10px; }
   .hero p{ max-width:680px; margin:0 auto; font-size:18px; line-height:1.6; opacity:.95; }
 
   .wrap{ max-width:1100px; margin:0 auto; padding:40px 18px; }
@@ -86,21 +83,21 @@
     font-size:22px;
     font-weight:800;
     margin-bottom:10px;
-    display:flex;
-    align-items:center;
-    gap:12px;
-    flex-wrap:wrap;
     background:linear-gradient(90deg,var(--brand1),var(--brand2));
     -webkit-background-clip:text;
     -webkit-text-fill-color:transparent;
+    display:inline-block;
   }
   .about-info .badge{
     background:var(--brand1);
-    color:#fff;
+    color:#fff !important;
     font-size:13px;
     font-weight:600;
     padding:6px 12px;
     border-radius:8px;
+    margin-left:10px;
+    display:inline-block;
+    -webkit-text-fill-color:initial; /* fix invisibility */
   }
   .about-info p{
     font-size:16px;
@@ -110,7 +107,7 @@
 
   @media(max-width:768px){
     .about-flex{ flex-direction:column; align-items:center; text-align:center; }
-    .about-info h3{ justify-content:center; }
+    .about-info h3, .about-info .badge{ display:block; margin:0 auto 10px; text-align:center; }
   }
 </style>
 
@@ -125,6 +122,7 @@
   <!-- Content -->
   <div class="wrap">
 
+    <!-- Vision -->
     <div class="card">
       <h2>Vision Statement</h2>
       <p>Our vision is to establish a center of excellence in education within our village that redefines the meaning of learning by combining the power of science, technology, and human values. We aspire to create a model school where quality education is not a privilege but a right—accessible, affordable, and impactful for every child, regardless of their socio-economic background.</p>
@@ -140,6 +138,7 @@
       <p>Ultimately, our vision is to see our school evolve into a transformative learning hub that ignites the potential of every student, equipping them with the scientific knowledge, technological fluency, and ethical values needed to become innovators, leaders, and change-makers in society. In doing so, we aim to contribute not only to the progress of our community but also to the advancement of our nation and the world.</p>
     </div>
 
+    <!-- Mission -->
     <div class="card">
       <h2>Mission Statement</h2>
       <p>Our mission is to provide high-quality, affordable, and concept-driven education that empowers every child in our village to grow into a confident, skilled, and responsible citizen of the modern world. We are committed to breaking the cycle of rote learning and instead nurturing students’ natural curiosity, creativity, and problem-solving abilities through innovative teaching practices and relevant scientific activities.</p>
@@ -167,7 +166,7 @@
           <img src="{{ asset('assets/images/school/ahmad.jpg') }}" alt="Eng. Ahmad Awan">
         </div>
         <div class="about-info">
-          <h3>Eng. Ahmad Awan <span class="badge">Owner</span></h3>
+          <h3>Eng. Ahmad Awan</h3><span class="badge">Owner</span>
           <p>Ahmed Tech is a growing digital technology company committed to providing innovative, reliable, and affordable IT solutions for businesses and individuals. We specialize in developing high-quality mobile applications, web platforms, and customized software solutions that meet the demands of the modern digital era.</p>
           <p>At Ahmed Tech, we believe technology should be simple, accessible, and empowering. Our team focuses on creating solutions that are easy to use, time-saving, and result-driven. From small businesses to large enterprises, we aim to help our clients grow by offering tools that enhance productivity, streamline operations, and improve customer engagement.</p>
         </div>
