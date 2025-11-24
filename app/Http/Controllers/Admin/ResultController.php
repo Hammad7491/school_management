@@ -26,11 +26,25 @@ class ResultController extends Controller
         $classes = SchoolClass::orderBy('name')->get();
         $courses = Course::orderBy('name')->get();
 
-        return view('admin.results.index', compact('terms','classes','courses'));
+        return view('admin.results.index', compact('terms', 'classes', 'courses'));
     }
 
     /**
-     * Handle CSV upload for class/course results.
+     * Handle CSV upload (ONE ROW = ONE STUDENT, MULTIPLE SUBJECT COLUMNS).
+     *
+     * Expected CSV headers (example):
+     *   reg_no,name,english,math,physics,chemistry,urdu,islamiyat,attendance_total,attendance_present,remarks
+     *
+     * Reserved columns (special handling):
+     *   - reg_no              (required)
+     *   - name                (optional, ignored in DB)
+     *   - exam_date           (optional, same for all subjects in that row)
+     *   - attendance_total    (optional)
+     *   - attendance_present  (optional)
+     *   - remarks             (optional)
+     *
+     * All other columns are treated as SUBJECT NAMES and their values
+     * are treated as obtained marks out of a default total (e.g. 100).
      */
     public function upload(Request $request)
     {
@@ -54,7 +68,7 @@ class ResultController extends Controller
         $classId  = $request->scope === 'class'  ? (int) $request->class_id  : null;
         $courseId = $request->scope === 'course' ? (int) $request->course_id : null;
 
-        // Detect if the table still has a NOT NULL `subject` text column.
+        // Backward-compatibility: if the table still has a text 'subject' column
         $hasSubjectTextCol = Schema::hasColumn('exam_results', 'subject');
 
         // Open CSV
@@ -70,44 +84,82 @@ class ResultController extends Controller
             return back()->withErrors(['csv' => 'Empty CSV.']);
         }
 
-        // Normalize headers (lower-case, trimmed)
-        $map = [];
-        foreach ($header as $i => $h) {
-            $map[strtolower(trim($h))] = $i;
-        }
+        // Original & normalized headers
+        $originalHeader = array_map('trim', $header);
+        $lowerHeader    = array_map(function ($h) {
+            return strtolower(trim($h));
+        }, $header);
 
-        // Required columns
-        foreach (['reg_no','subject','total_marks','obtained_marks'] as $col) {
-            if (!array_key_exists($col, $map)) {
-                fclose($handle);
-                return back()->withErrors(['csv' => "Missing required column: {$col}"]);
+        // Build map: lower_header => index
+        $map = [];
+        foreach ($lowerHeader as $i => $h) {
+            if ($h !== '') {
+                $map[$h] = $i;
             }
         }
 
+        // Required: reg_no
+        if (!array_key_exists('reg_no', $map)) {
+            fclose($handle);
+            return back()->withErrors(['csv' => "Missing required column: reg_no"]);
+        }
+
         // Optional columns
-        $opt = [
-            'exam_date'          => $map['exam_date']          ?? null,
-            'remarks'            => $map['remarks']            ?? null,
-            'attendance_total'   => $map['attendance_total']   ?? null,
-            'attendance_present' => $map['attendance_present'] ?? null,
+        $examDateIndex         = $map['exam_date']          ?? null;
+        $remarksIndex          = $map['remarks']            ?? null;
+        $attendanceTotalIndex  = $map['attendance_total']   ?? null;
+        $attendancePresentIndex= $map['attendance_present'] ?? null;
+        // name (optional, not stored, but we read index)
+        $nameIndex             = $map['name']               ?? null;
+
+        // Reserved columns (not treated as subjects)
+        $reserved = [
+            'reg_no',
+            'name',
+            'exam_date',
+            'attendance_total',
+            'attendance_present',
+            'remarks',
         ];
 
-        $inserted = 0; $updated = 0; $skipped = 0; $rowErrors = [];
+        // Detect subject columns: any header not in reserved list
+        $subjectColumns = [];
+        foreach ($lowerHeader as $i => $lh) {
+            if (!in_array($lh, $reserved, true) && $originalHeader[$i] !== '') {
+                $subjectColumns[] = [
+                    'index' => $i,
+                    // Use ORIGINAL header as subject display name
+                    'name'  => trim($originalHeader[$i]),
+                ];
+            }
+        }
+
+        if (empty($subjectColumns)) {
+            fclose($handle);
+            return back()->withErrors(['csv' => 'No subject columns detected.']);
+        }
+
+        // Default total marks per subject (can be changed if needed)
+        $defaultTotalMarks = 100;
+
+        $inserted = 0;
+        $updated  = 0;
+        $skipped  = 0;
+        $rowErrors = [];
 
         DB::beginTransaction();
         try {
             while (($row = fgetcsv($handle)) !== false) {
-                $regNo   = trim($row[$map['reg_no']] ?? '');
-                $subject = trim($row[$map['subject']] ?? '');
-                $tmarks  = (int) ($row[$map['total_marks']]    ?? 0);
-                $omarks  = (int) ($row[$map['obtained_marks']] ?? 0);
-
-                // Basic validation per row
-                if ($regNo === '' || $subject === '' || $tmarks <= 0 || $omarks < 0 || $omarks > $tmarks) {
+                // ---- Core per-student data ----
+                $regNo = trim($row[$map['reg_no']] ?? '');
+                if ($regNo === '') {
                     $skipped++;
-                    $rowErrors[] = "Invalid row (reg_no={$regNo}, subject={$subject})";
+                    $rowErrors[] = "Missing reg_no in a row.";
                     continue;
                 }
+
+                // Optional name (ignored in DB, but you could log it if desired)
+                $name = $nameIndex !== null ? trim($row[$nameIndex] ?? '') : null;
 
                 // Find student
                 $student = Student::where('reg_no', $regNo)->first();
@@ -118,27 +170,21 @@ class ResultController extends Controller
                 }
 
                 // Scope membership checks
-                if ($classId && (int)$student->class_id !== $classId) {
+                if ($classId && (int) $student->class_id !== $classId) {
                     $skipped++;
                     $rowErrors[] = "Student {$regNo} not in selected class.";
                     continue;
                 }
-                if ($courseId && (int)$student->course_id !== $courseId) {
+                if ($courseId && (int) $student->course_id !== $courseId) {
                     $skipped++;
                     $rowErrors[] = "Student {$regNo} not in selected course.";
                     continue;
                 }
 
-                // Resolve subject (case-insensitive) and auto-create if not present.
-                $sub = Subject::whereRaw('LOWER(name) = ?', [mb_strtolower($subject)])->first();
-                if (!$sub) {
-                    $sub = Subject::create(['name' => $subject]);
-                }
-
-                // Optional fields
+                // Optional exam_date (same for all subjects of this student row)
                 $examDate = null;
-                if ($opt['exam_date'] !== null) {
-                    $raw = trim($row[$opt['exam_date']] ?? '');
+                if ($examDateIndex !== null) {
+                    $raw = trim($row[$examDateIndex] ?? '');
                     if ($raw !== '') {
                         $ts = strtotime($raw);
                         if ($ts !== false) {
@@ -146,62 +192,121 @@ class ResultController extends Controller
                         }
                     }
                 }
-                $remarks = $opt['remarks'] !== null ? trim($row[$opt['remarks']] ?? '') : null;
 
-                $percentage = round(($omarks / max(1, $tmarks)) * 100, 2);
+                // Optional remarks (same for all subjects, or you can later split logic)
+                $remarks = $remarksIndex !== null ? trim($row[$remarksIndex] ?? '') : null;
 
-                // UPSERT per (student, term, subject, scope)
-                $attrs = [
-                    'student_id' => $student->id,
-                    'term_id'    => $termId,
-                    'subject_id' => $sub->id,
-                    'class_id'   => $classId,
-                    'course_id'  => $courseId,
-                ];
+                // ---- Handle all subjects in this row ----
+                $hasAnySubjectForStudent = false;
 
-                // Common payload
-                $values = [
-                    'user_id'         => Auth::id(),        // who uploaded
-                    'reg_no'          => $student->reg_no,  // snapshot of roll number
-                    'exam_date'       => $examDate,
-                    'total_marks'     => $tmarks,
-                    'obtained_marks'  => $omarks,
-                    'percentage'      => $percentage,
-                    'grade'           => null,              // add grading policy later if needed
-                    'remarks'         => $remarks,
-                ];
+                foreach ($subjectColumns as $subCol) {
+                    $subjectName  = $subCol['name'];
+                    $subjectIndex = $subCol['index'];
 
-                // If the table still has a NOT NULL `subject` text column, also fill it.
-                if ($hasSubjectTextCol) {
-                    $values['subject'] = $subject;
+                    $rawMarks = trim($row[$subjectIndex] ?? '');
+                    if ($rawMarks === '') {
+                        // No marks entered for this subject -> just skip this subject for this student
+                        continue;
+                    }
+
+                    // Convert to integer marks
+                    if (!is_numeric($rawMarks)) {
+                        $skipped++;
+                        $rowErrors[] = "Invalid marks for subject '{$subjectName}' (reg_no={$regNo}).";
+                        continue;
+                    }
+
+                    $omarks = (int) $rawMarks;
+                    $tmarks = $defaultTotalMarks;
+
+                    if ($tmarks <= 0 || $omarks < 0 || $omarks > $tmarks) {
+                        $skipped++;
+                        $rowErrors[] = "Out-of-range marks for subject '{$subjectName}' (reg_no={$regNo}).";
+                        continue;
+                    }
+
+                    // Resolve subject (case-insensitive) and auto-create if not present.
+                    $sub = Subject::whereRaw('LOWER(name) = ?', [mb_strtolower($subjectName)])->first();
+                    if (!$sub) {
+                        $sub = Subject::create(['name' => $subjectName]);
+                    }
+
+                    $percentage = round(($omarks / max(1, $tmarks)) * 100, 2);
+
+                    // UPSERT per (student, term, subject, scope)
+                    $attrs = [
+                        'student_id' => $student->id,
+                        'term_id'    => $termId,
+                        'subject_id' => $sub->id,
+                        'class_id'   => $classId,
+                        'course_id'  => $courseId,
+                    ];
+
+                    // Common payload
+                    $values = [
+                        'user_id'        => Auth::id(),          // uploader
+                        'reg_no'         => $student->reg_no,    // snapshot
+                        'exam_date'      => $examDate,
+                        'total_marks'    => $tmarks,
+                        'obtained_marks' => $omarks,
+                        'percentage'     => $percentage,
+                        'grade'          => null,                // can add grading policy later
+                        'remarks'        => $remarks,
+                    ];
+
+                    // If the legacy text 'subject' column still exists, fill it too
+                    if ($hasSubjectTextCol) {
+                        $values['subject'] = $subjectName;
+                    }
+
+                    $existing = ExamResult::where($attrs)->first();
+                    if ($existing) {
+                        $existing->update($values);
+                        $updated++;
+                    } else {
+                        ExamResult::create($attrs + $values);
+                        $inserted++;
+                    }
+
+                    $hasAnySubjectForStudent = true;
                 }
 
-                $existing = ExamResult::where($attrs)->first();
-                if ($existing) {
-                    $existing->update($values);
-                    $updated++;
-                } else {
-                    ExamResult::create($attrs + $values);
-                    $inserted++;
+                if (!$hasAnySubjectForStudent) {
+                    // No valid subject marks in this row for the student
+                    $rowErrors[] = "No valid subject marks found for reg_no={$regNo}.";
+                    $skipped++;
                 }
 
-                // Attendance (optional, once per student/term/scope)
-                $attTotal = $opt['attendance_total']   !== null ? (int)($row[$opt['attendance_total']]   ?? 0) : null;
-                $attPres  = $opt['attendance_present'] !== null ? (int)($row[$opt['attendance_present']] ?? 0) : null;
+                // ---- Attendance (once per student/term/scope) ----
+                $attTotal = $attendanceTotalIndex !== null
+                    ? trim($row[$attendanceTotalIndex] ?? '')
+                    : null;
+                $attPres  = $attendancePresentIndex !== null
+                    ? trim($row[$attendancePresentIndex] ?? '')
+                    : null;
 
-                if ($attTotal !== null || $attPres !== null) {
+                $attTotalInt = ($attTotal !== null && $attTotal !== '' && is_numeric($attTotal))
+                    ? (int) $attTotal
+                    : null;
+                $attPresInt = ($attPres !== null && $attPres !== '' && is_numeric($attPres))
+                    ? (int) $attPres
+                    : null;
+
+                if ($attTotalInt !== null || $attPresInt !== null) {
                     $att = Attendance::firstOrNew([
                         'student_id' => $student->id,
                         'term_id'    => $termId,
                         'class_id'   => $classId,
                         'course_id'  => $courseId,
                     ]);
+
                     // update numbers (keep previous if null in this row)
-                    $att->total_days   = $attTotal ?? $att->total_days ?? 0;
-                    $att->present_days = $attPres  ?? $att->present_days ?? 0;
+                    $att->total_days   = $attTotalInt !== null ? $attTotalInt : ($att->total_days ?? 0);
+                    $att->present_days = $attPresInt  !== null ? $attPresInt  : ($att->present_days ?? 0);
                     $att->percentage   = $att->total_days
                         ? round(($att->present_days / max(1, $att->total_days)) * 100, 2)
                         : null;
+
                     $att->save();
                 }
             }
@@ -210,13 +315,13 @@ class ResultController extends Controller
         } catch (\Throwable $e) {
             DB::rollBack();
             fclose($handle);
-            return back()->withErrors(['csv' => 'Error: '.$e->getMessage()]);
+            return back()->withErrors(['csv' => 'Error: ' . $e->getMessage()]);
         }
 
         fclose($handle);
 
         return back()
-            ->with('success', "Upload complete. Inserted: {$inserted}, Updated: {$updated}, Skipped: {$skipped}")
+            ->with('success', "Upload complete. Inserted: {$inserted}, Updated: {$updated}, Skipped (subjects/rows): {$skipped}")
             ->with('errors_list', $rowErrors);
     }
 }

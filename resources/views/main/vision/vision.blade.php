@@ -160,15 +160,15 @@
 
     <!-- About Ahmad Tech Section -->
     <div class="card about-section">
-      <h2>About Ahmad Tech</h2>
+      <h2>About Ahmad Vision</h2>
       <div class="about-flex">
         <div class="about-photo">
           <img src="{{ asset('assets/images/school/ahmad.jpg') }}" alt="Eng. Ahmad Awan">
         </div>
         <div class="about-info">
           <h3>Eng. Ahmad Awan</h3><span class="badge">Owner</span>
-          <p>Ahmed Tech is a growing digital technology company committed to providing innovative, reliable, and affordable IT solutions for businesses and individuals. We specialize in developing high-quality mobile applications, web platforms, and customized software solutions that meet the demands of the modern digital era.</p>
-          <p>At Ahmed Tech, we believe technology should be simple, accessible, and empowering. Our team focuses on creating solutions that are easy to use, time-saving, and result-driven. From small businesses to large enterprises, we aim to help our clients grow by offering tools that enhance productivity, streamline operations, and improve customer engagement.</p>
+          <p>Ahmed Vision is a growing digital technology company committed to providing innovative, reliable, and affordable IT solutions for businesses and individuals. We specialize in developing high-quality mobile applications, web platforms, and customized software solutions that meet the demands of the modern digital era.</p>
+          <p>At Ahmed Vision, we believe technology should be simple, accessible, and empowering. Our team focuses on creating solutions that are easy to use, time-saving, and result-driven. From small businesses to large enterprises, we aim to help our clients grow by offering tools that enhance productivity, streamline operations, and improve customer engagement.</p>
         </div>
       </div>
     </div>

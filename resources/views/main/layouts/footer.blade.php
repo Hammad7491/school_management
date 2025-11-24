@@ -6,7 +6,7 @@
     <!-- Left: Brand / identity -->
     <section class="fcol fcol--brand">
       <a href="{{ url('/') }}" class="fbrand" aria-label="AL-FARAN School of Excellence - home">
-        <img src="{{ asset('assets/images/fse-logo.png') }}" alt="AL-FARAN School of Excellence logo" class="fbrand__logo-square">
+        <img src="{{ asset('assets/images/school/logo.jpg') }}" alt="AL-FARAN School of Excellence logo" class="fbrand__logo-square">
         <div class="fbrand__text">
           <span class="fbrand__eyebrow">AL-FARAN</span>
           <span class="fbrand__name">School of Excellence</span>
