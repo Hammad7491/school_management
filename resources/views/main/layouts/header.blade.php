@@ -5,9 +5,12 @@
     {{-- Brand --}}
     <a href="{{ url('/') }}" class="brand">
       <img src="{{ asset('assets/images/school/logo.jpg') }}" alt="Al-Faran School of Excellence logo" class="brand__logo">
+
       <div class="brand__text">
         <span class="brand__name">Al-Faran School of Excellence</span>
-        <span class="brand__tag">learn • grow • lead</span>
+
+        {{-- MOVED TAGLINE BELOW (UPDATED AS YOU REQUESTED) --}}
+        <span class="brand__tag">learn • grow • lead • FSE</span>
       </div>
     </a>
 
@@ -96,10 +99,14 @@
     aspect-ratio:1/1; object-fit:cover;
     border-radius:14px; box-shadow:0 4px 14px rgba(0,0,0,.15);
   }
-  .brand__text{ line-height:1; }
+  .brand__text{ line-height:1.2; display:flex; flex-direction:column; }
   .brand__name{ font-weight:900; color:var(--ink); font-size:clamp(18px,2.2vw,22px); }
-  .brand__tag{ font-size:12px; color:var(--muted); }
-  .brand__tag::after{ content:" • FSE"; color:var(--fse-gold); font-weight:700; }
+  .brand__tag{
+    font-size:12px; 
+    color:var(--muted); 
+    font-weight:600;
+    margin-top:4px;
+  }
 
   /* NAV */
   .nav{ margin-left:auto; }
@@ -118,7 +125,7 @@
     padding:10px 16px; border-radius:12px; color:#fff; font-weight:900;
   }
 
-  /* HAMBURGER NEW FIXED */
+  /* HAMBURGER */
   .hamburger{
     margin-left:auto;
     height:48px; width:48px;
@@ -169,7 +176,7 @@
     .hamburger{ display:flex; }
   }
   @media(max-width:480px){
-    .brand__text{ display:none; }
+    .brand__text{ display:none; } /* mobile auto-hide */
   }
 </style>
 
@@ -208,4 +215,3 @@
     });
   })();
 </script>
-  

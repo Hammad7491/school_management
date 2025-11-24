@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
@@ -27,7 +28,8 @@ class UserController extends Controller
     public function store(Request $request)
     {
         $data = $request->validate([
-            'name'     => 'required|string|max:255',
+            // name must be unique across users + students
+            'name'     => 'required|string|max:255|unique:users,name|unique:students,name',
             'email'    => 'required|email|unique:users,email',
             'password' => 'required|confirmed|min:6',
             'roles'    => 'required|array',
@@ -56,17 +58,22 @@ class UserController extends Controller
     public function update(Request $request, User $user)
     {
         $data = $request->validate([
-            'name'     => 'required|string|max:255',
-            'email'    => 'required|email|unique:users,email,'.$user->id,
+            // name must stay unique in users (ignore current user) and not clash with any student name
+            'name'     => 'required|string|max:255'
+                         . '|unique:users,name,' . $user->id
+                         . '|unique:students,name',
+            'email'    => 'required|email|unique:users,email,' . $user->id,
             'password' => 'nullable|confirmed|min:6',
             'roles'    => 'required|array',
         ]);
 
         $user->name  = $data['name'];
         $user->email = $data['email'];
+
         if (! empty($data['password'])) {
             $user->password = Hash::make($data['password']);
         }
+
         $user->save();
 
         $user->syncRoles($data['roles']);
@@ -78,6 +85,7 @@ class UserController extends Controller
     public function destroy(User $user)
     {
         $user->delete();
+
         return redirect()->route('admin.users.index')
                          ->with('success','User deleted.');
     }

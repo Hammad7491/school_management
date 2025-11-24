@@ -1,4 +1,73 @@
 <div class="navbar-header">
+  @php
+      $user      = auth()->user();
+      $userName  = trim($user->name ?? 'User');
+      $userLabel = strtoupper($userName);
+      $initial   = mb_strtoupper(mb_substr($userName, 0, 1));
+  @endphp
+
+  <style>
+      .student-topbar-pill{
+          display:inline-flex;
+          align-items:center;
+          gap:.6rem;
+          padding:6px 14px 6px 8px;
+          border-radius:999px;
+          background:linear-gradient(135deg,#f3f4ff,#e0f2fe);
+          border:1px solid #d0d7ff;
+          box-shadow:0 8px 20px rgba(15,23,42,.12);
+          transition:transform .15s ease, box-shadow .15s ease, background .15s ease;
+      }
+      .student-topbar-pill:hover{
+          transform:translateY(-1px);
+          box-shadow:0 10px 26px rgba(15,23,42,.16);
+          background:linear-gradient(135deg,#e0e7ff,#bfdbfe);
+      }
+      .student-topbar-avatar{
+          width:32px;
+          height:32px;
+          border-radius:999px;
+          background:#111827;
+          color:#f9fafb;
+          display:flex;
+          align-items:center;
+          justify-content:center;
+          font-size:14px;
+          font-weight:700;
+          box-shadow:0 0 0 2px #e5e7eb;
+      }
+      .student-topbar-name{
+          font-size:14px;
+          font-weight:700;
+          letter-spacing:.04em;
+          text-transform:uppercase;
+          color:#111827;
+          white-space:nowrap;
+          max-width:190px;
+          overflow:hidden;
+          text-overflow:ellipsis;
+      }
+      .student-topbar-role{
+          font-size:11px;
+          font-weight:500;
+          text-transform:uppercase;
+          letter-spacing:.12em;
+          color:#6b7280;
+          margin-top:-2px;
+      }
+      .student-topbar-chevron{
+          font-size:16px;
+          color:#6b7280;
+      }
+
+      @media (max-width:768px){
+          .student-topbar-name{ max-width:120px; font-size:13px; }
+          .student-topbar-pill{
+              padding:6px 10px 6px 6px;
+          }
+      }
+  </style>
+
   <div class="row align-items-center justify-content-between">
     {{-- Left side toggles --}}
     <div class="col-auto">
@@ -16,48 +85,8 @@
     {{-- Right side controls --}}
     <div class="col-auto">
       <div class="d-flex flex-wrap align-items-center gap-3">
-        {{-- Dark mode --}}
-        <button type="button" data-theme-toggle
-          class="w-40-px h-40-px bg-neutral-200 rounded-circle d-flex justify-content-center align-items-center"></button>
 
-        {{-- Language (keep yours) --}}
-        <div class="dropdown d-none d-sm-inline-block">
-          <button class="has-indicator w-40-px h-40-px bg-neutral-200 rounded-circle d-flex justify-content-center align-items-center"
-                  type="button" data-bs-toggle="dropdown">
-            <img src="{{ asset('assets/images/lang-flag.png') }}" alt="lang"
-                 class="w-24 h-24 object-fit-cover rounded-circle">
-          </button>
-          <div class="dropdown-menu to-top dropdown-menu-sm">
-            <div class="py-12 px-16 radius-8 bg-primary-50 mb-16 d-flex align-items-center justify-content-between gap-2">
-              <h6 class="text-lg text-primary-light fw-semibold mb-0">Choose Your Language</h6>
-            </div>
-            <div class="max-h-400-px overflow-y-auto scroll-sm pe-8">
-              {{-- your language options --}}
-            </div>
-          </div>
-        </div>
-
-        {{-- Messages (keep yours) --}}
-        <div class="dropdown">
-          <button class="has-indicator w-40-px h-40-px bg-neutral-200 rounded-circle d-flex justify-content-center align-items-center"
-                  type="button" data-bs-toggle="dropdown">
-            <iconify-icon icon="mage:email" class="text-primary-light text-xl"></iconify-icon>
-          </button>
-          <div class="dropdown-menu to-top dropdown-menu-lg p-0">
-            <div class="m-16 py-12 px-16 radius-8 bg-primary-50 mb-16 d-flex align-items-center justify-content-between gap-2">
-              <h6 class="text-lg text-primary-light fw-semibold mb-0">Message</h6>
-              <span class="text-primary-600 fw-semibold text-lg w-40-px h-40-px rounded-circle bg-base d-flex justify-content-center align-items-center">05</span>
-            </div>
-            <div class="max-h-400-px overflow-y-auto scroll-sm pe-4">
-              {{-- message items --}}
-            </div>
-            <div class="text-center py-12 px-16">
-              <a href="javascript:void(0)" class="text-primary-600 fw-semibold text-md">See All Message</a>
-            </div>
-          </div>
-        </div>
-
-        {{-- 🔔 Notifications --}}
+        {{-- 🔔 Notifications (UNCHANGED) --}}
         <div class="dropdown">
           <button
             id="notifBtn"
@@ -117,42 +146,51 @@
         </div>
         {{-- /Notifications --}}
 
-        {{-- Profile --}}
+        {{-- Profile (clean pill with name + logout only) --}}
         <div class="dropdown">
-          <button class="d-flex justify-content-center align-items-center rounded-circle" type="button" data-bs-toggle="dropdown">
-            <img src="{{ asset('assets/images/user.png') }}" alt="user" class="w-40-px h-40-px object-fit-cover rounded-circle">
-          </button>
-          <div class="dropdown-menu to-top dropdown-menu-sm">
-            <div class="py-12 px-16 radius-8 bg-primary-50 mb-16 d-flex align-items-center justify-content-between gap-2">
-              <div>
-                <h6 class="text-lg text-primary-light fw-semibold mb-2">{{ auth()->user()->name ?? 'User' }}</h6>
-                <span class="text-secondary-light fw-medium text-sm">Student</span>
+          <button
+              class="student-topbar-pill border-0 bg-transparent"
+              type="button"
+              id="studentProfileDropdown"
+              data-bs-toggle="dropdown"
+              aria-expanded="false">
+
+              <span class="student-topbar-avatar">
+                  {{ $initial }}
+              </span>
+
+              <div class="d-flex flex-column align-items-start">
+                  <span class="student-topbar-name">{{ $userLabel }}</span>
+                  <span class="student-topbar-role">Student Portal</span>
               </div>
-              <button type="button" class="hover-text-danger">
-                <iconify-icon icon="radix-icons:cross-1" class="icon text-xl"></iconify-icon>
-              </button>
-            </div>
-            <ul class="to-top-list">
-              <li><a class="dropdown-item text-black px-0 py-8 hover-bg-transparent hover-text-primary d-flex align-items-center gap-3" href="#">
-                <iconify-icon icon="solar:user-linear" class="icon text-xl"></iconify-icon> My Profile</a>
-              </li>
-              <li><a class="dropdown-item text-black px-0 py-8 hover-bg-transparent hover-text-primary d-flex align-items-center gap-3" href="#">
-                <iconify-icon icon="tabler:message-check" class="icon text-xl"></iconify-icon> Inbox</a>
-              </li>
-              <li><a class="dropdown-item text-black px-0 py-8 hover-bg-transparent hover-text-primary d-flex align-items-center gap-3" href="#">
-                <iconify-icon icon="icon-park-outline:setting-two" class="icon text-xl"></iconify-icon> Setting</a>
-              </li>
-              <li>
-                <a href="{{ route('logout') }}"
-                   class="dropdown-item text-black px-0 py-8 hover-bg-transparent hover-text-danger d-flex align-items-center gap-3"
-                   onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                  <iconify-icon icon="lucide:power" class="icon text-xl"></iconify-icon> Log Out
-                </a>
-                <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display:none;">
-                  @csrf
-                </form>
-              </li>
-            </ul>
+
+              <span class="student-topbar-chevron ms-1">▾</span>
+          </button>
+
+          <div class="dropdown-menu dropdown-menu-end shadow-sm border-0 py-1"
+               aria-labelledby="studentProfileDropdown"
+               style="min-width: 180px; border-radius: 14px;">
+
+            <button type="button" class="dropdown-item text-muted small" disabled>
+              Signed in as <strong>{{ $userName }}</strong>
+            </button>
+            <div class="dropdown-divider my-1"></div>
+
+            <a href="{{ route('logout') }}"
+               class="dropdown-item d-flex align-items-center gap-2 text-danger fw-semibold"
+               onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+              <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"
+                   stroke-linecap="round" stroke-linejoin="round">
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+                <polyline points="16 17 21 12 16 7"/>
+                <line x1="21" y1="12" x2="9" y2="12"/>
+              </svg>
+              Logout
+            </a>
+
+            <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+              @csrf
+            </form>
           </div>
         </div>
         {{-- /Profile --}}

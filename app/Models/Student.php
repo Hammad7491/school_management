@@ -9,36 +9,27 @@ class Student extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        // who created the record (admin/school)
-        'user_id',
+   protected $fillable = [
+    'user_id',
+    'class_id',
+    'course_id',
+    'student_id',
+    'reg_no',
+    'admission_date',
+    'name',
+    'father_name',
+    'b_form',
+    'b_form_image_path',
+    'profile_image_path',     // <-- NEW
+    'dob',
+    'caste',
+    'parent_phone',
+    'guardian_phone',
+    'address',
+    'email',
+    'status',
+];
 
-        // relations
-        'class_id',
-        'course_id',
-
-        // link to the user account of the student
-        'student_id',
-
-        // identifiers
-        'reg_no',
-
-        // profile
-        'admission_date',
-        'name',
-        'father_name',
-        'b_form',                // present in your migration
-        'b_form_image_path',
-        'dob',
-        'caste',
-        'parent_phone',
-        'guardian_phone',
-        'address',
-        'email',                 // duplicated in students table per your migration
-
-        // status
-        'status',
-    ];
 
     protected $casts = [
         'admission_date' => 'date',

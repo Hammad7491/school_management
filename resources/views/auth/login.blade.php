@@ -6,129 +6,145 @@
   <title>Login | AL-FARAN School of Excellence</title>
   <link rel="icon" type="image/png" href="{{ asset('assets/images/school/logo.jpg') }}" sizes="32x32" />
 
-  <!-- remix icon -->
   <link rel="stylesheet" href="{{ asset('assets/css/remixicon.css') }}" />
-  <!-- Bootstrap -->
   <link rel="stylesheet" href="{{ asset('assets/css/lib/bootstrap.min.css') }}" />
-  <!-- Main CSS -->
-  <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}" />
 
   <style>
+    :root {
+      --blue: #1f64c8;
+      --sky: #22c1f1;
+      --ink: #0b1020;
+      --muted: #64748b;
+      --radius: 16px;
+    }
+
     body {
-      min-height: 100vh;
       margin: 0;
+      padding: 20px;
+      min-height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
-      background: linear-gradient(135deg, #6a7bff, #22d3ee);
-      font-family: 'Inter', sans-serif;
-      padding: 20px;
+      background: #f0f4ff;
+      font-family: "Inter", sans-serif;
     }
 
     .login-wrapper {
       width: 100%;
       max-width: 420px;
-      background: linear-gradient(135deg, #6a7bff, #22d3ee);
-      border-radius: 20px;
+      background: #fff;
+      border-radius: var(--radius);
       padding: 40px 32px;
-      box-shadow: 0 20px 50px rgba(0,0,0,0.25);
-      text-align: center;
-      color: #fff;
-      animation: fadeIn 0.6s ease-in-out;
+      box-shadow: 0 12px 40px rgba(31, 100, 200, 0.18);
+      animation: fadeIn 0.5s ease;
     }
 
     @keyframes fadeIn {
-      from {opacity: 0; transform: translateY(20px);}
+      from {opacity: 0; transform: translateY(15px);}
       to {opacity: 1; transform: translateY(0);}
     }
 
-    .login-logo {
-      margin-bottom: 20px;
-    }
+    /* LOGO */
     .login-logo img {
-      width: 100px;
-      height: 100px;
-      object-fit: contain;
-      border-radius: 12px;
+      width: 90px;
+      height: 90px;
+      border-radius: 14px;
+      object-fit: cover;
       border: 2px solid #fff;
       background: #fff;
-      padding: 8px;
-      box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+      box-shadow: 0 6px 14px rgba(0,0,0,0.1);
     }
 
     .login-title {
-      font-size: 18px;
-      font-weight: 600;
+      margin-top: 14px;
       margin-bottom: 25px;
       line-height: 1.5;
+      font-size: 17px;
+      color: var(--ink);
+      font-weight: 600;
     }
 
+    /* FORM */
     .form-control {
-      border-radius: 12px;
+      border-radius: var(--radius);
       padding: 14px 16px;
+      border: 1px solid #dbe2ef;
       font-size: 15px;
-      border: none;
-      margin-bottom: 15px;
+      margin-bottom: 14px;
     }
 
+    .form-control:focus {
+      box-shadow: 0 0 0 3px rgba(31,100,200,0.15);
+      border-color: var(--blue);
+    }
+
+    /* BUTTON */
     .btn-primary {
-      background: #fff;
-      color: #0b1020;
+      width: 100%;
+      background: linear-gradient(90deg, var(--blue), var(--sky));
+      border-radius: var(--radius);
       border: none;
-      font-weight: 700;
       padding: 14px;
-      border-radius: 12px;
+      color: #fff;
       font-size: 16px;
-      margin-bottom: 15px;
+      font-weight: 800;
       transition: 0.2s;
     }
-    .btn-primary:hover { background: #f1f5f9; }
 
+    .btn-primary:hover {
+      box-shadow: 0 8px 22px rgba(31,100,200,0.3);
+      transform: translateY(-2px);
+    }
+
+    /* QUICK LOGIN */
     .quick-buttons button {
       flex: 1;
-      min-width: 45%;
       border-radius: 10px;
+      padding: 12px;
+      font-size: 14px;
       font-weight: 600;
-      background: rgba(255,255,255,0.15);
-      color: #fff;
-      border: 1px solid rgba(255,255,255,0.4);
+      background: #f1f5f9;
+      border: 1px solid #dbe2ef;
+      color: var(--ink);
     }
     .quick-buttons button:hover {
-      background: rgba(255,255,255,0.25);
+      background: #e2e8f0;
     }
 
+    /* HOME BUTTON */
     .btn-home {
       position: absolute;
       top: 20px;
       left: 20px;
-      background: rgba(255,255,255,0.2);
-      color: #fff;
       padding: 8px 16px;
-      border-radius: 12px;
-      font-weight: 600;
+      background: #fff;
+      border-radius: 10px;
+      font-weight: 700;
+      color: var(--blue);
       text-decoration: none;
-      transition: 0.2s;
+      border: 1px solid #dce3f5;
+      box-shadow: 0 4px 14px rgba(31,100,200,0.15);
     }
-    .btn-home:hover { background: rgba(255,255,255,0.35); }
 
-    @media(max-width: 500px){
+    @media(max-width:500px){
       .login-wrapper { padding: 30px 20px; }
-      .login-title { font-size: 16px; }
     }
   </style>
 </head>
+
 <body>
 
 <a href="{{ url('/') }}" class="btn-home"><i class="ri-home-4-line"></i> Home</a>
 
 <div class="login-wrapper">
-  <div class="login-logo">
+
+  <div class="login-logo text-center">
     <img src="{{ asset('assets/images/school/logo.jpg') }}" alt="School Logo">
   </div>
 
-  <div class="login-title">
+  <div class="login-title text-center">
     Login as Faculty or Student<br>
-    in <strong>AL-FARAN School of Excellence</strong>
+    <strong>Al-Faran School of Excellence</strong>
   </div>
 
   @if ($errors->any())
@@ -146,26 +162,22 @@
     @csrf
 
     <input type="email" name="email" class="form-control" placeholder="Email address" value="{{ old('email') }}" required>
+
     <div class="position-relative">
       <input type="password" name="password" id="password" class="form-control" placeholder="Password" required>
-      <button type="button" id="togglePassword" class="position-absolute end-0 top-50 translate-middle-y me-3 bg-transparent border-0 text-dark">
+      <button type="button" id="togglePassword" class="position-absolute end-0 top-50 translate-middle-y me-3 bg-transparent border-0">
         <i class="ri-eye-line"></i>
       </button>
     </div>
 
-    <button type="submit" class="btn btn-primary w-100">Log In</button>
+    <button type="submit" class="btn btn-primary mt-2">Log In</button>
 
-    {{-- Quick login buttons --}}
-    <div class="d-flex flex-wrap gap-2 quick-buttons">
-      <button type="button" onclick="fillLogin('a@a','a')">Admin</button>
-      <button type="button" onclick="fillLogin('principal@example.com','password')">Principal</button>
-      <button type="button" onclick="fillLogin('teacher@example.com','password')">Teacher</button>
-      <button type="button" onclick="fillLogin('student@example.com','password')">Student</button>
-    </div>
+    <!-- Quick login buttons -->
+    
+
   </form>
 </div>
 
-<!-- JS -->
 <script src="{{ asset('assets/js/lib/bootstrap.bundle.min.js') }}"></script>
 <script>
   function fillLogin(email, password) {
@@ -182,5 +194,6 @@
     icon.classList.toggle('ri-eye-off-line');
   });
 </script>
+
 </body>
 </html>

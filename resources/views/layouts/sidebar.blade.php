@@ -5,9 +5,7 @@
 
     <div>
         <a href="{{ route('admin.dashboard') }}" class="sidebar-logo">
-            <img src="{{ asset('assets/images/logo.png') }}" alt="site logo" class="light-logo">
-            <img src="{{ asset('assets/images/logo-light.png') }}" alt="site logo" class="dark-logo">
-            <img src="{{ asset('assets/images/logo-icon.png') }}" alt="site logo" class="logo-icon">
+          
         </a>
     </div>
 
@@ -327,13 +325,7 @@
 @endcanany
 
 
-            {{-- Email (example) --}}
-            <li>
-                <a href="email.html">
-                    <iconify-icon icon="mage:email" class="menu-icon"></iconify-icon>
-                    <span>Email</span>
-                </a>
-            </li>
+            
 
         </ul>
     </div>
