@@ -74,7 +74,7 @@
 
   <!-- Bottom strip -->
   <div class="pro-footer__bottom">
-    <p class="copy">© {{ date('Y') }} AL-FARAN School of Excellence. All rights reserved.</p>
+    <p class="copy">© {{ date('Y') }} Powered by Ahmad Vision. All rights reserved.</p>
   </div>
 </footer>
 

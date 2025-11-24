@@ -71,8 +71,7 @@
         <h3>Eng. Ahmad Awan</h3>
         <p>BCS Computer Science (UP)<br>
           Computer Hardware & Software Engineering (Wisdom College)<br>
-          Artificial Intelligence & Robotics (Purdue University Qatar)<br>
-          PLC-SCADA (KSA)
+          Artificial Intelligence & Robotics
         </p>
       </div>
 

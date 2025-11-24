@@ -200,7 +200,7 @@
 
     {{-- ADMISSION CTA --}}
     <div class="cta-box">
-      <button class="btn-admission">Get Admission</button>
+      <a href="{{ route('admission') }}"><button class="btn-admission" > Get Admission</button></a>
     </div>
 
     {{-- ACHIEVEMENTS --}}
@@ -219,27 +219,21 @@
       <div class="testi-grid">
         <div class="testi">
           <p>“My son has become more confident and active since joining AL-FARAN. The teachers give attention like family.”</p>
-          <strong>— Ahmed Raza, Lahore</strong>
+          <strong>— Ahmed Raza, Depalpur</strong>
         </div>
         <div class="testi">
           <p>“I shifted my daughter from another school and I’m very happy. The focus on both academics and values is amazing.”</p>
-          <strong>— Maria Khan, Karachi</strong>
+          <strong>— Maria Khan, Depalpur</strong>
         </div>
         <div class="testi">
           <p>“The best part is how they involve parents and keep us updated. A real caring environment for children.”</p>
-          <strong>— Faisal Mehmood, Islamabad</strong>
+          <strong>— Faisal Mehmood, Depalpur</strong>
         </div>
       </div>
     </section>
 
     {{-- CONTACT --}}
-    <section class="section contact">
-      <h3 class="h-title">Contact Us</h3>
-      <p class="h-sub">Have questions or want to visit our campus? Get in touch with us today.</p>
-      <div class="cta-box">
-        <button class="btn-admission">Contact Us</button>
-      </div>
-    </section>
+   
   </main>
 @endsection
 
