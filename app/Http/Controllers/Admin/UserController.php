@@ -19,6 +19,7 @@ class UserController extends Controller
     public function create()
     {
         $roles = Role::all();
+
         return view('admin.users.create', [
             'roles'     => $roles,
             'userRoles' => [],
@@ -28,8 +29,8 @@ class UserController extends Controller
     public function store(Request $request)
     {
         $data = $request->validate([
-            // name must be unique across users + students
-            'name'     => 'required|string|max:255|unique:users,name|unique:students,name',
+            // name is NOT unique now
+            'name'     => 'required|string|max:255',
             'email'    => 'required|email|unique:users,email',
             'password' => 'required|confirmed|min:6',
             'roles'    => 'required|array',
@@ -43,8 +44,9 @@ class UserController extends Controller
 
         $user->syncRoles($data['roles']);
 
-        return redirect()->route('admin.users.index')
-                         ->with('success','User created.');
+        return redirect()
+            ->route('admin.users.index')
+            ->with('success', 'User created.');
     }
 
     public function edit(User $user)
@@ -52,16 +54,14 @@ class UserController extends Controller
         $roles     = Role::all();
         $userRoles = $user->roles->pluck('name')->toArray();
 
-        return view('admin.users.create', compact('user','roles','userRoles'));
+        return view('admin.users.create', compact('user', 'roles', 'userRoles'));
     }
 
     public function update(Request $request, User $user)
     {
         $data = $request->validate([
-            // name must stay unique in users (ignore current user) and not clash with any student name
-            'name'     => 'required|string|max:255'
-                         . '|unique:users,name,' . $user->id
-                         . '|unique:students,name',
+            // still not unique on update
+            'name'     => 'required|string|max:255',
             'email'    => 'required|email|unique:users,email,' . $user->id,
             'password' => 'nullable|confirmed|min:6',
             'roles'    => 'required|array',
@@ -78,15 +78,17 @@ class UserController extends Controller
 
         $user->syncRoles($data['roles']);
 
-        return redirect()->route('admin.users.index')
-                         ->with('success','User updated.');
+        return redirect()
+            ->route('admin.users.index')
+            ->with('success', 'User updated.');
     }
 
     public function destroy(User $user)
     {
         $user->delete();
 
-        return redirect()->route('admin.users.index')
-                         ->with('success','User deleted.');
+        return redirect()
+            ->route('admin.users.index')
+            ->with('success', 'User deleted.');
     }
 }
