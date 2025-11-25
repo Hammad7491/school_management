@@ -84,7 +84,7 @@
       <div class="card">
         <img src="{{ asset('assets/images/school/girl.png') }}" alt="Miss Saira Mudasser Alvi">
         <h3>Miss Saira Mudasser Alvi</h3>
-        <p>M.A (English), B.Ed<br>BS(Hons.) Bio Chemistry</p>
+        <p>M.A (English), B.Ed<br></p>
       </div>
 
       <div class="card">
@@ -99,16 +99,12 @@
         <p>BS(Hons.) Zoology</p>
       </div>
 
-      <div class="card">
-        <img src="{{ asset('assets/images/school/girl.png') }}" alt="Miss Rabia">
-        <h3>Miss Rabia</h3>
-        <p>—</p>
-      </div>
+     
 
       <div class="card">
         <img src="{{ asset('assets/images/school/girl.png') }}" alt="Miss Sobia Hamid">
         <h3>Miss Sobia Hamid</h3>
-        <p>M.A (Urdu)<br>BS(Hons.) Math</p>
+        <p>M.A (Urdu), B.ED</p>
       </div>
 
       <div class="card">
