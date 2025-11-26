@@ -141,6 +141,23 @@
     color:var(--muted);
     font-weight:600;
   }
+
+  /* SUCCESS ALERT */
+  .form-alert{
+    margin-bottom:20px;
+    padding:12px 14px;
+    border-radius:var(--radius);
+    background:#ecfdf3;
+    border:1px solid rgba(34,197,94,.3);
+    color:#166534;
+    font-weight:600;
+    display:flex;
+    align-items:flex-start;
+    gap:10px;
+  }
+  .form-alert i{
+    margin-top:2px;
+  }
 </style>
 @endpush
 
@@ -167,9 +184,17 @@
 
   {{-- FORM --}}
   <section class="form-section">
+    {{-- SUCCESS MESSAGE --}}
+    @if(session('success'))
+      <div class="form-alert">
+        <i class="fa-solid fa-circle-check"></i>
+        <span>{{ session('success') }}</span>
+      </div>
+    @endif
+
     <h2>Registration Form</h2>
-   <form action="{{ route('admission.store') }}" method="POST">
-    @csrf
+    <form action="{{ route('admission.store') }}" method="POST">
+      @csrf
       <input type="text" name="student_name" class="form-control" placeholder="Student Name" required>
       <select name="gender" class="form-control" required>
         <option value="">Select Gender</option>
