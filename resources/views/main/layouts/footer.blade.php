@@ -18,11 +18,9 @@
 
       <!-- Socials -->
       <nav class="fsocial" aria-label="Social">
-        <a href="#" aria-label="Facebook" class="fsocial__btn"><iconify-icon icon="mdi:facebook"></iconify-icon></a>
-        <a href="#" aria-label="Instagram" class="fsocial__btn"><iconify-icon icon="mdi:instagram"></iconify-icon></a>
-        <a href="#" aria-label="Twitter" class="fsocial__btn"><iconify-icon icon="mdi:twitter"></iconify-icon></a>
+        <a href="https://www.facebook.com/Alfaran.school.of.Excellence" aria-label="Facebook" class="fsocial__btn"><iconify-icon icon="mdi:facebook"></iconify-icon></a>
         <a href="#" aria-label="YouTube" class="fsocial__btn"><iconify-icon icon="mdi:youtube"></iconify-icon></a>
-        <a href="#" aria-label="LinkedIn" class="fsocial__btn"><iconify-icon icon="mdi:linkedin"></iconify-icon></a>
+       
       </nav>
     </section>
 
