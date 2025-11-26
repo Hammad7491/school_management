@@ -9,7 +9,7 @@
       <div class="brand__text">
         <span class="brand__name">Al-Faran School of Excellence</span>
 
-        {{-- MOVED TAGLINE BELOW (UPDATED AS YOU REQUESTED) --}}
+        {{-- TAGLINE --}}
         <span class="brand__tag">learn • grow • lead • FSE</span>
       </div>
     </a>
@@ -17,12 +17,47 @@
     {{-- Desktop Nav --}}
     <nav class="nav" id="siteNav" aria-label="Primary">
       <ul class="nav__list">
-        <li><a href="{{ url('/') }}" class="nav__link {{ request()->is('/') ? 'is-active' : '' }}">Home</a></li>
-        <li><a href="{{ route('fee') }}" class="nav__link {{ request()->is('fee') ? 'is-active' : '' }}">Fee</a></li>
-        <li><a href="{{ route('faculty') }}" class="nav__link {{ request()->is('faculty') ? 'is-active' : '' }}">Faculty</a></li>
-        <li><a href="{{ route('vision') }}" class="nav__link {{ request()->is('vision') ? 'is-active' : '' }}">Our Vision</a></li>
-        <li><a href="{{ route('computer.courses') }}" class="nav__link {{ request()->is('courses') ? 'is-active' : '' }}">Courses</a></li>
-        <li><a href="{{ route('admission') }}" class="nav__link {{ request()->is('admission') ? 'is-active' : '' }}">Admission</a></li>
+        <li>
+          <a href="{{ url('/') }}"
+             class="nav__link {{ request()->is('/') ? 'is-active' : '' }}">
+            Home
+          </a>
+        </li>
+
+        <li>
+          <a href="{{ route('fee') }}"
+             class="nav__link {{ request()->routeIs('fee') ? 'is-active' : '' }}">
+            Fee
+          </a>
+        </li>
+
+        <li>
+          <a href="{{ route('faculty') }}"
+             class="nav__link {{ request()->routeIs('faculty') ? 'is-active' : '' }}">
+            Faculty
+          </a>
+        </li>
+
+        <li>
+          <a href="{{ route('vision') }}"
+             class="nav__link {{ request()->routeIs('vision') ? 'is-active' : '' }}">
+            Our Vision
+          </a>
+        </li>
+
+        <li>
+          <a href="{{ route('computer.courses') }}"
+             class="nav__link {{ request()->routeIs('computer.courses') ? 'is-active' : '' }}">
+            Courses
+          </a>
+        </li>
+
+        <li>
+          <a href="{{ route('admission') }}"
+             class="nav__link {{ request()->routeIs('admission') ? 'is-active' : '' }}">
+            Admission
+          </a>
+        </li>
       </ul>
     </nav>
 
@@ -46,12 +81,35 @@
   {{-- Mobile Panel --}}
   <div class="mobile-panel" id="mobilePanel" aria-hidden="true">
     <nav class="mobile-nav">
-      <a href="{{ url('/') }}" class="mobile-nav__link {{ request()->is('/') ? 'is-active' : '' }}">Home</a>
-      <a href="{{ route('fee') }}" class="mobile-nav__link {{ request()->is('fee') ? 'is-active' : '' }}">Fee</a>
-      <a href="{{ route('faculty') }}" class="mobile-nav__link {{ request()->is('faculty') ? 'is-active' : '' }}">Faculty</a>
-      <a href="{{ route('vision') }}" class="mobile-nav__link {{ request()->is('vision') ? 'is-active' : '' }}">Our Vision</a>
-      <a href="{{ route('computer.courses') }}" class="mobile-nav__link {{ request()->is('courses') ? 'is-active' : '' }}">Courses</a>
-      <a href="{{ route('admission') }}" class="mobile-nav__link {{ request()->is('admission') ? 'is-active' : '' }}">Admission</a>
+      <a href="{{ url('/') }}"
+         class="mobile-nav__link {{ request()->is('/') ? 'is-active' : '' }}">
+        Home
+      </a>
+
+      <a href="{{ route('fee') }}"
+         class="mobile-nav__link {{ request()->routeIs('fee') ? 'is-active' : '' }}">
+        Fee
+      </a>
+
+      <a href="{{ route('faculty') }}"
+         class="mobile-nav__link {{ request()->routeIs('faculty') ? 'is-active' : '' }}">
+        Faculty
+      </a>
+
+      <a href="{{ route('vision') }}"
+         class="mobile-nav__link {{ request()->routeIs('vision') ? 'is-active' : '' }}">
+        Our Vision
+      </a>
+
+      <a href="{{ route('computer.courses') }}"
+         class="mobile-nav__link {{ request()->routeIs('computer.courses') ? 'is-active' : '' }}">
+        Courses
+      </a>
+
+      <a href="{{ route('admission') }}"
+         class="mobile-nav__link {{ request()->routeIs('admission') ? 'is-active' : '' }}">
+        Admission
+      </a>
 
       @auth
         <a href="{{ route('admin.dashboard') }}" class="mobile-nav__btn">Dashboard</a>
@@ -102,8 +160,8 @@
   .brand__text{ line-height:1.2; display:flex; flex-direction:column; }
   .brand__name{ font-weight:900; color:var(--ink); font-size:clamp(18px,2.2vw,22px); }
   .brand__tag{
-    font-size:12px; 
-    color:var(--muted); 
+    font-size:12px;
+    color:var(--muted);
     font-weight:600;
     margin-top:4px;
   }
@@ -116,7 +174,10 @@
     padding:10px 14px; border-radius:12px;
     transition:.25s ease;
   }
-  .nav__link:hover, .nav__link.is-active{ color:var(--fse-blue); }
+  .nav__link:hover,
+  .nav__link.is-active{
+    color:var(--fse-blue);
+  }
 
   /* BUTTON */
   .cta{ margin-left:8px; }
