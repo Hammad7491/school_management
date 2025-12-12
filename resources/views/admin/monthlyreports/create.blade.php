@@ -159,7 +159,7 @@
           <div class="uploader">
             <img id="fileThumb" class="thumb" alt="">
             <div>
-              <strong>Click to choose a fi</strong>
+              <strong>Click to choose a file</strong>
               <div class="file-meta">PNG/JPG/WEBP/GIF or PDF, up to ~5MB</div>
               <div id="fileName" class="file-meta" style="margin-top:6px;"></div>
             </div>
