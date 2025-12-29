@@ -214,36 +214,10 @@
           </li>
         </ul>
 
-        <div class="actions">
-          <a href="{{ route('admin.vacations.index', ['status' => 'pending']) }}" class="btnx">
-            <iconify-icon icon="mdi:clipboard-list-outline"></iconify-icon> Review Vacations
-          </a>
-          <a href="{{ route('admin.notifications.index') }}" class="btnx">
-            <iconify-icon icon="mdi:bullhorn-outline"></iconify-icon> Manage Notifications
-          </a>
-        </div>
+       
       </div>
 
-      {{-- Quick Links --}}
-      <div class="cardx">
-        <h3>Quick Links</h3>
-        <div class="quick">
-          <div class="chips">
-            <a class="chip" href="{{ route('students.index') }}">
-              <iconify-icon icon="mdi:account-multiple-outline"></iconify-icon> Students
-            </a>
-            <a class="chip" href="{{ route('students.create') }}">
-              <iconify-icon icon="mdi:account-plus-outline"></iconify-icon> Add Student
-            </a>
-            <a class="chip" href="{{ route('classes.index') }}">
-              <iconify-icon icon="mdi:school-outline"></iconify-icon> Classes
-            </a>
-            <a class="chip" href="{{ route('courses.index') }}">
-              <iconify-icon icon="mdi:book-open-variant-outline"></iconify-icon> Courses
-            </a>
-          </div>
-        </div>
-      </div>
+     
     </div>
 
   </div>
