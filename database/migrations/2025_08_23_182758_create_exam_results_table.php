@@ -1,10 +1,12 @@
 <?php
+// database/migrations/2025_08_23_182758_create_exam_results_table.php
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration {
+return new class extends Migration 
+{
     public function up(): void
     {
         Schema::create('exam_results', function (Blueprint $table) {
@@ -14,7 +16,6 @@ return new class extends Migration {
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
 
             // Term & scope
-            // (Assumes exam_terms table exists; you migrated it already)
             $table->foreignId('term_id')->constrained('exam_terms')->cascadeOnDelete();
 
             // Class/Course scope (either can be used, or both null if you decide later)
@@ -27,6 +28,9 @@ return new class extends Migration {
 
             // SUBJECT AS TEXT (no FK to subjects to keep CSV flexible across classes)
             $table->string('subject', 150);
+
+            // SUBJECT ID (optional FK to subjects table)
+            $table->unsignedBigInteger('subject_id')->nullable();
 
             // Marks
             $table->unsignedInteger('total_marks');      // e.g., 100
@@ -43,6 +47,12 @@ return new class extends Migration {
             $table->text('remarks')->nullable();
 
             $table->timestamps();
+
+            // Foreign key for subject_id
+            $table->foreign('subject_id')
+                  ->references('id')
+                  ->on('subjects')
+                  ->nullOnDelete();
 
             // Helpful indexes
             $table->index(['term_id', 'class_id', 'course_id']);

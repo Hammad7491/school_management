@@ -4,19 +4,20 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Homework extends Model
 {
     use HasFactory;
 
-    // Ensure we point to the correct table name
+    // ✅ IMPORTANT: your migration creates "homeworks"
     protected $table = 'homeworks';
 
     protected $fillable = [
         'user_id',
         'class_id',
         'course_id',
+        'subject_id',
         'file_path',
         'file_name',
         'comment',
@@ -27,30 +28,23 @@ class Homework extends Model
         'day' => 'date',
     ];
 
-    /**
-     * Accessor: URL for the stored file (works if you use 'public' disk and ran storage:link)
-     */
-    public function getFileUrlAttribute(): ?string
-    {
-        return $this->file_path ? Storage::url($this->file_path) : null;
-    }
-
-    /**
-     * Relationships
-     */
-    public function user()
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
-    // Avoid 'class()' as method name; keep 'schoolClass' (matches your code)
-    public function schoolClass()
+    public function schoolClass(): BelongsTo
     {
         return $this->belongsTo(SchoolClass::class, 'class_id');
     }
 
-    public function course()
+    public function course(): BelongsTo
     {
         return $this->belongsTo(Course::class, 'course_id');
+    }
+
+    public function subject(): BelongsTo
+    {
+        return $this->belongsTo(Subject::class, 'subject_id');
     }
 }

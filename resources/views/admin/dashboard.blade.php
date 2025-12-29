@@ -4,7 +4,17 @@
 @section('content')
 @php
   use Illuminate\Support\Str;
-  $user = auth()->user();
+
+  $user  = auth()->user();
+  $stats = $stats ?? [];
+
+  $displayName = $user?->name ? Str::title($user->name) : 'Admin';
+  $initials    = $user?->name
+      ? collect(explode(' ', trim($user->name)))->filter()->map(fn($p)=>Str::upper(Str::substr($p,0,1)))->take(2)->implode('')
+      : 'A';
+
+  // If later you add a profile image column for admin user, replace this:
+  $adminPhotoUrl = null; // e.g. $user->profile_image_path ? asset('storage/'.$user->profile_image_path) : null;
 @endphp
 
 <style>
@@ -25,11 +35,49 @@
   }
   .wrap{ max-width:1200px; margin:0 auto; padding:24px 12px 72px; }
 
-  .hero{ background:var(--card); border:1px solid var(--stroke); border-radius:22px; padding:28px 24px;
-         box-shadow:0 24px 60px rgba(2,6,23,.10); margin-bottom:18px; }
+  .hero{
+    background:var(--card);
+    border:1px solid var(--stroke);
+    border-radius:22px;
+    padding:28px 24px;
+    box-shadow:0 24px 60px rgba(2,6,23,.10);
+    margin-bottom:18px;
+    position:relative;
+    overflow:hidden;
+  }
+
+  .hero-top{
+    display:flex;
+    align-items:flex-start;
+    justify-content:space-between;
+    gap:12px;
+  }
+
   .hero h1{ font-size: clamp(28px,5vw,56px); font-weight:900; line-height:1.04; margin:0; }
   .hero h1 span{ background:linear-gradient(90deg,var(--brand1),var(--brand2)); -webkit-background-clip:text; background-clip:text; color:transparent; }
   .subtle{ color:var(--muted); font-weight:600; margin-top:6px; }
+
+  /* Admin avatar */
+  .avatar{
+    width:46px;
+    height:46px;
+    border-radius:999px;
+    border:1px solid var(--stroke);
+    background:linear-gradient(135deg, rgba(106,123,255,.22), rgba(34,211,238,.20));
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-weight:900;
+    box-shadow:0 12px 28px rgba(2,6,23,.10);
+    flex:0 0 auto;
+    overflow:hidden;
+  }
+  .avatar img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    display:block;
+  }
 
   .grid{ display:grid; gap:16px; }
   .stats{ grid-template-columns: repeat(3, minmax(0,1fr)); }
@@ -88,8 +136,20 @@
 
     {{-- Welcome --}}
     <div class="hero">
-      <h1>Welcome, <span>{{ $user?->name ? Str::title($user->name) : 'Admin' }}</span></h1>
-      <div class="subtle">Here’s a quick snapshot of your activity.</div>
+      <div class="hero-top">
+        <div>
+          <h1>Welcome, <span>{{ $displayName }}</span></h1>
+          <div class="subtle">Here’s a quick snapshot of your activity.</div>
+        </div>
+
+        <div class="avatar" title="{{ $displayName }}">
+          @if($adminPhotoUrl)
+            <img src="{{ $adminPhotoUrl }}" alt="Admin Photo">
+          @else
+            {{ $initials }}
+          @endif
+        </div>
+      </div>
     </div>
 
     {{-- Top stats --}}

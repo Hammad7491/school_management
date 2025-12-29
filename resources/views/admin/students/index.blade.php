@@ -1,3 +1,4 @@
+{{-- resources/views/admin/students/index.blade.php --}}
 @extends('layouts.app')
 
 @section('content')
@@ -8,14 +9,12 @@
     --danger:#e11d48; --radius:18px;
     --ok:#10b981; --bad:#ef4444;
   }
-
   @media (prefers-color-scheme: dark){
     :root{
       --bg:#020617; --ink:#e5e7eb; --muted:#9ca3af; --card:#020817;
       --stroke:rgba(148,163,184,.35);
     }
   }
-
   .page{
     min-height:100vh;
     background:
@@ -24,13 +23,11 @@
       var(--bg);
     color:var(--ink);
   }
-
   .wrap{
-    max-width:1200px;
+    max-width:1400px;
     margin:auto;
     padding:28px 14px 72px;
   }
-
   .title{
     font-size:clamp(28px,5vw,56px);
     font-weight:900;
@@ -42,13 +39,11 @@
     background-clip:text;
     color:transparent;
   }
-
   .subtitle{
     color:var(--muted);
     font-size:13px;
     margin-top:4px;
   }
-
   .bar{
     display:flex;
     justify-content:space-between;
@@ -56,7 +51,6 @@
     flex-wrap:wrap;
     gap:14px;
   }
-
   .btn{
     border:0;
     border-radius:12px;
@@ -80,13 +74,11 @@
     transform:translateY(-1px);
     box-shadow:0 18px 50px rgba(37,99,235,.42);
   }
-
   .search-wrap{
     flex:1 1 260px;
     display:flex;
     justify-content:center;
   }
-
   .search{
     display:flex;
     align-items:center;
@@ -99,7 +91,6 @@
     width:100%;
     box-shadow:0 8px 25px rgba(15,23,42,.06);
   }
-
   .search-input{
     border:none;
     outline:none;
@@ -108,10 +99,7 @@
     color:var(--ink);
     background:transparent;
   }
-  .search-input::placeholder{
-    color:var(--muted);
-  }
-
+  .search-input::placeholder{ color:var(--muted); }
   .clear-btn{
     border:0;
     width:22px;
@@ -125,13 +113,7 @@
     background:#f3f4f6;
     color:#4b5563;
   }
-
-  .icon-magnify{
-    font-size:14px;
-    color:var(--muted);
-  }
-
-  /* Shell around table */
+  .icon-magnify{ font-size:14px; color:var(--muted); }
   .table-shell{
     margin-top:20px;
     border-radius:var(--radius);
@@ -140,7 +122,6 @@
     box-shadow:0 22px 60px rgba(15,23,42,.12);
     overflow:hidden;
   }
-
   .table-header{
     padding:12px 18px 0;
     display:flex;
@@ -151,31 +132,23 @@
     font-size:12px;
     color:var(--muted);
   }
-
-  .table-scroll{
-    /* no horizontal scroll */
-    overflow-x:visible;
-  }
-
+  .table-scroll{ overflow-x:auto; }
   .tablex{
     width:100%;
-    min-width:0;                 /* allow shrink */
+    min-width:1100px;
     border-collapse:separate;
     border-spacing:0;
     font-size:14px;
   }
-
   .tablex thead{
     background:linear-gradient(90deg,rgba(148,163,184,.15),rgba(209,213,219,.02));
   }
-
   .tablex th,
   .tablex td{
     padding:14px 16px;
     border-bottom:1px solid var(--stroke);
-    white-space:normal;          /* allow wrapping instead of forcing scroll */
+    white-space:nowrap;
   }
-
   .tablex th{
     text-align:left;
     font-size:12px;
@@ -184,16 +157,12 @@
     color:var(--muted);
     font-weight:700;
   }
-
-  .tablex tbody tr:hover{
-    background:rgba(15,23,42,.02);
-  }
-
+  .tablex tbody tr:hover{ background:rgba(15,23,42,.02); }
+  .student-name{ font-weight:600; color:var(--ink); }
+  .student-email{ color:var(--muted); font-size:13px; }
   .chip{
-    font-size:12px;
-    padding:6px 11px;
-    border-radius:999px;
-    font-weight:700;
+    font-size:12px; padding:6px 11px; border-radius:999px;
+    font-weight:700; display:inline-block;
   }
   .chip-ok{ background:rgba(16,185,129,.15); color:#047857; }
   .chip-bad{ background:rgba(239,68,68,.18); color:#b91c1c; }
@@ -211,20 +180,16 @@
     display:inline-flex;
     align-items:center;
     gap:4px;
+    white-space:nowrap;
   }
-  .btn-sm:hover{
-    background:#f9fafb;
-  }
-
+  .btn-sm:hover{ background:#f9fafb; }
   .btn-danger{
     background:#ef4444;
     color:#fff;
     border:0;
   }
-  .btn-danger:hover{
-    background:#dc2626;
-  }
-
+  .btn-danger:hover{ background:#dc2626; }
+  .actions-cell{ display:flex; gap:6px; flex-wrap:wrap; }
   .pagination-wrap{
     padding:12px 18px 16px;
     display:flex;
@@ -235,62 +200,25 @@
     font-size:12px;
     color:var(--muted);
   }
-
   .empty-state{
     padding:28px 18px;
     text-align:center;
     font-size:14px;
     color:var(--muted);
   }
-
-  /* Small screens */
   @media (max-width: 768px){
-    .wrap{
-      padding-inline:10px;
-    }
-
-    .bar{
-      align-items:flex-start;
-    }
-
-    .search-wrap{
-      order:3;
-      width:100%;
-    }
-
-    .search{
-      max-width:none;
-    }
-
-    .btn{
-      width:100%;
-      justify-content:center;
-    }
-
-    .table-shell{
-      margin-top:16px;
-      border-radius:16px;
-    }
-
+    .wrap{ padding-inline:10px; }
+    .bar{ align-items:flex-start; }
+    .search-wrap{ order:3; width:100%; }
+    .search{ max-width:none; }
+    .btn{ width:100%; justify-content:center; }
+    .table-shell{ margin-top:16px; border-radius:16px; }
+    .tablex{ min-width:900px; }
     .tablex th,
-    .tablex td{
-      padding:10px 12px;
-      font-size:13px;
-    }
-
-    /* hide download columns on very small screens for compact view */
-    .tablex th:nth-child(3),
-    .tablex td:nth-child(3),
-    .tablex th:nth-child(4),
-    .tablex td:nth-child(4){
-      display:none;
-    }
+    .tablex td{ padding:10px 12px; font-size:13px; }
   }
-
   @media (max-width:480px){
-    .title{
-      font-size:30px;
-    }
+    .title{ font-size:30px; }
   }
 </style>
 
@@ -314,19 +242,17 @@
         </form>
       </div>
 
-      <a href="{{ route('students.create') }}" class="btn btn-primary">
-        + Add Student
-      </a>
+      @can('create students')
+      <a href="{{ route('students.create') }}" class="btn btn-primary">+ Add Student</a>
+      @endcan
     </div>
 
-    {{-- Success --}}
     @if(session('success'))
-      <div class="alert alert-success mt-3" style="border-radius:12px;">
+      <div class="alert alert-success mt-3" style="border-radius:12px;padding:12px 18px;background:rgba(16,185,129,.15);color:#047857;border:1px solid rgba(16,185,129,.3);">
         {{ session('success') }}
       </div>
     @endif
 
-    {{-- Table --}}
     <div class="table-shell mt-3">
       <div class="table-header">
         <span>Students list</span>
@@ -339,53 +265,74 @@
             <tr>
               <th>#</th>
               <th>Reg #</th>
-              <th>Download Photo</th>
-              <th>Download B-Form</th>
-              <th>Name</th>
+              <th>Student Name</th>
               <th>Email</th>
               <th>Class</th>
               <th>Course</th>
+              <th>Photo</th>
+              <th>B-Form</th>
               <th>Status</th>
               <th>Actions</th>
             </tr>
           </thead>
 
           <tbody>
-            @php $start = $students->firstItem(); @endphp
+            @php $start = $students->firstItem() ?? 1; @endphp
 
             @forelse($students as $s)
               <tr data-row="student">
                 <td>{{ $start + $loop->index }}</td>
-                <td>{{ $s->reg_no }}</td>
+                <td><strong>{{ $s->reg_no }}</strong></td>
 
-                {{-- DOWNLOAD PROFILE PHOTO --}}
+                <td data-col="name">
+                  <div class="student-name">{{ $s->name }}</div>
+                </td>
+
+                <td data-col="email">
+                  <div class="student-email">{{ $s->email }}</div>
+                </td>
+
+                <td>
+                  @if($s->schoolClass)
+                    <span class="chip" style="background:rgba(106,123,255,.15);color:#4338ca;">
+                      {{ $s->schoolClass->name }}
+                    </span>
+                  @else
+                    <span style="color:var(--muted);">—</span>
+                  @endif
+                </td>
+
+                <td>
+                  @if($s->course)
+                    <span class="chip" style="background:rgba(34,211,238,.15);color:#0e7490;">
+                      {{ $s->course->name }}
+                    </span>
+                  @else
+                    <span style="color:var(--muted);">—</span>
+                  @endif
+                </td>
+
+                {{-- ✅ FIXED: DOWNLOAD PROFILE PHOTO (forced download) --}}
                 <td>
                   @if($s->profile_image_path)
-                    <a class="btn-sm" href="{{ asset('storage/'.$s->profile_image_path) }}" download>
-                      Download
+                    <a class="btn-sm" href="{{ route('students.photo.download', $s->id) }}">
+                      📥 Photo
                     </a>
                   @else
-                    —
+                    <span style="color:var(--muted);">—</span>
                   @endif
                 </td>
 
-                {{-- DOWNLOAD B-FORM --}}
+                {{-- ✅ B-FORM download (forced download) --}}
                 <td>
                   @if($s->b_form_image_path)
-                    <a class="btn-sm" href="{{ route('students.bform.download',$s->id) }}">
-                      Download
+                    <a class="btn-sm" href="{{ route('students.bform.download', $s->id) }}">
+                      📥 B-Form
                     </a>
                   @else
-                    —
+                    <span style="color:var(--muted);">—</span>
                   @endif
                 </td>
-
-                <td data-col="name">{{ $s->name }}</td>
-                <td data-col="email">{{ $s->email }}</td>
-
-                {{-- Class & Course --}}
-                <td>{{ $s->schoolClass->name ?? '—' }}</td>
-                <td>{{ $s->course->name ?? '—' }}</td>
 
                 <td>
                   @if ($s->status === 1)
@@ -398,25 +345,29 @@
                 </td>
 
                 <td>
-                  <a href="{{ route('students.edit',$s->id) }}" class="btn-sm">
-                    Edit
-                  </a>
+                  <div class="actions-cell">
+                    @can('edit students')
+                      <a href="{{ route('students.edit', $s->id) }}" class="btn-sm">✏️ Edit</a>
+                    @endcan
 
-                  <form action="{{ route('students.destroy',$s->id) }}"
-                        method="POST"
-                        style="display:inline"
-                        onsubmit="return confirm('Delete this student?');">
-                    @csrf @method('DELETE')
-                    <button class="btn-sm btn-danger" type="submit">
-                      Delete
-                    </button>
-                  </form>
+                    @can('delete students')
+                      <form action="{{ route('students.destroy', $s->id) }}"
+                            method="POST"
+                            style="display:inline"
+                            onsubmit="return confirm('Delete student {{ $s->name }}?');">
+                        @csrf @method('DELETE')
+                        <button class="btn-sm btn-danger" type="submit">🗑️ Delete</button>
+                      </form>
+                    @endcan
+                  </div>
                 </td>
               </tr>
             @empty
               <tr>
                 <td colspan="10" class="empty-state">
-                  No students found yet. Click “Add Student” to create the first one.
+                  <div style="font-size:48px;margin-bottom:12px;">📚</div>
+                  <div style="font-size:16px;font-weight:700;margin-bottom:6px;">No students found</div>
+                  <div>Click "Add Student" to create the first one.</div>
                 </td>
               </tr>
             @endforelse
@@ -424,14 +375,9 @@
         </table>
       </div>
 
-      {{-- Pagination --}}
       <div class="pagination-wrap">
-        <div>
-          Page {{ $students->currentPage() }} of {{ $students->lastPage() }}
-        </div>
-        <div>
-          {{ $students->links() }}
-        </div>
+        <div>Page {{ $students->currentPage() }} of {{ $students->lastPage() }}</div>
+        <div>{{ $students->links() }}</div>
       </div>
     </div>
 
@@ -448,13 +394,15 @@
   function norm(v){ return (v || "").toLowerCase().trim(); }
 
   function filter(){
-    if(!q) return;
-    let term    = norm(q.value);
+    let term = norm(q.value);
     let visible = 0;
 
     rows.forEach(tr => {
-      const name  = norm(tr.querySelector('[data-col="name"]').textContent);
-      const email = norm(tr.querySelector('[data-col="email"]').textContent);
+      const nameEl  = tr.querySelector('[data-col="name"]');
+      const emailEl = tr.querySelector('[data-col="email"]');
+
+      const name  = nameEl ? norm(nameEl.textContent) : '';
+      const email = emailEl ? norm(emailEl.textContent) : '';
 
       const match = name.includes(term) || email.includes(term);
       tr.style.display = match ? "" : "none";
@@ -465,16 +413,11 @@
     clearBtn.style.display = term ? "flex" : "none";
   }
 
-  if(q){
-    q.addEventListener('input', filter);
-  }
-  if(clearBtn){
-    clearBtn.addEventListener('click', () => {
-      q.value = '';
-      filter();
-    });
-  }
+  q.addEventListener('input', filter);
+  clearBtn.addEventListener('click', () => {
+    q.value = '';
+    filter();
+  });
 })();
 </script>
-
 @endsection

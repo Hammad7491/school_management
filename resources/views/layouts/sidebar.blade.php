@@ -1,3 +1,4 @@
+{{-- resources/views/layouts/partials/sidebar.blade.php --}}
 <aside class="sidebar">
     <button type="button" class="sidebar-close-btn">
         <iconify-icon icon="radix-icons:cross-2"></iconify-icon>
@@ -34,7 +35,7 @@
             <li class="sidebar-menu-group-title">Users</li>
             <li class="dropdown">
                 <a href="javascript:void(0)">
-                    <iconify-icon icon="solar:home-smile-angle-outline" class="menu-icon"></iconify-icon>
+                    <iconify-icon icon="solar:users-group-rounded-outline" class="menu-icon"></iconify-icon>
                     <span>User Management</span>
                 </a>
                 <ul class="sidebar-submenu">
@@ -97,32 +98,86 @@
             </li>
             @endcanany
 
-          @canany(['create courses','view courses'])
-<li class="sidebar-menu-group-title">Courses</li>
-<li class="dropdown">
-    <a href="javascript:void(0)">
-        <iconify-icon icon="ph:book-open-text-duotone" class="menu-icon"></iconify-icon>
-        <span>Course Management</span>
-    </a>
-    <ul class="sidebar-submenu">
-        @can('create courses')
-        <li>
-            <a href="{{ route('courses.create') }}">
-                <i class="ri-circle-fill circle-icon text-primary-600 w-auto"></i> Add Course
-            </a>
-        </li>
-        @endcan
-        @can('view courses')
-        <li>
-            <a href="{{ route('courses.index') }}">
-                <i class="ri-circle-fill circle-icon text-primary-600 w-auto"></i> Courses List
-            </a>
-        </li>
-        @endcan
-    </ul>
-</li>
-@endcanany
+            {{-- ✅ Subjects (NEW) --}}
+            @canany(['create subjects','view subjects'])
+            <li class="sidebar-menu-group-title">Subjects</li>
+            <li class="dropdown">
+                <a href="javascript:void(0)">
+                    <iconify-icon icon="mdi:book-open-page-variant-outline" class="menu-icon"></iconify-icon>
+                    <span>Subject Management</span>
+                </a>
+                <ul class="sidebar-submenu">
+                    @can('create subjects')
+                    <li>
+                        <a href="{{ route('subjects.create') }}">
+                            <i class="ri-circle-fill circle-icon text-primary-600 w-auto"></i> Add Subject
+                        </a>
+                    </li>
+                    @endcan
+                    @can('view subjects')
+                    <li>
+                        <a href="{{ route('subjects.index') }}">
+                            <i class="ri-circle-fill circle-icon text-primary-600 w-auto"></i> Subjects List
+                        </a>
+                    </li>
+                    @endcan
+                </ul>
+            </li>
+            @endcanany
 
+            {{-- Courses --}}
+            @canany(['create courses','view courses'])
+            <li class="sidebar-menu-group-title">Courses</li>
+            <li class="dropdown">
+                <a href="javascript:void(0)">
+                    <iconify-icon icon="ph:book-open-text-duotone" class="menu-icon"></iconify-icon>
+                    <span>Course Management</span>
+                </a>
+                <ul class="sidebar-submenu">
+                    @can('create courses')
+                    <li>
+                        <a href="{{ route('courses.create') }}">
+                            <i class="ri-circle-fill circle-icon text-primary-600 w-auto"></i> Add Course
+                        </a>
+                    </li>
+                    @endcan
+                    @can('view courses')
+                    <li>
+                        <a href="{{ route('courses.index') }}">
+                            <i class="ri-circle-fill circle-icon text-primary-600 w-auto"></i> Courses List
+                        </a>
+                    </li>
+                    @endcan
+                </ul>
+            </li>
+            @endcanany
+
+            {{-- ✅ Teacher Assignments (NEW) --}}
+            @canany(['create teacher-assignments','view teacher-assignments'])
+            <li class="sidebar-menu-group-title">Teacher Assignments</li>
+            <li class="dropdown">
+                <a href="javascript:void(0)">
+                    <iconify-icon icon="mdi:account-tie" class="menu-icon"></iconify-icon>
+                    <span>Teacher Assignment</span>
+                </a>
+                <ul class="sidebar-submenu">
+                    @can('create teacher-assignments')
+                    <li>
+                        <a href="{{ route('admin.teacher-assignments.create') }}">
+                            <i class="ri-circle-fill circle-icon text-primary-600 w-auto"></i> Assign Teacher
+                        </a>
+                    </li>
+                    @endcan
+                    @can('view teacher-assignments')
+                    <li>
+                        <a href="{{ route('admin.teacher-assignments.index') }}">
+                            <i class="ri-circle-fill circle-icon text-primary-600 w-auto"></i> Assignments List
+                        </a>
+                    </li>
+                    @endcan
+                </ul>
+            </li>
+            @endcanany
 
             {{-- Students --}}
             @canany(['create students','view students'])
@@ -250,7 +305,7 @@
             </li>
             @endcanany
 
-            {{-- ✅ Vacation / Leave Requests (NEW) --}}
+            {{-- Vacation / Leave Requests --}}
             @canany(['view vacationrequests','approve vacationrequests','edit vacationrequests','delete vacationrequests'])
             <li class="sidebar-menu-group-title">Leave Requests</li>
             <li class="dropdown">
@@ -270,62 +325,52 @@
             </li>
             @endcanany
 
+            {{-- Admission --}}
+            @canany(['create admissions','view admissions'])
+            <li class="sidebar-menu-group-title">Admission</li>
+            <li class="dropdown">
+                <a href="javascript:void(0)">
+                    <iconify-icon icon="mdi:account-plus-outline" class="menu-icon"></iconify-icon>
+                    <span>Admission Management</span>
+                </a>
+                <ul class="sidebar-submenu">
+                    @can('view admissions')
+                    <li>
+                        <a href="{{ route('admissions.index') }}">
+                            <i class="ri-circle-fill circle-icon text-primary-600 w-auto"></i> Admission List
+                        </a>
+                    </li>
+                    @endcan
+                </ul>
+            </li>
+            @endcanany
 
-
-{{-- Admission --}}
-@canany(['create admissions','view admissions'])
-<li class="sidebar-menu-group-title">Admission</li>
-<li class="dropdown">
-    <a href="javascript:void(0)">
-        <iconify-icon icon="mdi:account-plus-outline" class="menu-icon"></iconify-icon>
-        <span>Admission Management</span>
-    </a>
-    <ul class="sidebar-submenu">
-        @can('view admissions')
-        <li>
-            <a href="{{ route('admissions.index') }}">
-                <i class="ri-circle-fill circle-icon text-primary-600 w-auto"></i> Admission List
-            </a>
-        </li>
-        @endcan
-    </ul>
-</li>
-@endcanany
-
-
-
-
-
-
-            {{-- ✅ Notifications --}}
-@canany(['create notifications','view notifications'])
-<li class="sidebar-menu-group-title">Notifications</li>
-<li class="dropdown">
-    <a href="javascript:void(0)">
-        <iconify-icon icon="iconoir:bell" class="menu-icon"></iconify-icon>
-        <span>Notifications</span>
-    </a>
-    <ul class="sidebar-submenu">
-        @can('create notifications')
-        <li>
-            <a href="{{ route('admin.notifications.create') }}">
-                <i class="ri-circle-fill circle-icon text-primary-600 w-auto"></i> Create Notification
-            </a>
-        </li>
-        @endcan
-        @can('view notifications')
-        <li>
-            <a href="{{ route('admin.notifications.index') }}">
-                <i class="ri-circle-fill circle-icon text-primary-600 w-auto"></i> Notifications List
-            </a>
-        </li>
-        @endcan
-    </ul>
-</li>
-@endcanany
-
-
-            
+            {{-- Notifications --}}
+            @canany(['create notifications','view notifications'])
+            <li class="sidebar-menu-group-title">Notifications</li>
+            <li class="dropdown">
+                <a href="javascript:void(0)">
+                    <iconify-icon icon="iconoir:bell" class="menu-icon"></iconify-icon>
+                    <span>Notifications</span>
+                </a>
+                <ul class="sidebar-submenu">
+                    @can('create notifications')
+                    <li>
+                        <a href="{{ route('admin.notifications.create') }}">
+                            <i class="ri-circle-fill circle-icon text-primary-600 w-auto"></i> Create Notification
+                        </a>
+                    </li>
+                    @endcan
+                    @can('view notifications')
+                    <li>
+                        <a href="{{ route('admin.notifications.index') }}">
+                            <i class="ri-circle-fill circle-icon text-primary-600 w-auto"></i> Notifications List
+                        </a>
+                    </li>
+                    @endcan
+                </ul>
+            </li>
+            @endcanany
 
         </ul>
     </div>

@@ -7,7 +7,6 @@
   $className  = $student->schoolClass->name ?? null;
   $courseName = $student->course->name ?? null;
 
-  // Safe inline fallbacks (if controller didn’t already pass these)
   $homeworksCount = $homeworksCount ?? (function() use ($student){
       if(!$student->class_id && !$student->course_id) return 0;
       return \App\Models\Homework::where(function($q) use ($student){
@@ -17,6 +16,14 @@
   })();
 
   $hasMonthlyReport = $hasMonthlyReport ?? \App\Models\MonthlyReport::where('reg_no', $student->reg_no)->exists();
+
+  $studentPhoto = $student->profile_image_url;
+
+  $initials = collect(explode(' ', trim($student->name)))
+      ->filter()
+      ->map(fn($p) => Str::upper(Str::substr($p, 0, 1)))
+      ->take(2)
+      ->implode('') ?: 'S';
 @endphp
 
 <style>
@@ -40,20 +47,16 @@
       var(--bg);
     color:var(--ink);
   }
-
-  .wrap{
-    max-width:1100px;
-    margin:0 auto;
-    padding:20px 12px 72px;
-  }
+  .wrap{ max-width:1100px; margin:0 auto; padding:20px 12px 72px; }
 
   .cardx{
     background:var(--card);
     border:1px solid var(--stroke);
     border-radius:var(--radius);
     box-shadow:0 18px 45px rgba(2,6,23,.08);
+    overflow:hidden;
   }
-  .cardx .body{ padding:16px; }
+  .cardx .body{ padding:18px; }
   .cardx .footer{
     padding:12px 16px;
     border-top:1px solid var(--stroke);
@@ -62,39 +65,93 @@
     gap:10px;
   }
 
-  .hero-header{
-    display:flex;
+  /* ✅ NEW HERO GRID (THIS IS THE MAIN FIX) */
+  .hero-grid{
+    display:grid;
+    grid-template-columns: 120px 1fr auto;  /* photo | text | pill */
+    gap:16px;
     align-items:center;
-    justify-content:space-between;
-    gap:12px;
-    flex-wrap:wrap;
+  }
+  @media (max-width: 760px){
+    .hero-grid{
+      grid-template-columns: 90px 1fr;
+      grid-template-areas:
+        "photo text"
+        "pill  pill";
+      align-items:start;
+    }
+    .hero-pill{ grid-area:pill; justify-self:start; margin-top:6px; }
+    .hero-photo{ grid-area:photo; }
+    .hero-text{ grid-area:text; }
   }
 
-  .title{
-    font-size:clamp(24px,5vw,40px);
+  /* ✅ BIG PHOTO */
+  .hero-photo{
+    width:110px;
+    height:110px;
+    border-radius:18px; /* square with rounded corners (premium) */
+    overflow:hidden;
+    border:2px solid rgba(106,123,255,.22);
+    background:linear-gradient(135deg, rgba(106,123,255,.18), rgba(34,211,238,.18));
+    box-shadow:0 16px 38px rgba(2,6,23,.16);
+    position:relative;
+    flex:0 0 auto;
+  }
+  .hero-photo img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    display:block;
+  }
+  .hero-photo .fallback{
+    width:100%;
+    height:100%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-weight:900;
+    font-size:26px;
+    color:#fff;
+  }
+
+  /* ✅ SMALLER, CLEANER WELCOME */
+  .hero-text .welcome{
+    font-size: clamp(20px, 2.6vw, 30px);
+    font-weight:900;
+    letter-spacing:-0.02em;
+    margin:0;
+    line-height:1.1;
+  }
+  .hero-text .name{
+    margin-top:6px;
+    font-size: clamp(26px, 3.2vw, 40px); /* controlled (NOT TOO BIG) */
     font-weight:900;
     line-height:1.05;
-    margin:4px 0 6px;
-  }
-  .title span{
     background:linear-gradient(90deg,var(--brand1),var(--brand2));
     -webkit-background-clip:text;
     background-clip:text;
     color:transparent;
   }
-  .pill{
+  .hero-text .sub{
+    color:var(--muted);
+    margin-top:6px;
+    font-size:14px;
+    font-weight:700;
+  }
+
+  .hero-pill{
     display:inline-flex;
     align-items:center;
     gap:.5rem;
-    padding:6px 12px;
+    padding:8px 12px;
     border-radius:999px;
     border:1px solid var(--stroke);
-    font-weight:800;
+    font-weight:900;
     font-size:12px;
     color:var(--muted);
     white-space:nowrap;
+    justify-self:end;
   }
-  .sub{ color:var(--muted); font-size:14px; }
 
   .btn{
     border:0;
@@ -103,6 +160,10 @@
     font-weight:900;
     cursor:pointer;
     font-size:14px;
+    text-decoration:none;
+    display:inline-flex;
+    justify-content:center;
+    align-items:center;
   }
   .btn-outline{
     background:transparent;
@@ -114,60 +175,28 @@
     background:linear-gradient(90deg,var(--brand1),var(--brand2));
     box-shadow:0 10px 22px rgba(106,123,255,.35);
   }
-  .btn-primary:hover{
-    filter:brightness(1.05);
-    transform:translateY(-1px);
-  }
-
-  /* Quick actions responsive layout */
   .btn-cta{
     text-align:center;
     flex:1 1 calc(25% - 8px);
     min-width:140px;
   }
-  @media (max-width:991.98px){
-    .btn-cta{ flex:1 1 calc(33.333% - 8px); }
-  }
-  @media (max-width:767.98px){
-    .btn-cta{ flex:1 1 calc(50% - 8px); }
-  }
+  @media (max-width:991.98px){ .btn-cta{ flex:1 1 calc(33.333% - 8px); } }
+  @media (max-width:767.98px){ .btn-cta{ flex:1 1 calc(50% - 8px); } }
   @media (max-width:575.98px){
-    .cardx .footer{
-      flex-direction:column;
-      align-items:stretch;
-    }
-    .btn-cta{
-      flex:1 1 100%;
-      width:100%;
-    }
+    .cardx .footer{ flex-direction:column; }
+    .btn-cta{ width:100%; }
+    .hero-photo{ width:86px; height:86px; border-radius:16px; }
   }
 
   .cards{
     display:grid;
     gap:14px;
     grid-template-columns:1fr;
-  }
-  @media (min-width:768px){
-    .cards{ grid-template-columns:repeat(12, 1fr); }
+    margin-top:14px;
   }
 
-  .label{
-    font-weight:800;
-    color:var(--muted);
-    margin-bottom:6px;
-    font-size:13px;
-  }
-  .metric{
-    font-size:clamp(20px,4vw,26px);
-    font-weight:900;
-  }
-  .stat{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    gap:10px;
-    flex-wrap:wrap;
-  }
+  .label{ font-weight:800; color:var(--muted); margin-bottom:6px; font-size:13px; }
+  .metric{ font-size:clamp(20px,4vw,26px); font-weight:900; }
 
   .badge{
     font-weight:800;
@@ -178,7 +207,6 @@
   .bg-ok{ background:rgba(16,185,129,.12); color:#065f46; }
   .bg-warn{ background:rgba(245,158,11,.12); color:#7c2d12; }
   .bg-danger{ background:rgba(225,29,72,.12); color:#7f1d1d; }
-
   @media (prefers-color-scheme: dark){
     .bg-ok{ color:#bbf7d0; }
     .bg-warn{ color:#fde68a; }
@@ -189,20 +217,29 @@
 <div class="page">
   <div class="wrap">
 
-    {{-- Header / welcome --}}
-    <div class="cardx" style="margin-bottom:14px;">
-      <div class="body hero-header">
-        <div>
-          <h1 class="title">
-            Welcome,
-            <span>{{ Str::headline($student->name) }}</span>
-          </h1>
-          <div class="sub">Reg #: <strong>{{ $student->reg_no }}</strong></div>
+    <div class="cardx">
+      <div class="body">
+        <div class="hero-grid">
+
+          {{-- ✅ BIG SQUARE PHOTO --}}
+          <div class="hero-photo" title="Profile Photo">
+            <img id="studentAvatarImg" src="{{ $studentPhoto }}" alt="{{ $student->name }}" style="display:none;">
+            <div id="studentAvatarFallback" class="fallback">{{ $initials }}</div>
+          </div>
+
+          {{-- ✅ TEXT --}}
+          <div class="hero-text">
+            <div class="welcome">Welcome,</div>
+            <div class="name">{{ Str::headline($student->name) }}</div>
+            <div class="sub">Reg #: <strong>{{ $student->reg_no }}</strong></div>
+          </div>
+
+          {{-- ✅ PILL --}}
+          <div class="hero-pill">Student Dashboard</div>
+
         </div>
-        <div class="pill">Student Dashboard</div>
       </div>
 
-      {{-- Single quick-actions row (the only CTAs) --}}
       <div class="footer" aria-label="Quick actions">
         <a class="btn btn-outline btn-cta" href="{{ route('student.homeworks') }}">View Homework</a>
         <a class="btn btn-outline btn-cta" href="{{ route('student.exams') }}">View Exams</a>
@@ -212,72 +249,71 @@
     </div>
 
     <div class="cards">
-
-      {{-- Class (only if enrolled) --}}
       @if($className)
-        <div class="cardx" style="grid-column: span 12;">
-          <div class="body">
-            <div class="label">Class</div>
-            <div class="metric">{{ $className }}</div>
-          </div>
-        </div>
+        <div class="cardx"><div class="body">
+          <div class="label">Class</div>
+          <div class="metric">{{ $className }}</div>
+        </div></div>
       @endif
 
-      {{-- Course (only if enrolled) --}}
       @if($courseName)
-        <div class="cardx" style="grid-column: span 12;">
-          <div class="body">
-            <div class="label">Course</div>
-            <div class="metric">{{ $courseName }}</div>
-          </div>
-        </div>
+        <div class="cardx"><div class="body">
+          <div class="label">Course</div>
+          <div class="metric">{{ $courseName }}</div>
+        </div></div>
       @endif
 
-      {{-- Status --}}
-      <div class="cardx" style="grid-column: span 12;">
-        <div class="body stat">
-          <div>
-            <div class="label">Status</div>
-            @if ($student->status === 1)
-              <span class="badge bg-ok">Approved</span>
-            @elseif ($student->status === 0)
-              <span class="badge bg-danger">Rejected</span>
-            @else
-              <span class="badge bg-warn">Pending</span>
-            @endif
-          </div>
-          <div class="sub">Use the quick actions above to navigate.</div>
-        </div>
-      </div>
+      <div class="cardx"><div class="body">
+        <div class="label">Status</div>
+        @if ($student->status === 1)
+          <span class="badge bg-ok">Approved</span>
+        @elseif ($student->status === 0)
+          <span class="badge bg-danger">Rejected</span>
+        @else
+          <span class="badge bg-warn">Pending</span>
+        @endif
+        <div class="sub" style="margin-top:8px;">Use the quick actions above to navigate.</div>
+      </div></div>
 
-      {{-- Homework metric --}}
-      <div class="cardx" style="grid-column: span 12;">
-        <div class="body">
-          <div class="label">Homework Assigned</div>
-          <div class="metric">{{ $homeworksCount }}</div>
-          <div class="sub" style="margin-top:4px;">
-            for your
-            {{ $className && $courseName ? 'class / course' : ($className ? 'class' : ($courseName ? 'course' : 'profile')) }}
-          </div>
-        </div>
-      </div>
+      <div class="cardx"><div class="body">
+        <div class="label">Homework Assigned</div>
+        <div class="metric">{{ $homeworksCount }}</div>
+      </div></div>
 
-      {{-- Monthly report status --}}
-      <div class="cardx" style="grid-column: span 12;">
-        <div class="body">
-          <div class="label">Monthly Report</div>
-          @if($hasMonthlyReport)
-            <div class="metric">Available</div>
-            <div class="sub" style="margin-top:4px;">A report has been uploaded for your REG #</div>
-          @else
-            <div class="metric">Not Uploaded</div>
-            <div class="sub" style="margin-top:4px;">No report found for your REG # yet</div>
-          @endif
-        </div>
-      </div>
-
+      <div class="cardx"><div class="body">
+        <div class="label">Monthly Report</div>
+        @if($hasMonthlyReport)
+          <div class="metric">Available</div>
+          <div class="sub" style="margin-top:4px;">A report has been uploaded for your REG #</div>
+        @else
+          <div class="metric">Not Uploaded</div>
+          <div class="sub" style="margin-top:4px;">No report found for your REG # yet</div>
+        @endif
+      </div></div>
     </div>
 
   </div>
 </div>
+
+<script>
+(function(){
+  const img = document.getElementById('studentAvatarImg');
+  const fb  = document.getElementById('studentAvatarFallback');
+  if(!img) return;
+
+  img.onload = function(){
+    img.style.display = 'block';
+    if (fb) fb.style.display = 'none';
+  };
+
+  img.onerror = function(){
+    img.style.display = 'none';
+    if (fb) fb.style.display = 'flex';
+  };
+
+  if (img.complete && img.naturalWidth > 0) img.onload();
+  else if (img.complete) img.onerror();
+})();
+</script>
+
 @endsection

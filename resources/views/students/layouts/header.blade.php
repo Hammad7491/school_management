@@ -1,9 +1,48 @@
 <div class="navbar-header">
   @php
+      use Illuminate\Support\Facades\Storage;
+      use Illuminate\Support\Str;
+
       $user      = auth()->user();
       $userName  = trim($user->name ?? 'User');
       $userLabel = strtoupper($userName);
       $initial   = mb_strtoupper(mb_substr($userName, 0, 1));
+
+      // ✅ Find student record for this logged-in user (try both keys)
+      $student = \App\Models\Student::where('student_id', $user->id)->first();
+      if (!$student) {
+          $student = \App\Models\Student::where('user_id', $user->id)->first();
+      }
+
+      // ✅ Normalize any stored path to a correct public URL
+      $headerPhotoUrl = null;
+      if ($student && !empty($student->profile_image_path)) {
+          $p = trim((string) $student->profile_image_path);
+
+          // If it's already a full URL
+          if (Str::startsWith($p, ['http://', 'https://', '//'])) {
+              $headerPhotoUrl = $p;
+          } else {
+              // Remove leading slashes
+              $p = ltrim($p, '/');
+
+              // If someone stored: "storage/profiles/xxx.jpg" => make it "profiles/xxx.jpg"
+              if (Str::startsWith($p, 'storage/')) {
+                  $p = Str::after($p, 'storage/');
+              }
+
+              // If someone stored: "public/profiles/xxx.jpg" => make it "profiles/xxx.jpg"
+              if (Str::startsWith($p, 'public/')) {
+                  $p = Str::after($p, 'public/');
+              }
+
+              // Now build: /storage/profiles/xxx.jpg
+              $headerPhotoUrl = Storage::disk('public')->url($p);
+
+              // Cache-buster to avoid browser showing old/broken cached image
+              $headerPhotoUrl .= (str_contains($headerPhotoUrl, '?') ? '&' : '?') . 'v=' . time();
+          }
+      }
   @endphp
 
   <style>
@@ -23,6 +62,8 @@
           box-shadow:0 10px 26px rgba(15,23,42,.16);
           background:linear-gradient(135deg,#e0e7ff,#bfdbfe);
       }
+
+      /* ✅ Avatar always shows initial first */
       .student-topbar-avatar{
           width:32px;
           height:32px;
@@ -33,9 +74,30 @@
           align-items:center;
           justify-content:center;
           font-size:14px;
-          font-weight:700;
+          font-weight:800;
           box-shadow:0 0 0 2px #e5e7eb;
+          overflow:hidden;
+          flex:0 0 auto;
+          position:relative;
       }
+      .student-topbar-avatar .initial{
+          position:absolute;
+          inset:0;
+          display:flex;
+          align-items:center;
+          justify-content:center;
+          z-index:1;
+      }
+      .student-topbar-avatar img{
+          position:absolute;
+          inset:0;
+          width:100%;
+          height:100%;
+          object-fit:cover;
+          display:none;          /* hidden until loaded */
+          z-index:2;
+      }
+
       .student-topbar-name{
           font-size:14px;
           font-weight:700;
@@ -62,9 +124,7 @@
 
       @media (max-width:768px){
           .student-topbar-name{ max-width:120px; font-size:13px; }
-          .student-topbar-pill{
-              padding:6px 10px 6px 6px;
-          }
+          .student-topbar-pill{ padding:6px 10px 6px 6px; }
       }
   </style>
 
@@ -96,7 +156,6 @@
 
             <iconify-icon icon="iconoir:bell" class="text-xl"></iconify-icon>
 
-            {{-- OUTSIDE badge --}}
             <span id="notifBadge"
                   class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger {{ ($headerUnreadCount ?? 0) > 0 ? '' : 'd-none' }}"
                   style="font-size:.65rem;">
@@ -146,7 +205,7 @@
         </div>
         {{-- /Notifications --}}
 
-        {{-- Profile (clean pill with name + logout only) --}}
+        {{-- ✅ Profile pill with photo --}}
         <div class="dropdown">
           <button
               class="student-topbar-pill border-0 bg-transparent"
@@ -156,7 +215,14 @@
               aria-expanded="false">
 
               <span class="student-topbar-avatar">
-                  {{ $initial }}
+                  <span class="initial">{{ $initial }}</span>
+
+                  @if($headerPhotoUrl)
+                    <img
+                      id="topbarStudentImg"
+                      src="{{ $headerPhotoUrl }}"
+                      alt="Profile Photo">
+                  @endif
               </span>
 
               <div class="d-flex flex-column align-items-start">
@@ -179,12 +245,6 @@
             <a href="{{ route('logout') }}"
                class="dropdown-item d-flex align-items-center gap-2 text-danger fw-semibold"
                onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-              <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"
-                   stroke-linecap="round" stroke-linejoin="round">
-                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
-                <polyline points="16 17 21 12 16 7"/>
-                <line x1="21" y1="12" x2="9" y2="12"/>
-              </svg>
               Logout
             </a>
 
@@ -199,39 +259,46 @@
   </div>
 </div>
 
-{{-- Mark latest notifications as read when dropdown opens --}}
 <script>
 document.addEventListener('DOMContentLoaded', function () {
+  const img = document.getElementById('topbarStudentImg');
+  if (img) {
+    img.onload = () => { img.style.display = 'block'; };
+    img.onerror = () => { img.remove(); }; // initial stays visible
+    if (img.complete && img.naturalWidth > 0) img.onload();
+  }
+
+  // Notifications (UNCHANGED)
   const btn   = document.getElementById('notifBtn');
   const badge = document.getElementById('notifBadge');
   const headerCount = document.getElementById('notifHeaderCount');
 
-  btn.addEventListener('shown.bs.dropdown', function () {
-    // Optimistic UI clear
-    btn.classList.remove('bg-danger','text-white');
-    btn.classList.add('bg-neutral-200');
-    if (badge) { badge.classList.add('d-none'); badge.textContent = '0'; }
-    if (headerCount) headerCount.textContent = '0';
+  if (btn) {
+    btn.addEventListener('shown.bs.dropdown', function () {
+      btn.classList.remove('bg-danger','text-white');
+      btn.classList.add('bg-neutral-200');
+      if (badge) { badge.classList.add('d-none'); badge.textContent = '0'; }
+      if (headerCount) headerCount.textContent = '0';
 
-    fetch("{{ route('student.notifications.markLatestRead') }}", {
-      method: 'POST',
-      headers: {
-        'X-CSRF-TOKEN': '{{ csrf_token() }}',
-        'Accept': 'application/json'
-      }
-    })
-    .then(r => r.json())
-    .then(data => {
-      const remaining = Number(data?.remaining ?? 0);
-      if (remaining > 0) {
-        // still have unread (beyond top 5) – restore badge + color
-        btn.classList.add('bg-danger','text-white');
-        badge.classList.remove('d-none');
-        badge.textContent = remaining;
-        if (headerCount) headerCount.textContent = remaining;
-      }
-    })
-    .catch(() => { /* ignore errors for now */ });
-  });
+      fetch("{{ route('student.notifications.markLatestRead') }}", {
+        method: 'POST',
+        headers: {
+          'X-CSRF-TOKEN': '{{ csrf_token() }}',
+          'Accept': 'application/json'
+        }
+      })
+      .then(r => r.json())
+      .then(data => {
+        const remaining = Number(data?.remaining ?? 0);
+        if (remaining > 0) {
+          btn.classList.add('bg-danger','text-white');
+          badge.classList.remove('d-none');
+          badge.textContent = remaining;
+          if (headerCount) headerCount.textContent = remaining;
+        }
+      })
+      .catch(() => {});
+    });
+  }
 });
 </script>
