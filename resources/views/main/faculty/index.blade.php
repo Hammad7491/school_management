@@ -12,7 +12,7 @@
   }
   @media(prefers-color-scheme: dark){
     :root{ --bg:#0b1020; --ink:#e6e9f5; --muted:#9aa3ba; --card:#0f1830;
-      --stroke:rgba(255,255,255,.12);}
+      --stroke:rgba(255,255,255,.12); }
   }
 
   body.page--faculty .dashboard-main{ padding-left:0 !important; margin-left:0 !important; }
@@ -21,33 +21,51 @@
   .page{ background:var(--bg); color:var(--ink); }
 
   /* Hero */
-  .hero{ background:linear-gradient(135deg,var(--brand1),var(--brand2));
-    padding:90px 14px; text-align:center; color:#fff; }
+  .hero{
+    background:linear-gradient(135deg,var(--brand1),var(--brand2));
+    padding:clamp(56px,10vw,90px) 14px;
+    text-align:center; color:#fff;
+  }
   .hero h1{ font-size:clamp(32px,6vw,64px); font-weight:900; margin-bottom:12px; }
-  .hero p{ max-width:720px; margin:0 auto; font-size:18px; opacity:.95; }
+  .hero p{ max-width:720px; margin:0 auto; font-size:clamp(15px,2.2vw,18px); opacity:.95; padding:0 6px; }
 
   /* Faculty grid */
-  .wrap{ max-width:1200px; margin:0 auto; padding:50px 18px; }
+  .wrap{ max-width:1200px; margin:0 auto; padding:clamp(28px,6vw,50px) 18px; }
   h2.section-title{
-    font-size:clamp(26px,4vw,40px); font-weight:900; margin:40px 0 28px;
+    font-size:clamp(22px,4vw,40px); font-weight:900; margin:40px 0 28px;
     background:linear-gradient(90deg,var(--brand1),var(--brand2));
     -webkit-background-clip:text; -webkit-text-fill-color:transparent;
     text-align:center;
   }
 
-  .grid{ display:grid; gap:32px; }
-  @media(min-width:600px){ .grid{ grid-template-columns:repeat(2,1fr);} }
-  @media(min-width:1000px){ .grid{ grid-template-columns:repeat(3,1fr);} }
+  .grid{
+    display:grid;
+    gap:clamp(16px,3vw,32px);
+    grid-template-columns:repeat(auto-fit, minmax(240px, 1fr));
+  }
 
-  .card{ background:var(--card); border:1px solid var(--stroke);
-    border-radius:var(--radius); padding:36px 24px; text-align:center;
-    box-shadow:0 6px 16px rgba(2,6,23,.08); transition:.3s ease; }
-  .card:hover{ transform:translateY(-6px) scale(1.02);
-    box-shadow:0 14px 30px rgba(2,6,23,.12); }
+  .card{
+    background:var(--card); border:1px solid var(--stroke);
+    border-radius:var(--radius);
+    padding:clamp(20px,4vw,36px) clamp(16px,3vw,24px);
+    text-align:center;
+    box-shadow:0 6px 16px rgba(2,6,23,.08);
+    transition:.3s ease;
+  }
+  .card:hover{
+    transform:translateY(-6px) scale(1.02);
+    box-shadow:0 14px 30px rgba(2,6,23,.12);
+  }
 
-  .card img{ width:160px; height:160px; object-fit:cover;
-    border-radius:50%; border:4px solid var(--brand1); margin-bottom:18px;
-    box-shadow:0 6px 18px rgba(0,0,0,.08); }
+  .card img{
+    width:clamp(120px,28vw,160px);
+    height:clamp(120px,28vw,160px);
+    object-fit:cover;
+    border-radius:50%;
+    border:4px solid var(--brand1);
+    margin-bottom:18px;
+    box-shadow:0 6px 18px rgba(0,0,0,.08);
+  }
   .card h3{ font-size:20px; font-weight:800; margin-bottom:10px; color:var(--ink); }
   .card p{ font-size:15px; line-height:1.6; color:var(--muted); }
 </style>
@@ -81,6 +99,19 @@
         <p>BS (Bio Chemistry)</p>
       </div>
 
+      <!-- NEW: Added after Nazim Ali -->
+      <div class="card">
+        <img src="{{ asset('assets/images/school/girl.png') }}" alt="Tasleem Qamar">
+        <h3>Tasleem Qamar</h3>
+        <p>BS (Physics)</p>
+      </div>
+
+      <div class="card">
+        <img src="{{ asset('assets/images/school/girl.png') }}" alt="Fazeelat Iqbal">
+        <h3>Fazeelat Iqbal</h3>
+        <p>BS (Botany)</p>
+      </div>
+
       <div class="card">
         <img src="{{ asset('assets/images/school/girl.png') }}" alt="Miss Saira Mudasser Alvi">
         <h3>Miss Saira Mudasser Alvi</h3>
@@ -98,8 +129,6 @@
         <h3>Miss Aneesa</h3>
         <p>BS(Hons.) Zoology</p>
       </div>
-
-     
 
       <div class="card">
         <img src="{{ asset('assets/images/school/girl.png') }}" alt="Miss Sobia Hamid">
