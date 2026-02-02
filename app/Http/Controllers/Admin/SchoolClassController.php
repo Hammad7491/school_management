@@ -8,17 +8,23 @@ use Illuminate\Http\Request;
 
 class SchoolClassController extends Controller
 {
-    // List page (table)
+    public function __construct()
+    {
+        $this->middleware('permission:view classes')->only(['index']);
+        $this->middleware('permission:create classes')->only(['create', 'store']);
+        $this->middleware('permission:edit classes')->only(['edit', 'update']);
+        $this->middleware('permission:delete classes')->only(['destroy']);
+    }
+
     public function index()
     {
         $classes = SchoolClass::latest()->get();
         return view('admin.classes.index', compact('classes'));
     }
 
-    // Create page (FORM ONLY)
     public function create()
     {
-        return view('admin.classes.create'); // no $classes here
+        return view('admin.classes.create');
     }
 
     public function store(Request $request)
@@ -37,7 +43,6 @@ class SchoolClassController extends Controller
         return redirect()->route('classes.index')->with('success', 'Class Added!');
     }
 
-    // Edit on the SAME create page (pass only $class)
     public function edit($id)
     {
         $class = SchoolClass::findOrFail($id);

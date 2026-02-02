@@ -32,7 +32,8 @@
 
   .toast{ padding:12px 14px; border-radius:12px; border:1px solid; display:flex; gap:.6rem; align-items:flex-start; margin-bottom:12px; }
   .toast-success{ background:#ecfdf5; border-color:#a7f3d0; color:#065f46; }
-  @media (prefers-color-scheme: dark){ .toast-success{ background:rgba(16,185,129,.14); border-color:rgba(16,185,129,.45); color:#d1fae5; }
+  @media (prefers-color-scheme: dark){
+    .toast-success{ background:rgba(16,185,129,.14); border-color:rgba(16,185,129,.45); color:#d1fae5; }
     .search{ background:rgba(255,255,255,.04); }
   }
 
@@ -93,14 +94,20 @@
     <div class="bar">
       <div>
         <h1 class="title"><span>All</span> Classes</h1>
-        <div id="resultMeta" style="color:var(--muted); font-size:12px;"><span id="resultCount">{{ $classes->count() }}</span> on this page</div>
+        <div id="resultMeta" style="color:var(--muted); font-size:12px;">
+          <span id="resultCount">{{ $classes->count() }}</span> on this page
+        </div>
       </div>
+
       <form class="search" role="search" onsubmit="return false">
         <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
         <input id="q" type="search" placeholder="Search by class name…" autocomplete="off" />
         <button type="button" id="clearBtn" class="clear" aria-label="Clear">×</button>
       </form>
-      <a href="{{ route('classes.create') }}" class="btn btn-primary">+ Add New Class</a>
+
+      @can('create classes')
+        <a href="{{ route('classes.create') }}" class="btn btn-primary">+ Add New Class</a>
+      @endcan
     </div>
 
     @if(session('success'))
@@ -135,34 +142,60 @@
                       <span class="chip-muted">—</span>
                     @endif
                   </td>
+
                   <td class="ta-right" data-label="Actions">
-                    <!-- Desktop: show inline buttons -->
-                    <div class="desk-actions">
-                      <a href="{{ route('classes.edit', $c->id) }}" class="btn-sm">Edit</a>
-                      <form action="{{ route('classes.destroy', $c->id) }}" method="POST" style="display:inline" onsubmit="return confirm('Delete this class?')">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="btn-sm btn-danger">Delete</button>
-                      </form>
-                    </div>
-                    <!-- Mobile: dropdown menu -->
-                    <div class="menu mobile-actions" data-open="false">
-                      <button type="button" class="menu-btn js-menu-btn" aria-haspopup="true" aria-expanded="false">Actions ▾</button>
-                      <div class="menu-list" role="menu">
-                        <a href="{{ route('classes.edit', $c->id) }}" class="menu-item" role="menuitem">Edit</a>
-                        <div class="menu-divider"></div>
-                        <form action="{{ route('classes.destroy', $c->id) }}" method="POST" onsubmit="return confirm('Delete this class?')">
-                          @csrf
-                          @method('DELETE')
-                          <button type="submit" class="menu-item btn-danger" role="menuitem">Delete</button>
-                        </form>
+                    @canany(['edit classes','delete classes'])
+                      <!-- Desktop: show inline buttons -->
+                      <div class="desk-actions">
+                        @can('edit classes')
+                          <a href="{{ route('classes.edit', $c->id) }}" class="btn-sm">Edit</a>
+                        @endcan
+
+                        @can('delete classes')
+                          <form action="{{ route('classes.destroy', $c->id) }}" method="POST" style="display:inline" onsubmit="return confirm('Delete this class?')">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="btn-sm btn-danger">Delete</button>
+                          </form>
+                        @endcan
                       </div>
-                    </div>
+
+                      <!-- Mobile: dropdown menu -->
+                      <div class="menu mobile-actions" data-open="false">
+                        <button type="button" class="menu-btn js-menu-btn" aria-haspopup="true" aria-expanded="false">Actions ▾</button>
+                        <div class="menu-list" role="menu">
+
+                          @can('edit classes')
+                            <a href="{{ route('classes.edit', $c->id) }}" class="menu-item" role="menuitem">Edit</a>
+                          @endcan
+
+                          @if(auth()->user()->can('edit classes') && auth()->user()->can('delete classes'))
+                            <div class="menu-divider"></div>
+                          @endif
+
+                          @can('delete classes')
+                            <form action="{{ route('classes.destroy', $c->id) }}" method="POST" onsubmit="return confirm('Delete this class?')">
+                              @csrf
+                              @method('DELETE')
+                              <button type="submit" class="menu-item btn-danger" role="menuitem">Delete</button>
+                            </form>
+                          @endcan
+
+                        </div>
+                      </div>
+                    @else
+                      <span class="chip-muted">—</span>
+                    @endcanany
                   </td>
                 </tr>
               @empty
                 <tr>
-                  <td colspan="4" class="empty">No classes found. <a href="{{ route('classes.create') }}" style="text-decoration:underline">Add your first class</a>.</td>
+                  <td colspan="4" class="empty">
+                    No classes found.
+                    @can('create classes')
+                      <a href="{{ route('classes.create') }}" style="text-decoration:underline">Add your first class</a>.
+                    @endcan
+                  </td>
                 </tr>
               @endforelse
 
@@ -233,7 +266,13 @@
     const menus = Array.from(document.querySelectorAll('.menu'));
 
     function closeAll(except){
-      menus.forEach(m => { if(m !== except){ m.dataset.open = 'false'; const b=m.querySelector('.js-menu-btn'); if(b){ b.setAttribute('aria-expanded','false'); } } });
+      menus.forEach(m => {
+        if(m !== except){
+          m.dataset.open = 'false';
+          const b=m.querySelector('.js-menu-btn');
+          if(b){ b.setAttribute('aria-expanded','false'); }
+        }
+      });
     }
 
     menus.forEach(menu => {
