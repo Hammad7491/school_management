@@ -3,6 +3,8 @@
 
 @push('styles')
 <style>
+  /* ========== Responsive upgrades only (no logic changed) ========== */
+
   /* Page header */
   .page-head{
     display:flex;
@@ -17,6 +19,9 @@
     gap:.5rem;
   }
 
+  /* Avoid overflow in flex children */
+  .min-w-0{ min-width:0 !important; }
+
   /* Avatar */
   .avatar-sm{
     width:40px;
@@ -28,20 +33,21 @@
 
   /* Truncate helpers */
   .truncate-1{
-    max-width: 260px;
+    display:block;
+    max-width: min(360px, 62vw);
     white-space:nowrap;
     overflow:hidden;
     text-overflow:ellipsis;
-    display:block;
   }
   .truncate-2{
     display:-webkit-box;
     -webkit-line-clamp:2;
     -webkit-box-orient:vertical;
     overflow:hidden;
+    word-break:break-word;
   }
 
-  /* Action buttons (fix small/empty icons issue) */
+  /* Action buttons */
   .action-btn{
     display:inline-flex;
     align-items:center;
@@ -54,9 +60,7 @@
   .action-btn i{ font-size:1rem; line-height:1; }
 
   /* Status toggle button alignment */
-  .toggle-btn{
-    white-space:nowrap;
-  }
+  .toggle-btn{ white-space:nowrap; }
 
   /* Card list for mobile */
   .assign-card{
@@ -77,6 +81,7 @@
     flex-wrap:wrap;
     justify-content:flex-end;
   }
+
   .meta-grid{
     display:grid;
     grid-template-columns: 1fr 1fr;
@@ -89,12 +94,40 @@
     margin-bottom:.15rem;
   }
 
-  /* Small screens padding + header button full width */
+  /* Table responsiveness (tablet+): allow scroll without breaking page */
+  .table-responsive{
+    -webkit-overflow-scrolling: touch;
+    overflow-x:auto;
+  }
+  /* On medium screens, table may need more width; scroll handles it */
+  .teacher-table{
+    min-width: 980px;
+  }
+
+  /* Small screens */
   @media (max-width: 576px){
     .page-wrap{ padding-left:.75rem; padding-right:.75rem; }
     .head-actions{ width:100%; }
     .head-actions .btn{ width:100%; justify-content:center; }
     .meta-grid{ grid-template-columns: 1fr; }
+    .truncate-1{ max-width: 100%; }
+  }
+
+  /* Extra small phones (320-375px) */
+  @media (max-width: 420px){
+    .avatar-sm{
+      width:34px; height:34px; flex:0 0 34px;
+      font-size:14px;
+    }
+    .action-btn{
+      width:34px;
+      height:32px;
+    }
+  }
+
+  /* Large screens: keep table comfortable */
+  @media (min-width: 1400px){
+    .teacher-table{ min-width: 1100px; }
   }
 </style>
 @endpush
@@ -137,8 +170,8 @@
             </div>
           @else
 
-            {{-- MOBILE VIEW (cards) --}}
-            <div class="d-lg-none">
+            {{-- ✅ MOBILE VIEW (cards): xs + sm only --}}
+            <div class="d-md-none">
               <div class="vstack gap-3">
                 @foreach($assignments as $assignment)
                   @php
@@ -153,7 +186,7 @@
                         </div>
 
                         <div class="min-w-0">
-                          <div class="fw-semibold mb-0">
+                          <div class="fw-semibold mb-0 truncate-1">
                             {{ $assignment->teacher->name }}
                           </div>
                           <div class="text-muted small truncate-1">
@@ -230,10 +263,10 @@
               </div>
             </div>
 
-            {{-- TABLET/DESKTOP VIEW (table) --}}
-            <div class="d-none d-lg-block">
+            {{-- ✅ TABLET/DESKTOP VIEW (table): md and above --}}
+            <div class="d-none d-md-block">
               <div class="table-responsive">
-                <table class="table table-hover align-middle mb-0">
+                <table class="table table-hover align-middle mb-0 teacher-table">
                   <thead class="table-light">
                     <tr>
                       <th style="min-width:70px;">#</th>
@@ -256,13 +289,13 @@
                         <td>{{ $assignment->id }}</td>
 
                         <td>
-                          <div class="d-flex align-items-center gap-2">
+                          <div class="d-flex align-items-center gap-2 min-w-0">
                             <div class="avatar-sm bg-primary text-white rounded-circle d-flex align-items-center justify-content-center">
                               {{ $initial }}
                             </div>
                             <div class="min-w-0">
-                              <div class="fw-semibold">{{ $assignment->teacher->name }}</div>
-                              <small class="text-muted truncate-1">{{ $assignment->teacher->email }}</small>
+                              <div class="fw-semibold truncate-1">{{ $assignment->teacher->name }}</div>
+                              <small class="text-muted truncate-1 d-block">{{ $assignment->teacher->email }}</small>
                             </div>
                           </div>
                         </td>
