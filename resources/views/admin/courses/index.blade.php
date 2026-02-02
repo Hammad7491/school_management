@@ -19,7 +19,7 @@
   .title span{ background: linear-gradient(90deg, var(--brand1), var(--brand2)); -webkit-background-clip:text; background-clip:text; color:transparent; }
 
   .bar{ display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:12px; flex-wrap:wrap; }
-  .btn{ border:0; border-radius:12px; padding:12px 16px; font-weight:900; color:#fff; cursor:pointer; }
+  .btn{ border:0; border-radius:12px; padding:12px 16px; font-weight:900; color:#fff; cursor:pointer; text-decoration:none; display:inline-flex; align-items:center; justify-content:center; }
   .btn-primary{ background: linear-gradient(90deg, var(--brand1), var(--brand2)); box-shadow:0 12px 28px rgba(106,123,255,.35); }
   .btn-primary:hover{ filter:brightness(1.05); transform: translateY(-1px); }
 
@@ -50,7 +50,7 @@
   .thumb{ width:70px; height:70px; object-fit:cover; border-radius:10px; border:1px solid var(--stroke); display:block; }
   .img-actions{ display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
 
-  .btn-sm{ border:1px solid var(--stroke); background:transparent; color:var(--ink); padding:8px 12px; border-radius:10px; font-weight:800; }
+  .btn-sm{ border:1px solid var(--stroke); background:transparent; color:var(--ink); padding:8px 12px; border-radius:10px; font-weight:800; text-decoration:none; display:inline-flex; align-items:center; justify-content:center; }
   .btn-sm:hover{ box-shadow:0 0 0 4px var(--ring); }
   .btn-danger{ color:#fff; background:linear-gradient(90deg,#ff5b6a,#ff8db3); border:0; }
 
@@ -98,14 +98,21 @@
     <div class="bar">
       <div>
         <h1 class="title"><span>Courses</span></h1>
-        <div id="resultMeta" style="color:var(--muted); font-size:12px;"><span id="resultCount">{{ $courses->count() }}</span> on this page</div>
+        <div id="resultMeta" style="color:var(--muted); font-size:12px;">
+          <span id="resultCount">{{ $courses->count() }}</span> on this page
+        </div>
       </div>
+
       <form class="search" role="search" onsubmit="return false">
         <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
         <input id="q" type="search" placeholder="Search by course name…" autocomplete="off" />
         <button type="button" id="clearBtn" class="clear" aria-label="Clear">×</button>
       </form>
-      <a href="{{ route('courses.create') }}" class="btn btn-primary">+ Add New Course</a>
+
+      {{-- ✅ show only if can create courses --}}
+      @can('create courses')
+        <a href="{{ route('courses.create') }}" class="btn btn-primary">+ Add New Course</a>
+      @endcan
     </div>
 
     @if(session('success'))
@@ -128,10 +135,13 @@
             </thead>
             <tbody>
               @php $start = (is_object($courses) && method_exists($courses,'firstItem')) ? $courses->firstItem() : 1; @endphp
+
               @forelse($courses as $course)
                 <tr data-row="course">
                   <td class="num text-muted" data-label="#">{{ $start + $loop->index }}</td>
+
                   <td class="fw-semibold" data-col="name" data-label="Course">{{ $course->name }}</td>
+
                   <td class="num" data-label="Fee">
                     @if(!is_null($course->fee))
                       PKR {{ number_format($course->fee, 0) }}
@@ -139,7 +149,11 @@
                       <span class="text-muted">—</span>
                     @endif
                   </td>
-                  <td class="text-truncate" style="max-width: 420px;" data-label="Description">{{ $course->description ?? '—' }}</td>
+
+                  <td class="text-truncate" style="max-width: 420px;" data-label="Description">
+                    {{ $course->description ?? '—' }}
+                  </td>
+
                   <td data-label="Image">
                     @if($course->image_path)
                       <div class="img-actions">
@@ -151,35 +165,65 @@
                       <span class="text-muted">No image</span>
                     @endif
                   </td>
-                  <td class="ta-right" data-label="Actions">
-                    <!-- Desktop: show inline buttons -->
-                    <div class="desk-actions">
-                      <a href="{{ route('courses.edit', $course->id) }}" class="btn-sm">Edit</a>
-                      <form action="{{ route('courses.destroy', $course->id) }}" method="POST" style="display:inline" onsubmit="return confirm('Delete this course?')">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="btn-sm btn-danger">Delete</button>
-                      </form>
-                    </div>
 
-                    <!-- Mobile: dropdown menu -->
-                    <div class="menu mobile-actions" data-open="false">
-                      <button type="button" class="menu-btn js-menu-btn" aria-haspopup="true" aria-expanded="false">Actions ▾</button>
-                      <div class="menu-list" role="menu">
-                        <a href="{{ route('courses.edit', $course->id) }}" class="menu-item" role="menuitem">Edit</a>
-                        <div class="menu-divider"></div>
-                        <form action="{{ route('courses.destroy', $course->id) }}" method="POST" onsubmit="return confirm('Delete this course?')">
-                          @csrf
-                          @method('DELETE')
-                          <button type="submit" class="menu-item btn-danger" role="menuitem">Delete</button>
-                        </form>
+                  <td class="ta-right" data-label="Actions">
+
+                    {{-- ✅ If user has edit/delete, show action UI. Otherwise show dash --}}
+                    @canany(['edit courses','delete courses'])
+
+                      <!-- Desktop: show inline buttons -->
+                      <div class="desk-actions">
+                        @can('edit courses')
+                          <a href="{{ route('courses.edit', $course->id) }}" class="btn-sm">Edit</a>
+                        @endcan
+
+                        @can('delete courses')
+                          <form action="{{ route('courses.destroy', $course->id) }}" method="POST" style="display:inline" onsubmit="return confirm('Delete this course?')">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="btn-sm btn-danger">Delete</button>
+                          </form>
+                        @endcan
                       </div>
-                    </div>
+
+                      <!-- Mobile: dropdown menu -->
+                      <div class="menu mobile-actions" data-open="false">
+                        <button type="button" class="menu-btn js-menu-btn" aria-haspopup="true" aria-expanded="false">Actions ▾</button>
+                        <div class="menu-list" role="menu">
+
+                          @can('edit courses')
+                            <a href="{{ route('courses.edit', $course->id) }}" class="menu-item" role="menuitem">Edit</a>
+                          @endcan
+
+                          @can('delete courses')
+                            @if(auth()->user()->can('edit courses'))
+                              <div class="menu-divider"></div>
+                            @endif
+
+                            <form action="{{ route('courses.destroy', $course->id) }}" method="POST" onsubmit="return confirm('Delete this course?')">
+                              @csrf
+                              @method('DELETE')
+                              <button type="submit" class="menu-item btn-danger" role="menuitem">Delete</button>
+                            </form>
+                          @endcan
+
+                        </div>
+                      </div>
+
+                    @else
+                      <span class="text-muted">—</span>
+                    @endcanany
+
                   </td>
                 </tr>
               @empty
                 <tr>
-                  <td colspan="6" class="empty">No courses found. <a href="{{ route('courses.create') }}" style="text-decoration:underline">Add your first course</a>.</td>
+                  <td colspan="6" class="empty">
+                    No courses found.
+                    @can('create courses')
+                      <a href="{{ route('courses.create') }}" style="text-decoration:underline">Add your first course</a>.
+                    @endcan
+                  </td>
                 </tr>
               @endforelse
 
@@ -217,7 +261,7 @@
     const norm = (s) => (s || '').toString().toLowerCase().trim();
 
     function renumber(){
-      let n = 1; // always start at 1 on the page
+      let n = 1;
       rows.forEach(tr => {
         if(tr.style.display !== 'none'){
           const cell = tr.querySelector('td[data-label="#"]');
@@ -246,12 +290,18 @@
     filter();
   })();
 
-  // Lightweight dropdown menu logic (close on outside click / Esc, one open at a time)
+  // Dropdown menu logic
   (function(){
     const menus = Array.from(document.querySelectorAll('.menu'));
 
     function closeAll(except){
-      menus.forEach(m => { if(m !== except){ m.dataset.open = 'false'; const b=m.querySelector('.js-menu-btn'); if(b){ b.setAttribute('aria-expanded','false'); } } });
+      menus.forEach(m => {
+        if(m !== except){
+          m.dataset.open = 'false';
+          const b=m.querySelector('.js-menu-btn');
+          if(b){ b.setAttribute('aria-expanded','false'); }
+        }
+      });
     }
 
     menus.forEach(menu => {
