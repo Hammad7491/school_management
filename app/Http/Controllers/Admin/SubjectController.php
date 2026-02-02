@@ -1,5 +1,4 @@
 <?php
-// app/Http/Controllers/Admin/SubjectController.php
 
 namespace App\Http\Controllers\Admin;
 
@@ -9,6 +8,14 @@ use Illuminate\Http\Request;
 
 class SubjectController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('permission:view subjects')->only(['index']);
+        $this->middleware('permission:create subjects')->only(['create', 'store']);
+        $this->middleware('permission:edit subjects')->only(['edit', 'update']);
+        $this->middleware('permission:delete subjects')->only(['destroy']);
+    }
+
     public function index()
     {
         $subjects = Subject::latest()->get();

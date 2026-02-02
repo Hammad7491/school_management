@@ -75,12 +75,15 @@
           Subjects
         </h2>
 
-        <div class="head-actions">
-          <a href="{{ route('subjects.create') }}" class="btn btn-primary d-inline-flex align-items-center">
-            <i class="bi bi-plus-lg me-1"></i>
-            <span>Add Subject</span>
-          </a>
-        </div>
+        {{-- ✅ show only if user can create subjects --}}
+        @can('create subjects')
+          <div class="head-actions">
+            <a href="{{ route('subjects.create') }}" class="btn btn-primary d-inline-flex align-items-center">
+              <i class="bi bi-plus-lg me-1"></i>
+              <span>Add Subject</span>
+            </a>
+          </div>
+        @endcan
       </div>
 
       {{-- Alert --}}
@@ -98,6 +101,15 @@
             <div class="text-center text-muted py-5">
               <i class="bi bi-book-half fs-1 mb-3"></i>
               <div class="fw-semibold">No subjects found.</div>
+
+              {{-- ✅ show CTA only if can create --}}
+              @can('create subjects')
+                <div class="mt-2">
+                  <a href="{{ route('subjects.create') }}" class="btn btn-sm btn-primary">
+                    + Add Subject
+                  </a>
+                </div>
+              @endcan
             </div>
           @else
 
@@ -125,33 +137,45 @@
                         </div>
                       </div>
 
+                      {{-- ✅ Actions shown only if edit/delete permission exists --}}
                       <div class="subject-actions flex-shrink-0">
-                        <a
-                          href="{{ route('subjects.edit', $subject) }}"
-                          class="btn btn-sm btn-outline-primary action-btn"
-                          title="Edit"
-                          aria-label="Edit subject"
-                        >
-                          <i class="bi bi-pencil-fill"></i>
-                        </a>
-
-                        <form
-                          action="{{ route('subjects.destroy', $subject) }}"
-                          method="POST"
-                          class="m-0"
-                          onsubmit="return confirm('Delete this subject?')"
-                        >
-                          @csrf
-                          @method('DELETE')
-                          <button
-                            type="submit"
-                            class="btn btn-sm btn-outline-danger action-btn"
-                            title="Delete"
-                            aria-label="Delete subject"
+                        @can('edit subjects')
+                          <a
+                            href="{{ route('subjects.edit', $subject) }}"
+                            class="btn btn-sm btn-outline-primary action-btn"
+                            title="Edit"
+                            aria-label="Edit subject"
                           >
-                            <i class="bi bi-trash-fill"></i>
-                          </button>
-                        </form>
+                            <i class="bi bi-pencil-fill"></i>
+                          </a>
+                        @endcan
+
+                        @can('delete subjects')
+                          <form
+                            action="{{ route('subjects.destroy', $subject) }}"
+                            method="POST"
+                            class="m-0"
+                            onsubmit="return confirm('Delete this subject?')"
+                          >
+                            @csrf
+                            @method('DELETE')
+                            <button
+                              type="submit"
+                              class="btn btn-sm btn-outline-danger action-btn"
+                              title="Delete"
+                              aria-label="Delete subject"
+                            >
+                              <i class="bi bi-trash-fill"></i>
+                            </button>
+                          </form>
+                        @endcan
+
+                        {{-- If no actions --}}
+                        @cannot('edit subjects')
+                          @cannot('delete subjects')
+                            <span class="text-muted small">—</span>
+                          @endcannot
+                        @endcannot
                       </div>
                     </div>
                   </div>
@@ -193,34 +217,44 @@
                         </td>
 
                         <td class="text-end">
-                          <div class="d-inline-flex align-items-center gap-2 justify-content-end">
-                            <a
-                              href="{{ route('subjects.edit', $subject) }}"
-                              class="btn btn-sm btn-outline-primary action-btn"
-                              title="Edit"
-                              aria-label="Edit subject"
-                            >
-                              <i class="bi bi-pencil-fill"></i>
-                            </a>
+                          @canany(['edit subjects','delete subjects'])
+                            <div class="d-inline-flex align-items-center gap-2 justify-content-end">
 
-                            <form
-                              action="{{ route('subjects.destroy', $subject) }}"
-                              method="POST"
-                              class="m-0"
-                              onsubmit="return confirm('Delete this subject?')"
-                            >
-                              @csrf
-                              @method('DELETE')
-                              <button
-                                type="submit"
-                                class="btn btn-sm btn-outline-danger action-btn"
-                                title="Delete"
-                                aria-label="Delete subject"
-                              >
-                                <i class="bi bi-trash-fill"></i>
-                              </button>
-                            </form>
-                          </div>
+                              @can('edit subjects')
+                                <a
+                                  href="{{ route('subjects.edit', $subject) }}"
+                                  class="btn btn-sm btn-outline-primary action-btn"
+                                  title="Edit"
+                                  aria-label="Edit subject"
+                                >
+                                  <i class="bi bi-pencil-fill"></i>
+                                </a>
+                              @endcan
+
+                              @can('delete subjects')
+                                <form
+                                  action="{{ route('subjects.destroy', $subject) }}"
+                                  method="POST"
+                                  class="m-0"
+                                  onsubmit="return confirm('Delete this subject?')"
+                                >
+                                  @csrf
+                                  @method('DELETE')
+                                  <button
+                                    type="submit"
+                                    class="btn btn-sm btn-outline-danger action-btn"
+                                    title="Delete"
+                                    aria-label="Delete subject"
+                                  >
+                                    <i class="bi bi-trash-fill"></i>
+                                  </button>
+                                </form>
+                              @endcan
+
+                            </div>
+                          @else
+                            <span class="text-muted">—</span>
+                          @endcanany
                         </td>
                       </tr>
                     @endforeach
